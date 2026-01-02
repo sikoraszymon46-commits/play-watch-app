@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Proste Gry</title>
+</head>
+<body>
+  <h1>🎮 Moje gry</h1>
+
+  <!-- GRA 1 – KLIKER -->
+  <button onclick="clickGame()">Kliknij mnie</button>
+  <p id="game1">Kliknięcia: 0</p>
+
+  <!-- GRA 2 – LOSOWANIE -->
+  <button onclick="randomGame()">Losuj liczbę</button>
+  <p id="game2">Wylosowano: -</p>
+
+  <!-- GRA 3 – PUNKTY -->
+  <button onclick="pointsGame()">Zdobądź punkty</button>
+  <p id="game3">Punkty: 0</p>
+
+  <script>
+    // JavaScript w tym samym pliku
+    let clicks = 0;
+    function clickGame() {
+      clicks++;
+      document.getElementById("game1").innerText =
+        "Kliknięcia: " + clicks;
+    }
+
+    function randomGame() {
+      const number = Math.floor(Math.random() * 10) + 1;
+      document.getElementById("game2").innerText =
+        "Wylosowano: " + number;
+    }
+
+    let points = 0;
+    function pointsGame() {
+      points += 5;
+      document.getElementById("game3").innerText =
+        "Punkty: " + points;
+    }
+  </script>
+</body>
+</html>
