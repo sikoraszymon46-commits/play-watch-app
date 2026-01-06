@@ -2,66 +2,113 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Moje Gry i Punkty</title>
+  <title>Kolorowe Gry i Punkty</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
     body {
-      font-family: Arial, sans-serif;
-      background: #111;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom, #1a1a1a, #111);
       color: white;
       text-align: center;
       padding: 20px;
+      margin: 0;
     }
 
-    h1, h2, h3 {
-      margin: 20px 0;
+    h1 {
+      font-size: 36px;
+      margin-bottom: 30px;
+      color: #ffd700;
+      text-shadow: 2px 2px #000;
+    }
+
+    h2, h3 {
+      margin: 15px 0;
+    }
+
+    .game-section {
+      background: linear-gradient(135deg, #ff4e50, #f9d423);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 400px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    }
+
+    .game-section:nth-child(3) {
+      background: linear-gradient(135deg, #36d1dc, #5b86e5);
+    }
+
+    .game-section:nth-child(4) {
+      background: linear-gradient(135deg, #ff512f, #dd2476);
     }
 
     button {
-      padding: 10px 20px;
+      padding: 12px 25px;
       margin: 10px;
       font-size: 16px;
       cursor: pointer;
       border: none;
-      border-radius: 5px;
-      background: #007BFF;
-      color: white;
+      border-radius: 10px;
+      background: #fff;
+      color: #333;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
 
     button:hover {
-      background: #0056b3;
+      background: #ffd700;
+      color: #111;
+      transform: scale(1.05);
     }
 
     .ad-placeholder {
-      background: #333;
-      color: #ccc;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 10px;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      color: #111;
+      padding: 25px;
+      margin: 25px auto;
+      border-radius: 15px;
+      max-width: 400px;
+      font-weight: bold;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
 
     .locked {
-      background: #444;
+      background: rgba(0,0,0,0.5);
       padding: 15px;
       border-radius: 10px;
       margin: 15px 0;
+      font-weight: bold;
+      color: #ffd700;
+    }
+
+    a {
+      color: #00ffff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
-<h1>🎮 Moje Gry</h1>
+<h1>🎮 Kolorowe Gry i Punkty</h1>
 
-<!-- Punkty -->
 <h2>Punkty: <span id="points">0</span></h2>
 
 <!-- Gra 1 -->
-<div id="game1-section">
+<div class="game-section" id="game1-section">
   <h3>Gra 1 – Klikanie</h3>
   <button onclick="addPoints(5)">Kliknij mnie (+5 pkt)</button>
 </div>
 
 <!-- Gra 2 -->
-<div id="game2-section">
+<div class="game-section" id="game2-section">
   <h3>Gra 2 – Losowanie liczby</h3>
   <button onclick="addPoints(10)">Zagraj (+10 pkt)</button>
   <div id="locked-game2" class="locked">🔒 Odblokuj grę za 50 punktów</div>
@@ -73,7 +120,7 @@
 </div>
 
 <!-- Gra 3 -->
-<div id="game3-section">
+<div class="game-section" id="game3-section">
   <h3>Gra 3 – Punkty bonusowe</h3>
   <button onclick="addPoints(20)">Zagraj (+20 pkt)</button>
 </div>
@@ -87,11 +134,11 @@
 <!-- Linki -->
 <hr>
 <a href="polityka.html">Polityka prywatności</a> |
-<a href="kontakt.html">Kontakt</a>
+<a href="kontakt.html">Kontakt</a> |
+<a href="regulamin.html">Regulamin</a>
 
 <!-- Skrypt -->
 <script>
-  // PUNKTY
   let points = localStorage.getItem("points") || 0;
   document.getElementById("points").innerText = points;
 
@@ -102,7 +149,6 @@
     unlockGames();
   }
 
-  // ODPOCZTEK / ODPOKRYWANIE GRY 2
   function unlockGames() {
     if (points >= 50) {
       document.getElementById("locked-game2").style.display = "none";
@@ -110,18 +156,13 @@
     }
   }
 
-  // GRA 2 – LOSOWANIE LICZBY
   function playRandom() {
     const number = Math.floor(Math.random() * 10) + 1;
     document.getElementById("randomNumber").innerText = number;
   }
 
-  // wywołanie przy starcie, jeśli już punkty są
   unlockGames();
 </script>
-<hr>
-<a href="polityka.html">Polityka prywatności</a> |
-<a href="kontakt.html">Kontakt</a> |
-<a href="regulamin.html">Regulamin</a>
+
 </body>
 </html>
