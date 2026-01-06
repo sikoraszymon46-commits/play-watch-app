@@ -89,10 +89,10 @@
   <button onclick="addPoints(20)">Zagraj (+20 pkt)</button>
 </div>
 
-<!-- Gra 4 – Zagadki -->
+<!-- Gra 4 – Dynamiczne, nieskończone zagadki -->
 <div class="game-section" id="game4-section">
-  <h3>Gra 4 – Zagadki</h3>
-  <p>Odpowiedz poprawnie i zdobądź 15 punktów!</p>
+  <h3>Gra 4 – Nieskończone Zagadki</h3>
+  <p>Rozwiązuj zagadki i zdobywaj 15 punktów za każdą poprawną odpowiedź!</p>
   <div id="riddle-container">
     <p id="riddle-text"></p>
     <input type="text" id="riddle-answer" placeholder="Twoja odpowiedź">
@@ -140,41 +140,66 @@
 
   unlockGames();
 
-  // Gra 4 – Zagadki
-  const riddles = [
-    { question: "Co zawsze rośnie, ale nigdy nie spada?", answer: "wiek" },
-    { question: "Co ma klucze, ale nie może otworzyć drzwi?", answer: "pianino" },
-    { question: "Co można złamać, ale nie można dotknąć?", answer: "obietnica" },
-    { question: "Co ma wiele twarzy, ale nie ma oczu?", answer: "zegarek" },
-    { question: "Co jest twoje, ale inni używają tego częściej niż ty?", answer: "imię" }
-  ];
+  // Gra 4 – Dynamiczne, nieskończone zagadki
+  let currentRiddle = {};
+  let lastRiddle = null;
 
-  let currentRiddle = 0;
+  function generateRiddle() {
+    const type = Math.floor(Math.random() * 3); // 3 typy zagadek
 
-  function showRiddle() {
-    if(currentRiddle < riddles.length){
-      document.getElementById("riddle-text").innerText = riddles[currentRiddle].question;
-      document.getElementById("riddle-answer").value = "";
-      document.getElementById("riddle-feedback").innerText = "";
+    let question = "";
+    let answer = "";
+
+    if(type === 0){
+      // Matematyczne: dodawanie
+      const a = Math.floor(Math.random() * 20) + 1;
+      const b = Math.floor(Math.random() * 20) + 1;
+      question = `Ile to jest ${a} + ${b}?`;
+      answer = (a + b).toString();
+    } else if(type === 1){
+      // Matematyczne: odejmowanie
+      const a = Math.floor(Math.random() * 50) + 10;
+      const b = Math.floor(Math.random() * 10);
+      question = `Ile to jest ${a} - ${b}?`;
+      answer = (a - b).toString();
     } else {
-      document.getElementById("riddle-text").innerText = "Gratulacje! Rozwiązałeś wszystkie zagadki!";
-      document.getElementById("riddle-container").style.display = "none";
+      // Logiczne: krótkie zagadki
+      const riddles = [
+        {q:"Co zawsze rośnie, ale nigdy nie spada?", a:"wiek"},
+        {q:"Co ma klucze, ale nie może otworzyć drzwi?", a:"pianino"},
+        {q:"Co można złamać, ale nie można dotknąć?", a:"obietnica"},
+        {q:"Co ma wiele twarzy, ale nie ma oczu?", a:"zegarek"},
+        {q:"Co jest twoje, ale inni używają tego częściej niż ty?", a:"imię"}
+      ];
+      const index = Math.floor(Math.random() * riddles.length);
+      question = riddles[index].q;
+      answer = riddles[index].a;
     }
+
+    // Unikamy powtarzania ostatniego pytania
+    if(lastRiddle && question === lastRiddle.question){
+      return generateRiddle();
+    }
+
+    currentRiddle = {question, answer};
+    lastRiddle = currentRiddle;
+    document.getElementById("riddle-text").innerText = question;
+    document.getElementById("riddle-answer").value = "";
+    document.getElementById("riddle-feedback").innerText = "";
   }
 
   function checkRiddle() {
-    const answer = document.getElementById("riddle-answer").value.trim().toLowerCase();
-    if(answer === riddles[currentRiddle].answer){
+    const userAnswer = document.getElementById("riddle-answer").value.trim().toLowerCase();
+    if(userAnswer === currentRiddle.answer.toLowerCase()){
       addPoints(15);
-      document.getElementById("riddle-feedback").innerText = "Brawo! Poprawna odpowiedź. +15 pkt!";
-      currentRiddle++;
-      setTimeout(showRiddle, 1500);
+      document.getElementById("riddle-feedback").innerText = "Brawo! Poprawna odpowiedź +15 pkt!";
+      setTimeout(generateRiddle, 1500);
     } else {
       document.getElementById("riddle-feedback").innerText = "Spróbuj ponownie!";
     }
   }
 
-  showRiddle();
+  generateRiddle();
 </script>
 
 </body>
