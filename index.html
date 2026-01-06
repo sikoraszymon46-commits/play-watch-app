@@ -15,16 +15,8 @@
       margin: 0;
     }
 
-    h1 {
-      font-size: 36px;
-      margin-bottom: 30px;
-      color: #ffd700;
-      text-shadow: 2px 2px #000;
-    }
-
-    h2, h3 {
-      margin: 15px 0;
-    }
+    h1 { font-size: 36px; margin-bottom: 30px; color: #ffd700; text-shadow: 2px 2px #000; }
+    h2, h3 { margin: 15px 0; }
 
     .game-section {
       background: linear-gradient(135deg, #ff4e50, #f9d423);
@@ -35,64 +27,36 @@
       box-shadow: 0 8px 15px rgba(0,0,0,0.3);
     }
 
-    .game-section:nth-child(3) {
-      background: linear-gradient(135deg, #36d1dc, #5b86e5);
-    }
-
-    .game-section:nth-child(4) {
-      background: linear-gradient(135deg, #ff512f, #dd2476);
-    }
+    .game-section:nth-child(3) { background: linear-gradient(135deg, #36d1dc, #5b86e5); }
+    .game-section:nth-child(4) { background: linear-gradient(135deg, #ff512f, #dd2476); }
 
     button {
-      padding: 12px 25px;
-      margin: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 10px;
-      background: #fff;
-      color: #333;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      padding: 12px 25px; margin: 10px; font-size: 16px;
+      cursor: pointer; border: none; border-radius: 10px;
+      background: #fff; color: #333; font-weight: bold;
+      transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
 
     button:hover {
-      background: #ffd700;
-      color: #111;
-      transform: scale(1.05);
+      background: #ffd700; color: #111; transform: scale(1.05);
     }
 
     .ad-placeholder {
       background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-      color: #111;
-      padding: 25px;
-      margin: 25px auto;
-      border-radius: 15px;
-      max-width: 400px;
-      font-weight: bold;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      color: #111; padding: 25px; margin: 25px auto;
+      border-radius: 15px; max-width: 400px;
+      font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
 
     .locked {
-      background: rgba(0,0,0,0.5);
-      padding: 15px;
-      border-radius: 10px;
-      margin: 15px 0;
-      font-weight: bold;
-      color: #ffd700;
+      background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px;
+      margin: 15px 0; font-weight: bold; color: #ffd700;
     }
 
-    a {
-      color: #00ffff;
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: bold;
-    }
+    a { color: #00ffff; text-decoration: none; margin: 0 10px; font-weight: bold; }
+    a:hover { text-decoration: underline; }
 
-    a:hover {
-      text-decoration: underline;
-    }
+    #riddle-answer { padding: 8px; border-radius: 5px; border: none; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -101,13 +65,13 @@
 
 <h2>Punkty: <span id="points">0</span></h2>
 
-<!-- Gra 1 -->
+<!-- Gra 1 – Klikanie -->
 <div class="game-section" id="game1-section">
   <h3>Gra 1 – Klikanie</h3>
   <button onclick="addPoints(5)">Kliknij mnie (+5 pkt)</button>
 </div>
 
-<!-- Gra 2 -->
+<!-- Gra 2 – Losowanie liczby -->
 <div class="game-section" id="game2-section">
   <h3>Gra 2 – Losowanie liczby</h3>
   <button onclick="addPoints(10)">Zagraj (+10 pkt)</button>
@@ -119,17 +83,27 @@
   </div>
 </div>
 
-<!-- Gra 3 -->
+<!-- Gra 3 – Punkty bonusowe -->
 <div class="game-section" id="game3-section">
   <h3>Gra 3 – Punkty bonusowe</h3>
   <button onclick="addPoints(20)">Zagraj (+20 pkt)</button>
 </div>
 
+<!-- Gra 4 – Zagadki -->
+<div class="game-section" id="game4-section">
+  <h3>Gra 4 – Zagadki</h3>
+  <p>Odpowiedz poprawnie i zdobądź 15 punktów!</p>
+  <div id="riddle-container">
+    <p id="riddle-text"></p>
+    <input type="text" id="riddle-answer" placeholder="Twoja odpowiedź">
+    <button onclick="checkRiddle()">Sprawdź odpowiedź</button>
+    <p id="riddle-feedback"></p>
+  </div>
+</div>
+
 <!-- Reklama -->
 <h3>Reklama</h3>
-<div class="ad-placeholder">
-  🔵 Miejsce na reklamę (testowe)
-</div>
+<div class="ad-placeholder">🔵 Miejsce na reklamę (testowe)</div>
 
 <!-- Linki -->
 <hr>
@@ -139,6 +113,7 @@
 
 <!-- Skrypt -->
 <script>
+  // Punkty
   let points = localStorage.getItem("points") || 0;
   document.getElementById("points").innerText = points;
 
@@ -149,19 +124,57 @@
     unlockGames();
   }
 
+  // Odblokowywanie gry 2
   function unlockGames() {
-    if (points >= 50) {
+    if(points >= 50){
       document.getElementById("locked-game2").style.display = "none";
       document.getElementById("game2").style.display = "block";
     }
   }
 
-  function playRandom() {
+  // Gra 2 – losowanie liczby
+  function playRandom(){
     const number = Math.floor(Math.random() * 10) + 1;
     document.getElementById("randomNumber").innerText = number;
   }
 
   unlockGames();
+
+  // Gra 4 – Zagadki
+  const riddles = [
+    { question: "Co zawsze rośnie, ale nigdy nie spada?", answer: "wiek" },
+    { question: "Co ma klucze, ale nie może otworzyć drzwi?", answer: "pianino" },
+    { question: "Co można złamać, ale nie można dotknąć?", answer: "obietnica" },
+    { question: "Co ma wiele twarzy, ale nie ma oczu?", answer: "zegarek" },
+    { question: "Co jest twoje, ale inni używają tego częściej niż ty?", answer: "imię" }
+  ];
+
+  let currentRiddle = 0;
+
+  function showRiddle() {
+    if(currentRiddle < riddles.length){
+      document.getElementById("riddle-text").innerText = riddles[currentRiddle].question;
+      document.getElementById("riddle-answer").value = "";
+      document.getElementById("riddle-feedback").innerText = "";
+    } else {
+      document.getElementById("riddle-text").innerText = "Gratulacje! Rozwiązałeś wszystkie zagadki!";
+      document.getElementById("riddle-container").style.display = "none";
+    }
+  }
+
+  function checkRiddle() {
+    const answer = document.getElementById("riddle-answer").value.trim().toLowerCase();
+    if(answer === riddles[currentRiddle].answer){
+      addPoints(15);
+      document.getElementById("riddle-feedback").innerText = "Brawo! Poprawna odpowiedź. +15 pkt!";
+      currentRiddle++;
+      setTimeout(showRiddle, 1500);
+    } else {
+      document.getElementById("riddle-feedback").innerText = "Spróbuj ponownie!";
+    }
+  }
+
+  showRiddle();
 </script>
 
 </body>
