@@ -1,127 +1,41 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Play Watch – Gry i Zagadki</title>
-    <meta name="description" content="Gry, zagadki logiczne i zabawa online.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Google AdSense -->
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-        crossorigin="anonymous"></script>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        header {
-            background: #222;
-            color: white;
-            padding: 20px;
-        }
-        main {
-            padding: 20px;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 500px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        footer {
-            background: #ddd;
-            padding: 15px;
-            font-size: 14px;
-        }
-        footer a {
-            margin: 0 10px;
-            color: #000;
-            text-decoration: none;
-        }
-    </style>
-</head>
-
-<body>
-
-<header>
-    <h1>🎮 Play Watch</h1>
-    <p>Gry, zagadki i dobra zabawa</p>
-</header>
-
-<main>
-
-    <!-- 🔹 GRA / ZAGADKI -->
-    <div class="card">
-        <h2>Zagadka</h2>
-        <p id="question">Kliknij przycisk, aby wylosować zagadkę</p>
-        <button onclick="nextRiddle()">Nowa zagadka</button>
-    </div>
-
-    <!-- 🔹 MIEJSCE NA REKLAMĘ -->
-    <div class="card">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9599322707323836"
-             data-ad-slot="1234567890"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-
-</main>
 
 <footer>
-    <a href="regulamin.html">Regulamin</a>
-    <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-    <a href="kontakt.html">Kontakt</a>
-    <p>© 2026 Play Watch</p>
+  <a href="regulamin.html">Regulamin</a>
+  <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+  <a href="kontakt.html">Kontakt</a>
+  <p>© 2026 PlayWatch</p>
 </footer>
 
 <script>
-    const riddles = [
-        "Co zawsze rośnie, ale nigdy nie spada?",
-        "Co ma klucze, ale nie może otworzyć drzwi?",
-        "Co można złamać, ale nie można dotknąć?",
-        "Co jest Twoje, ale inni używają tego częściej niż Ty?",
-        "Im więcej zabierasz, tym większe się staje. Co to?",
-        "Co ma wiele twarzy, ale nie ma oczu?",
-        "Co biegnie, ale nigdy nie chodzi?",
-        "Co ma ręce, ale nie potrafi klaskać?",
-        "Co ma głowę i ogon, ale nie ma ciała?",
-        "Co zawsze jest przed Tobą, ale nigdy tego nie dogonisz?"
-    ];
+let clicks = 0;
 
-    let used = [];
+const riddles = [
+  "Co zawsze rośnie, ale nigdy nie spada?",
+  "Co ma klucze, ale nie otwiera drzwi?",
+  "Co można złamać, ale nie dotknąć?",
+  "Co jest Twoje, ale inni używają tego częściej?",
+  "Im więcej zabierasz, tym większe się staje.",
+  "Co ma głowę i ogon, ale nie ma ciała?",
+  "Co biegnie, ale nie chodzi?",
+  "Co ma ręce, ale nie klaszcze?",
+  "Co zawsze jest przed Tobą, ale nie możesz tego dogonić?",
+  "Co ma wiele stron, ale nie jest książką?"
+];
 
-    function nextRiddle() {
-        if (used.length === riddles.length) {
-            used = [];
-        }
+let used = [];
 
-        let index;
-        do {
-            index = Math.floor(Math.random() * riddles.length);
-        } while (used.includes(index));
-
-        used.push(index);
-        document.getElementById("question").innerText = riddles[index];
-    }
+function nextRiddle() {
+  if (used.length === riddles.length) {
+    used = [];
+  }
+  let i;
+  do {
+    i = Math.floor(Math.random() * riddles.length);
+  } while (used.includes(i));
+  used.push(i);
+  document.getElementById("riddle").innerText = riddles[i];
+}
 </script>
 
 </body>
 </html>
-
