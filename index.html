@@ -3,180 +3,96 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>PlayWatch – Gry i Zagadki</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Darmowe gry i zagadki online. Prosta rozrywka w przeglądarce.">
-
-<!-- Google AdSense -->
-<script async
-  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-  crossorigin="anonymous"></script>
-
-<style>
-body { font-family: Arial; background: #f1f1f1; margin:0; }
-header { background:#111; color:#fff; padding:20px; text-align:center; }
-section { background:#fff; max-width:800px; margin:20px auto; padding:20px; border-radius:8px; }
-button { padding:10px 15px; font-size:16px; cursor:pointer; margin-top:5px; }
-.game { margin-top:15px; padding:15px; background:#f7f7f7; border-radius:6px; }
-footer { text-align:center; padding:20px; background:#ddd; }
-footer a { margin:0 10px; }
-input[type=number] { width:60px; padding:5px; margin-right:10px; }
-</style>
+<title>PlayWatch – Gry i Zagadki</title>
+<link rel="stylesheet" href="style.css">
+<!-- Miejsce na AdSense -->
+<!-- <script data-ad-client="ca-pub-9599322707323836" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
 </head>
-
 <body>
 
 <header>
   <h1>🎮 PlayWatch</h1>
-  <p>Proste gry i zagadki online</p>
+  <p>Proste gry, zagadki i zabawa online</p>
 </header>
 
-<!-- GLOBALNY LICZNIK PUNKTÓW -->
-<section>
+<section class="points-section">
   <h2>⭐ Twoje punkty</h2>
   <p>Łączna liczba punktów: <strong><span id="totalPoints">0</span></strong></p>
 </section>
 
-<section>
-  <h2>O stronie</h2>
-  <p>
-    PlayWatch to strona rozrywkowa z prostymi grami i zagadkami.
-    Działa na telefonach i komputerach bez instalowania aplikacji.
-  </p>
+<section class="about-section">
+<h2>O stronie</h2>
+<p>PlayWatch to strona rozrywkowa z prostymi grami i zagadkami. Działa na telefonach i komputerach bez instalowania aplikacji. Za każde poprawne rozwiązanie lub akcję w grze zdobywasz punkty!</p>
 </section>
 
-<section>
-  <h2>🧠 Gra 1 – Zagadki</h2>
-  <div class="game">
-    <p id="riddleText">Kliknij, aby wylosować zagadkę</p>
-    <button onclick="losujZagadke()">Losuj zagadkę</button>
-  </div>
+<!-- GRA 1: Zagadki -->
+<section class="game-section">
+<h2>🧩 Gra 1 – Zagadki</h2>
+<div class="game">
+<p id="riddleText">Kliknij "Nowa zagadka", aby wylosować zagadkę</p>
+<input type="text" id="riddleAnswer" placeholder="Twoja odpowiedź">
+<button onclick="sprawdzZagadke()">Sprawdź odpowiedź</button>
+<button onclick="losujZagadke()">Nowa zagadka</button>
+<p id="riddleResult"></p>
+</div>
 </section>
 
-<section>
-  <h2>🖱️ Gra 2 – Klikacz</h2>
-  <div class="game">
-    <p>Kliknięcia: <strong><span id="clicks">0</span></strong></p>
-    <button onclick="klik()">Kliknij mnie</button>
-  </div>
+<!-- GRA 2: Klikacz -->
+<section class="game-section">
+<h2>🖱️ Gra 2 – Klikacz</h2>
+<div class="game">
+<p>Kliknięcia: <strong><span id="clicks">0</span></strong></p>
+<button onclick="klik()">Kliknij mnie</button>
+</div>
 </section>
 
-<section>
-  <h2>🎲 Gra 3 – Losowa liczba</h2>
-  <div class="game">
-    <p>Liczba: <strong><span id="number">?</span></strong></p>
-    <button onclick="losuj()">Losuj 1–100</button>
-  </div>
+<!-- GRA 3: Losowa liczba -->
+<section class="game-section">
+<h2>🎲 Gra 3 – Losowa liczba</h2>
+<div class="game">
+<p>Liczba: <strong><span id="number">?</span></strong></p>
+<button onclick="losuj()">Losuj 1–100</button>
+</div>
 </section>
 
-<section>
-  <h2>🖱️ Gra 4 – Szybkie kliknięcia</h2>
-  <div class="game">
-    <p>Kliknij 5 razy jak najszybciej!</p>
-    <button id="fastClickBtn">Kliknij mnie</button>
-    <p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
-  </div>
+<!-- GRA 4: Szybkie kliknięcia -->
+<section class="game-section">
+<h2>⚡ Gra 4 – Szybkie kliknięcia</h2>
+<div class="game">
+<p>Kliknij 5 razy jak najszybciej!</p>
+<button id="fastClickBtn">Kliknij mnie</button>
+<p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
+</div>
 </section>
 
-<section>
-  <h2>🎴 Gra 5 – Losowa karta</h2>
-  <div class="game">
-    <p>Karta: <span id="card">?</span></p>
-    <button onclick="losujKarte()">Losuj kartę</button>
-  </div>
+<!-- GRA 5: Losowa karta -->
+<section class="game-section">
+<h2>🎴 Gra 5 – Losowa karta</h2>
+<div class="game">
+<p>Karta: <span id="card">?</span></p>
+<button onclick="losujKarte()">Losuj kartę</button>
+</div>
 </section>
 
-<section>
-  <h2>🎯 Gra 6 – Odgadnij liczbę</h2>
-  <div class="game">
-    <p>Wpisz liczbę 1–10:</p>
-    <input type="number" id="guessNumber" min="1" max="10">
-    <button onclick="sprawdzLiczbe()">Sprawdź</button>
-    <p id="guessResult"></p>
-  </div>
-</section>
-
-<section>
-  <h2>Reklama</h2>
-  <ins class="adsbygoogle"
-    style="display:block"
-    data-ad-client="ca-pub-9599322707323836"
-    data-ad-slot="1234567890"
-    data-ad-format="auto"
-    data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+<!-- GRA 6: Odgadnij liczbę -->
+<section class="game-section">
+<h2>🎯 Gra 6 – Odgadnij liczbę</h2>
+<div class="game">
+<p>Wpisz liczbę 1–10:</p>
+<input type="number" id="guessNumber" min="1" max="10">
+<button onclick="sprawdzLiczbe()">Sprawdź</button>
+<p id="guessResult"></p>
+</div>
 </section>
 
 <footer>
-  <a href="regulamin.html">Regulamin</a>
-  <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-  <a href="kontakt.html">Kontakt</a>
+<a href="regulamin.html">Regulamin</a>
+<a href="polityka-prywatnosci.html">Polityka prywatności</a>
+<a href="kontakt.html">Kontakt</a>
 </footer>
 
-<script>
-/* GLOBALNY LICZNIK PUNKTÓW */
-let points = localStorage.getItem("points") ? parseInt(localStorage.getItem("points")) : 0;
-document.getElementById("totalPoints").innerText = points;
-
-function addPoints(x) {
-  points += x;
-  localStorage.setItem("points", points);
-  document.getElementById("totalPoints").innerText = points;
-}
-
-/* GRA 1 – ZAGADKI */
-const zagadki = [
-  "Co zawsze rośnie, ale nigdy nie spada?",
-  "Co ma klucze, ale nie otwiera drzwi?",
-  "Co można złamać, ale nie dotknąć?",
-  "Co jest Twoje, ale inni używają tego częściej?",
-  "Im więcej zabierasz, tym większe się staje."
-];
-let used = [];
-function losujZagadke() {
-  if (used.length === zagadki.length) used = [];
-  let i; do { i = Math.floor(Math.random() * zagadki.length); } while (used.includes(i));
-  used.push(i);
-  document.getElementById("riddleText").innerText = zagadki[i];
-  addPoints(1);
-}
-
-/* GRA 2 – KLIKACZ */
-let clicks = 0;
-function klik() { clicks++; document.getElementById("clicks").innerText = clicks; addPoints(1); }
-
-/* GRA 3 – LOSOWA LICZBA */
-function losuj() { const number = Math.floor(Math.random() * 100) + 1; document.getElementById("number").innerText = number; addPoints(1); }
-
-/* GRA 4 – SZYBKIE KLIKI */
-let fastClicks = 0;
-const fastClickBtn = document.getElementById("fastClickBtn");
-fastClickBtn.addEventListener("click", () => {
-  fastClicks++;
-  document.getElementById("fastClicks").innerText = fastClicks;
-  addPoints(1);
-  if (fastClicks >= 5) { alert("Brawo! Zdobyłeś punkty za szybkie kliknięcia!"); fastClicks = 0; document.getElementById("fastClicks").innerText = 0; }
-});
-
-/* GRA 5 – LOSOWA KARTA */
-function losujKarte() {
-  const kolory = ["Kier", "Karo", "Trefl", "Pik"];
-  const liczby = ["A", "2","3","4","5","6","7","8","9","10","J","Q","K"];
-  const karta = liczby[Math.floor(Math.random()*liczby.length)] + " " + kolory[Math.floor(Math.random()*kolory.length)];
-  document.getElementById("card").innerText = karta;
-  addPoints(1);
-}
-
-/* GRA 6 – ODGADNIJ LICZBĘ */
-function sprawdzLiczbe() {
-  const los = Math.floor(Math.random()*10)+1;
-  const input = parseInt(document.getElementById("guessNumber").value);
-  const result = document.getElementById("guessResult");
-  if(input === los) { result.innerText = "Gratulacje! Trafiłeś!"; addPoints(3); }
-  else { result.innerText = "Spróbuj ponownie! Wylosowana liczba to " + los; }
-}
-</script>
+<script src="script.js"></script>
 
 </body>
-  </html>
-  
+</html>
