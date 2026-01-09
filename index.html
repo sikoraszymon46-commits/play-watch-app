@@ -7,7 +7,7 @@
 <title>PlayWatch – Gry i Zagadki</title>
 <link rel="stylesheet" href="style.css">
 
-<!-- Meta tag Google Search Console do weryfikacji własności -->
+<!-- Meta tag Google Search Console -->
 <meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
 
 <!-- Google AdSense -->
@@ -30,11 +30,6 @@
 <p>PlayWatch to strona rozrywkowa z prostymi grami i zagadkami. Działa na telefonach i komputerach bez instalowania aplikacji. Za każde poprawne rozwiązanie lub akcję w grze zdobywasz punkty!</p>
 </section>
 
-<!-- Miejsce na reklamy AdSense -->
-<div class="ads-placeholder">
-  <p>Reklama AdSense będzie wyświetlana tutaj po zatwierdzeniu konta.</p>
-</div>
-
 <!-- GRA 1: Zagadki -->
 <section class="game-section">
 <h2>🧩 Gra 1 – Zagadki</h2>
@@ -47,8 +42,53 @@
 </div>
 </section>
 
-<!-- Kolejne gry (Klikacz, Losowa liczba, Szybkie kliknięcia, Losowa karta, Odgadnij liczbę) -->
-<!-- Możesz dodać je analogicznie jak w Twoim poprzednim kodzie -->
+<!-- GRA 2: Klikacz -->
+<section class="game-section">
+<h2>🖱️ Gra 2 – Klikacz</h2>
+<div class="game">
+<p>Kliknięcia: <strong><span id="clicks">0</span></strong></p>
+<button onclick="klik()">Kliknij mnie</button>
+</div>
+</section>
+
+<!-- GRA 3: Losowa liczba -->
+<section class="game-section">
+<h2>🎲 Gra 3 – Losowa liczba</h2>
+<div class="game">
+<p>Liczba: <strong><span id="number">?</span></strong></p>
+<button onclick="losuj()">Losuj 1–100</button>
+</div>
+</section>
+
+<!-- GRA 4: Szybkie kliknięcia -->
+<section class="game-section">
+<h2>⚡ Gra 4 – Szybkie kliknięcia</h2>
+<div class="game">
+<p>Kliknij 5 razy jak najszybciej!</p>
+<button id="fastClickBtn">Kliknij mnie</button>
+<p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
+</div>
+</section>
+
+<!-- GRA 5: Losowa karta -->
+<section class="game-section">
+<h2>🎴 Gra 5 – Losowa karta</h2>
+<div class="game">
+<p>Karta: <span id="card">?</span></p>
+<button onclick="losujKarte()">Losuj kartę</button>
+</div>
+</section>
+
+<!-- GRA 6: Odgadnij liczbę -->
+<section class="game-section">
+<h2>🎯 Gra 6 – Odgadnij liczbę</h2>
+<div class="game">
+<p>Wpisz liczbę 1–10:</p>
+<input type="number" id="guessNumber" min="1" max="10">
+<button onclick="sprawdzLiczbe()">Sprawdź</button>
+<p id="guessResult"></p>
+</div>
+</section>
 
 <footer>
 <a href="regulamin.html">Regulamin</a>
