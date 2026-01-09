@@ -2,179 +2,61 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlayWatch – Gry i Zagadki</title>
+<link rel="stylesheet" href="style.css">
 
-  <!-- Meta tag Google do weryfikacji własności -->
-  <meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
+<!-- Meta tag Google Search Console do weryfikacji własności -->
+<meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
 
-  <title>Play & Watch App</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f0f0f0; }
-    header { background:#4CAF50; color:white; padding:20px; text-align:center; }
-    nav a { color:white; margin:0 10px; text-decoration:none; }
-    main { padding:20px; max-width:900px; margin:auto; background:white; }
-    .game { border:1px solid #ccc; padding:15px; margin-bottom:20px; border-radius:8px; background:#fafafa; }
-    .ads-placeholder { border:2px dashed #888; padding:20px; text-align:center; margin:20px 0; border-radius:8px; background:#e8e8e8; }
-    footer { text-align:center; padding:20px; background:#333; color:white; margin-top:20px; }
-    input[type="number"], input[type="text"] { padding:5px; margin-right:10px; }
-    button { padding:5px 10px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer; }
-    button:hover { background:#45a049; }
-  </style>
+<!-- Google AdSense -->
+<script data-ad-client="ca-pub-9599322707323836" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Play & Watch App</h1>
-    <nav>
-      <a href="index.html">Strona główna</a> |
-      <a href="gry.html">Gry</a> |
-      <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
-      <a href="regulamin.html">Regulamin</a> |
-      <a href="kontakt.html">Kontakt</a>
-    </nav>
-  </header>
 
-  <!-- Miejsce na reklamę AdSense -->
-  <div class="ads-placeholder">Tutaj pojawi się reklama AdSense</div>
+<header>
+  <h1>🎮 PlayWatch</h1>
+  <p>Proste gry, zagadki i zabawa online</p>
+</header>
 
-  <main>
-    <section id="gry">
-      <h2>Gry i zagadki</h2>
+<section class="points-section">
+  <h2>⭐ Twoje punkty</h2>
+  <p>Łączna liczba punktów: <strong><span id="totalPoints">0</span></strong></p>
+</section>
 
-      <!-- Gra 1: Zgadnij liczbę -->
-      <div class="game" id="gra1">
-        <h3>Gra 1: Zgadnij liczbę</h3>
-        <p>Spróbuj zgadnąć liczbę od 1 do 10!</p>
-        <input type="number" id="guess" placeholder="Wpisz liczbę">
-        <button onclick="sprawdz()">Sprawdź</button>
-        <p id="wynik"></p>
-      </div>
+<section class="about-section">
+<h2>O stronie</h2>
+<p>PlayWatch to strona rozrywkowa z prostymi grami i zagadkami. Działa na telefonach i komputerach bez instalowania aplikacji. Za każde poprawne rozwiązanie lub akcję w grze zdobywasz punkty!</p>
+</section>
 
-      <!-- Gra 2: Losowe zagadki -->
-      <div class="game" id="gra2">
-        <h3>Gra 2: Zagadki</h3>
-        <p id="zagadki"></p>
-        <input type="text" id="odpowiedz" placeholder="Twoja odpowiedź">
-        <button onclick="sprawdzZagadke()">Sprawdź odpowiedź</button>
-        <p id="wynikZagadki"></p>
-      </div>
+<!-- Miejsce na reklamy AdSense -->
+<div class="ads-placeholder">
+  <p>Reklama AdSense będzie wyświetlana tutaj po zatwierdzeniu konta.</p>
+</div>
 
-      <!-- Gra 3: Losowe punkty -->
-      <div class="game" id="gra3">
-        <h3>Gra 3: Losowe punkty</h3>
-        <p>Wciśnij przycisk, aby wylosować punkty!</p>
-        <button onclick="losujPunkty()">Losuj punkty</button>
-      </div>
+<!-- GRA 1: Zagadki -->
+<section class="game-section">
+<h2>🧩 Gra 1 – Zagadki</h2>
+<div class="game">
+<p id="riddleText">Kliknij "Nowa zagadka", aby wylosować zagadkę</p>
+<input type="text" id="riddleAnswer" placeholder="Twoja odpowiedź">
+<button onclick="sprawdzZagadke()">Sprawdź odpowiedź</button>
+<button onclick="losujZagadke()">Nowa zagadka</button>
+<p id="riddleResult"></p>
+</div>
+</section>
 
-      <!-- Gra 4: Szybkie kliknięcia -->
-      <div class="game" id="gra4">
-        <h3>Gra 4: Szybkie kliknięcia</h3>
-        <p>Kliknij przycisk jak najszybciej 10 razy!</p>
-        <button id="kliknijBtn" onclick="kliknij()">Kliknij mnie!</button>
-        <p id="wynikKlik"></p>
-      </div>
+<!-- Kolejne gry (Klikacz, Losowa liczba, Szybkie kliknięcia, Losowa karta, Odgadnij liczbę) -->
+<!-- Możesz dodać je analogicznie jak w Twoim poprzednim kodzie -->
 
-      <!-- Gra 5: Losowe litery -->
-      <div class="game" id="gra5">
-        <h3>Gra 5: Znajdź literę</h3>
-        <p>Znajdź literę "A" w losowym ciągu znaków!</p>
-        <button onclick="losujLiterę()">Sprawdź literę</button>
-        <p id="wynikLitera"></p>
-      </div>
+<footer>
+<a href="regulamin.html">Regulamin</a>
+<a href="polityka-prywatnosci.html">Polityka prywatności</a>
+<a href="kontakt.html">Kontakt</a>
+</footer>
 
-    </section>
+<script src="script.js"></script>
 
-    <section id="punkty">
-      <h2>Liczba punktów: <span id="punkty">0</span></h2>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2026 Play & Watch App. Wszystkie prawa zastrzeżone.</p>
-  </footer>
-
-  <script>
-    // Licznik punktów
-    let punkty = 0;
-
-    function aktualizujPunkty(dodaj) {
-      punkty += dodaj;
-      document.getElementById("punkty").textContent = punkty;
-    }
-
-    // Gra 1: Zgadnij liczbę
-    function sprawdz() {
-      let los = Math.floor(Math.random() * 10) + 1;
-      let zgad = parseInt(document.getElementById("guess").value);
-      let wynik = document.getElementById("wynik");
-      if(zgad === los){
-        wynik.textContent = "Brawo! +5 punktów!";
-        aktualizujPunkty(5);
-      } else {
-        wynik.textContent = "Nie tym razem. Wylosowana liczba: " + los;
-      }
-    }
-
-    // Gra 2: Zagadki
-    const zagadkiLista = [
-      {q:"Co zawsze rośnie, ale nigdy nie spada?", a:"wiek"},
-      {q:"Co ma klucze, ale nie otwiera drzwi?", a:"pianino"},
-      {q:"Co można złamać, ale nie można dotknąć?", a:"obietnica"},
-      {q:"Co ma wiele twarzy, ale nie ma oczu?", a:"zegarek"},
-      {q:"Co jest Twoje, a inni używają częściej niż Ty?", a:"imię"}
-    ];
-    let aktualnaZagadka = 0;
-
-    function pokazZagadke(){
-      document.getElementById("zagadki").textContent = zagadkiLista[aktualnaZagadka].q;
-    }
-    pokazZagadke();
-
-    function sprawdzZagadke(){
-      let odp = document.getElementById("odpowiedz").value.toLowerCase();
-      let wynik = document.getElementById("wynikZagadki");
-      if(odp === zagadkiLista[aktualnaZagadka].a){
-        wynik.textContent = "Brawo! +5 punktów!";
-        aktualizujPunkty(5);
-      } else {
-        wynik.textContent = "Źle! Spróbuj ponownie.";
-      }
-      aktualnaZagadka = (aktualnaZagadka + 1) % zagadkiLista.length;
-      pokazZagadke();
-    }
-
-    // Gra 3: Losowe punkty
-    function losujPunkty(){
-      let los = Math.floor(Math.random() * 10) + 1;
-      aktualizujPunkty(los);
-      alert("Wylosowano "+los+" punktów!");
-    }
-
-    // Gra 4: Szybkie kliknięcia
-    let klik = 0;
-    function kliknij(){
-      klik++;
-      document.getElementById("wynikKlik").textContent = "Kliknięto: " + klik;
-      if(klik>=10){
-        alert("Brawo! +10 punktów!");
-        aktualizujPunkty(10);
-        klik=0;
-      }
-    }
-
-    // Gra 5: Losowe litery
-    function losujLiterę(){
-      const znaki = "BCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const wynik = document.getElementById("wynikLitera");
-      const los = znaki[Math.floor(Math.random()*znaki.length)];
-      if(los==="A"){
-        wynik.textContent = "Znalazłeś literę A! +5 punktów";
-        aktualizujPunkty(5);
-      } else {
-        wynik.textContent = "Nie znalazłeś litery A. Spróbuj jeszcze raz!";
-      }
-    }
-  </script>
 </body>
 </html>
