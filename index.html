@@ -1,4 +1,169 @@
 
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>PlayWatch – Gry, Zagadki i Rozrywka Online</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PlayWatch to darmowa platforma z grami, zagadkami i rozrywką online. Graj, rozwiązuj zagadki i odkrywaj nowe treści.">
+<meta name="keywords" content="gry online, zagadki, gry logiczne, rozrywka, gry przeglądarkowe">
+
+<!-- Google AdSense -->
+<script async
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
+  crossorigin="anonymous"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f2f2f2;
+  color: #333;
+}
+header {
+  background: #111;
+  color: #fff;
+  padding: 30px;
+  text-align: center;
+}
+section {
+  max-width: 900px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+}
+h2 {
+  color: #222;
+}
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.game-box {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+footer {
+  background: #ddd;
+  padding: 20px;
+  text-align: center;
+}
+footer a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #000;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎮 PlayWatch</h1>
+  <p>Gry, zagadki i nowoczesna rozrywka online</p>
+</header>
+
+<section>
+  <h2>O platformie PlayWatch</h2>
+  <p>
+    PlayWatch to darmowa platforma rozrywkowa dostępna w przeglądarce internetowej.
+    Naszym celem jest dostarczanie prostych gier, zagadek logicznych oraz interaktywnej
+    rozrywki dla użytkowników w różnym wieku.
+  </p>
+  <p>
+    Platforma działa zarówno na urządzeniach mobilnych (Android, iOS),
+    jak i na komputerach stacjonarnych. Nie wymaga instalacji aplikacji.
+  </p>
+  <p>
+    Treści dostępne na stronie są stale rozwijane. Dodajemy nowe gry,
+    nowe zagadki oraz nowe funkcje poprawiające komfort użytkowania.
+  </p>
+</section>
+
+<section>
+  <h2>🎯 Zagadki logiczne</h2>
+  <p>
+    Rozwiązywanie zagadek rozwija logiczne myślenie, koncentrację
+    oraz kreatywność. Każde kliknięcie losuje nową zagadkę.
+  </p>
+
+  <div class="game-box">
+    <p id="riddle">Kliknij przycisk, aby wylosować zagadkę</p>
+    <button onclick="nextRiddle()">Losuj zagadkę</button>
+  </div>
+</section>
+
+<section>
+  <h2>🕹️ Mini gry</h2>
+  <p>
+    Na platformie dostępne są proste gry przeglądarkowe,
+    które pozwalają na krótką i przyjemną rozrywkę.
+  </p>
+
+  <div class="game-box">
+    <h3>Gra 1 – Klikacz</h3>
+    <p>Kliknij przycisk i sprawdź ile kliknięć wykonasz.</p>
+    <button onclick="clicks++ ; document.getElementById('score').innerText = clicks;">
+      Kliknij
+    </button>
+    <p>Wynik: <span id="score">0</span></p>
+  </div>
+
+  <div class="game-box">
+    <h3>Gra 2 – Losowa liczba</h3>
+    <p>Wylosuj liczbę od 1 do 100.</p>
+    <button onclick="document.getElementById('number').innerText = Math.floor(Math.random()*100)+1;">
+      Losuj
+    </button>
+    <p>Liczba: <span id="number">?</span></p>
+  </div>
+
+  <div class="game-box">
+    <h3>Gra 3 – Reakcja</h3>
+    <p>Kliknij jak najszybciej.</p>
+    <button onclick="alert('Brawo!')">Kliknij szybko</button>
+  </div>
+</section>
+
+<section>
+  <h2>ℹ️ Informacje o reklamach</h2>
+  <p>
+    Na stronie mogą być wyświetlane reklamy dostarczane przez Google AdSense.
+    Reklamy pomagają w utrzymaniu i rozwoju platformy.
+  </p>
+  <p>
+    Użytkownicy nie są zobowiązani do klikania reklam.
+    Reklamy są dostosowane automatycznie przez system Google.
+  </p>
+
+  <!-- REKLAMA -->
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-9599322707323836"
+       data-ad-slot="1234567890"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</section>
+
+<section>
+  <h2>📌 Dlaczego PlayWatch?</h2>
+  <ul>
+    <li>Darmowy dostęp</li>
+    <li>Brak instalacji</li>
+    <li>Gry i zagadki logiczne</li>
+    <li>Działa na telefonach i komputerach</li>
+    <li>Prosty i czytelny interfejs</li>
+  </ul>
+</section>
+
 <footer>
   <a href="regulamin.html">Regulamin</a>
   <a href="polityka-prywatnosci.html">Polityka prywatności</a>
@@ -38,4 +203,5 @@ function nextRiddle() {
 </script>
 
 </body>
-</html>
+  </html>
+  
