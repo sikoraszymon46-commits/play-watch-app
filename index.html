@@ -4,7 +4,6 @@
 <head>
 <meta charset="UTF-8">
 <title>PlayWatch – Gry i Zagadki</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Darmowe gry i zagadki online. Prosta rozrywka w przeglądarce.">
 
@@ -61,6 +60,12 @@ footer a {
   <p>Proste gry i zagadki online</p>
 </header>
 
+<!-- LICZNIK PUNKTÓW -->
+<section>
+  <h2>⭐ Twoje punkty</h2>
+  <p>Łączna liczba punktów: <strong><span id="totalPoints">0</span></strong></p>
+</section>
+
 <section>
   <h2>O stronie</h2>
   <p>
@@ -71,7 +76,6 @@ footer a {
 
 <section>
   <h2>🧠 Gra 1 – Zagadki (LOSOWE, DZIAŁAJĄ)</h2>
-
   <div class="game">
     <p id="riddleText">Kliknij, aby wylosować zagadkę</p>
     <button onclick="losujZagadke()">Losuj zagadkę</button>
@@ -79,8 +83,7 @@ footer a {
 </section>
 
 <section>
-  <h2>🖱️ Gra 2 – Klikacz (PRAWIDŁOWY)</h2>
-
+  <h2>🖱️ Gra 2 – Klikacz</h2>
   <div class="game">
     <p>Kliknięcia: <strong><span id="clicks">0</span></strong></p>
     <button onclick="klik()">Kliknij mnie</button>
@@ -89,7 +92,6 @@ footer a {
 
 <section>
   <h2>🎲 Gra 3 – Losowa liczba</h2>
-
   <div class="game">
     <p>Liczba: <strong><span id="number">?</span></strong></p>
     <button onclick="losuj()">Losuj 1–100</button>
@@ -98,7 +100,6 @@ footer a {
 
 <section>
   <h2>Reklama</h2>
-
   <ins class="adsbygoogle"
     style="display:block"
     data-ad-client="ca-pub-9599322707323836"
@@ -118,6 +119,19 @@ footer a {
 </footer>
 
 <script>
+/* GLOBALNY LICZNIK PUNKTÓW */
+let points = localStorage.getItem("points")
+  ? parseInt(localStorage.getItem("points"))
+  : 0;
+
+document.getElementById("totalPoints").innerText = points;
+
+function addPoints(x) {
+  points += x;
+  localStorage.setItem("points", points);
+  document.getElementById("totalPoints").innerText = points;
+}
+
 /* ZAGADKI */
 const zagadki = [
   "Co zawsze rośnie, ale nigdy nie spada?",
@@ -127,34 +141,34 @@ const zagadki = [
   "Im więcej zabierasz, tym większe się staje."
 ];
 
-let uzyte = [];
+let used = [];
 
 function losujZagadke() {
-  if (uzyte.length === zagadki.length) {
-    uzyte = [];
-  }
+  if (used.length === zagadki.length) used = [];
   let i;
   do {
     i = Math.floor(Math.random() * zagadki.length);
-  } while (uzyte.includes(i));
-  uzyte.push(i);
+  } while (used.includes(i));
+  used.push(i);
   document.getElementById("riddleText").innerText = zagadki[i];
+  addPoints(1);
 }
 
 /* KLIKACZ */
-let licznik = 0;
+let clicks = 0;
 function klik() {
-  licznik++;
-  document.getElementById("clicks").innerText = licznik;
+  clicks++;
+  document.getElementById("clicks").innerText = clicks;
+  addPoints(1);
 }
 
 /* LOSOWA LICZBA */
 function losuj() {
-  document.getElementById("number").innerText =
-    Math.floor(Math.random() * 100) + 1;
+  const number = Math.floor(Math.random() * 100) + 1;
+  document.getElementById("number").innerText = number;
+  addPoints(1);
 }
 </script>
 
 </body>
-</html
-  
+</html>
