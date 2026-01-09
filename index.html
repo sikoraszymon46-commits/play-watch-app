@@ -3,11 +3,10 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>PlayWatch – Gry, Zagadki i Rozrywka Online</title>
+<title>PlayWatch – Gry i Zagadki</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="PlayWatch to darmowa platforma z grami, zagadkami i rozrywką online. Graj, rozwiązuj zagadki i odkrywaj nowe treści.">
-<meta name="keywords" content="gry online, zagadki, gry logiczne, rozrywka, gry przeglądarkowe">
+<meta name="description" content="Darmowe gry i zagadki online. Prosta rozrywka w przeglądarce.">
 
 <!-- Google AdSense -->
 <script async
@@ -17,46 +16,40 @@
 <style>
 body {
   font-family: Arial, sans-serif;
+  background: #f1f1f1;
   margin: 0;
-  background: #f2f2f2;
-  color: #333;
 }
 header {
   background: #111;
   color: #fff;
-  padding: 30px;
-  text-align: center;
-}
-section {
-  max-width: 900px;
-  margin: 20px auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 10px;
-}
-h2 {
-  color: #222;
-}
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-.game-box {
-  margin-top: 15px;
-  padding: 15px;
-  background: #f9f9f9;
-  border-radius: 8px;
-}
-footer {
-  background: #ddd;
   padding: 20px;
   text-align: center;
 }
+section {
+  background: #fff;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+}
+button {
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.game {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f7f7f7;
+  border-radius: 6px;
+}
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #ddd;
+}
 footer a {
   margin: 0 10px;
-  text-decoration: none;
-  color: #000;
 }
 </style>
 </head>
@@ -65,143 +58,103 @@ footer a {
 
 <header>
   <h1>🎮 PlayWatch</h1>
-  <p>Gry, zagadki i nowoczesna rozrywka online</p>
+  <p>Proste gry i zagadki online</p>
 </header>
 
 <section>
-  <h2>O platformie PlayWatch</h2>
+  <h2>O stronie</h2>
   <p>
-    PlayWatch to darmowa platforma rozrywkowa dostępna w przeglądarce internetowej.
-    Naszym celem jest dostarczanie prostych gier, zagadek logicznych oraz interaktywnej
-    rozrywki dla użytkowników w różnym wieku.
-  </p>
-  <p>
-    Platforma działa zarówno na urządzeniach mobilnych (Android, iOS),
-    jak i na komputerach stacjonarnych. Nie wymaga instalacji aplikacji.
-  </p>
-  <p>
-    Treści dostępne na stronie są stale rozwijane. Dodajemy nowe gry,
-    nowe zagadki oraz nowe funkcje poprawiające komfort użytkowania.
+    PlayWatch to strona rozrywkowa z prostymi grami i zagadkami.
+    Działa na telefonach i komputerach bez instalowania aplikacji.
   </p>
 </section>
 
 <section>
-  <h2>🎯 Zagadki logiczne</h2>
-  <p>
-    Rozwiązywanie zagadek rozwija logiczne myślenie, koncentrację
-    oraz kreatywność. Każde kliknięcie losuje nową zagadkę.
-  </p>
+  <h2>🧠 Gra 1 – Zagadki (LOSOWE, DZIAŁAJĄ)</h2>
 
-  <div class="game-box">
-    <p id="riddle">Kliknij przycisk, aby wylosować zagadkę</p>
-    <button onclick="nextRiddle()">Losuj zagadkę</button>
+  <div class="game">
+    <p id="riddleText">Kliknij, aby wylosować zagadkę</p>
+    <button onclick="losujZagadke()">Losuj zagadkę</button>
   </div>
 </section>
 
 <section>
-  <h2>🕹️ Mini gry</h2>
-  <p>
-    Na platformie dostępne są proste gry przeglądarkowe,
-    które pozwalają na krótką i przyjemną rozrywkę.
-  </p>
+  <h2>🖱️ Gra 2 – Klikacz (PRAWIDŁOWY)</h2>
 
-  <div class="game-box">
-    <h3>Gra 1 – Klikacz</h3>
-    <p>Kliknij przycisk i sprawdź ile kliknięć wykonasz.</p>
-    <button onclick="clicks++ ; document.getElementById('score').innerText = clicks;">
-      Kliknij
-    </button>
-    <p>Wynik: <span id="score">0</span></p>
-  </div>
-
-  <div class="game-box">
-    <h3>Gra 2 – Losowa liczba</h3>
-    <p>Wylosuj liczbę od 1 do 100.</p>
-    <button onclick="document.getElementById('number').innerText = Math.floor(Math.random()*100)+1;">
-      Losuj
-    </button>
-    <p>Liczba: <span id="number">?</span></p>
-  </div>
-
-  <div class="game-box">
-    <h3>Gra 3 – Reakcja</h3>
-    <p>Kliknij jak najszybciej.</p>
-    <button onclick="alert('Brawo!')">Kliknij szybko</button>
+  <div class="game">
+    <p>Kliknięcia: <strong><span id="clicks">0</span></strong></p>
+    <button onclick="klik()">Kliknij mnie</button>
   </div>
 </section>
 
 <section>
-  <h2>ℹ️ Informacje o reklamach</h2>
-  <p>
-    Na stronie mogą być wyświetlane reklamy dostarczane przez Google AdSense.
-    Reklamy pomagają w utrzymaniu i rozwoju platformy.
-  </p>
-  <p>
-    Użytkownicy nie są zobowiązani do klikania reklam.
-    Reklamy są dostosowane automatycznie przez system Google.
-  </p>
+  <h2>🎲 Gra 3 – Losowa liczba</h2>
 
-  <!-- REKLAMA -->
+  <div class="game">
+    <p>Liczba: <strong><span id="number">?</span></strong></p>
+    <button onclick="losuj()">Losuj 1–100</button>
+  </div>
+</section>
+
+<section>
+  <h2>Reklama</h2>
+
   <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-9599322707323836"
-       data-ad-slot="1234567890"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
+    style="display:block"
+    data-ad-client="ca-pub-9599322707323836"
+    data-ad-slot="1234567890"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
-</section>
-
-<section>
-  <h2>📌 Dlaczego PlayWatch?</h2>
-  <ul>
-    <li>Darmowy dostęp</li>
-    <li>Brak instalacji</li>
-    <li>Gry i zagadki logiczne</li>
-    <li>Działa na telefonach i komputerach</li>
-    <li>Prosty i czytelny interfejs</li>
-  </ul>
 </section>
 
 <footer>
   <a href="regulamin.html">Regulamin</a>
   <a href="polityka-prywatnosci.html">Polityka prywatności</a>
   <a href="kontakt.html">Kontakt</a>
-  <p>© 2026 PlayWatch</p>
 </footer>
 
 <script>
-let clicks = 0;
-
-const riddles = [
+/* ZAGADKI */
+const zagadki = [
   "Co zawsze rośnie, ale nigdy nie spada?",
   "Co ma klucze, ale nie otwiera drzwi?",
   "Co można złamać, ale nie dotknąć?",
   "Co jest Twoje, ale inni używają tego częściej?",
-  "Im więcej zabierasz, tym większe się staje.",
-  "Co ma głowę i ogon, ale nie ma ciała?",
-  "Co biegnie, ale nie chodzi?",
-  "Co ma ręce, ale nie klaszcze?",
-  "Co zawsze jest przed Tobą, ale nie możesz tego dogonić?",
-  "Co ma wiele stron, ale nie jest książką?"
+  "Im więcej zabierasz, tym większe się staje."
 ];
 
-let used = [];
+let uzyte = [];
 
-function nextRiddle() {
-  if (used.length === riddles.length) {
-    used = [];
+function losujZagadke() {
+  if (uzyte.length === zagadki.length) {
+    uzyte = [];
   }
   let i;
   do {
-    i = Math.floor(Math.random() * riddles.length);
-  } while (used.includes(i));
-  used.push(i);
-  document.getElementById("riddle").innerText = riddles[i];
+    i = Math.floor(Math.random() * zagadki.length);
+  } while (uzyte.includes(i));
+  uzyte.push(i);
+  document.getElementById("riddleText").innerText = zagadki[i];
+}
+
+/* KLIKACZ */
+let licznik = 0;
+function klik() {
+  licznik++;
+  document.getElementById("clicks").innerText = licznik;
+}
+
+/* LOSOWA LICZBA */
+function losuj() {
+  document.getElementById("number").innerText =
+    Math.floor(Math.random() * 100) + 1;
 }
 </script>
 
 </body>
-  </html>
+</html
   
