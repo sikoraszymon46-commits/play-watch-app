@@ -1,182 +1,42 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlayWatch – Gry Online</title>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-crossorigin="anonymous"></script>
-
-<style>
-body{margin:0;font-family:Arial;background:#0f172a;color:#e5e7eb}
-header{text-align:center;padding:20px;background:#020617}
-section{background:#020617;margin:15px;padding:15px;border-radius:10px}
-button{padding:10px 14px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer}
-button.buy{background:#16a34a}
-button.lock{background:#334155}
-input{padding:8px;border-radius:6px;border:none}
-.shop-item{border:1px solid #1e293b;padding:10px;border-radius:8px;margin:10px 0}
-footer{text-align:center;padding:20px}
-footer a{color:#60a5fa;margin:0 10px}
-.start{text-align:center;padding:40px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontakt – PlayWatch</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  <header>
+    <h1>PlayWatch – Kontakt</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Strona główna</a></li>
+        <li><a href="gry.html">Gry</a></li>
+        <li><a href="zagadki.html">Zagadki</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<div id="start" class="start">
-  <h1>🎮 PlayWatch</h1>
-  <p>Podaj nick</p>
-  <input id="nickInput">
-  <br><br>
-  <button onclick="start()">Start</button>
-</div>
+  <main>
+    <section id="kontakt">
+      <h2>Skontaktuj się z nami</h2>
+      <p>
+        Masz pytania, sugestie lub uwagi? 
+        Wszelkie zgłoszenia prosimy wysyłać na nasz adres e-mail:
+      </p>
+      <p>
+        <a href="mailto:sikoraszymon45@gmail.com">sikoraszymon45@gmail.com</a>
+      </p>
+      <p>
+        Postaramy się odpowiedzieć tak szybko, jak to możliwe.
+      </p>
+    </section>
+  </main>
 
-<div id="app" style="display:none">
-
-<header>
-  <h1>🎮 PlayWatch</h1>
-  <p>
-    Gracz:
-    <b id="nick"></b>
-    <span id="rankLabel"></span>
-  </p>
-</header>
-
-<section>
-  ⭐ Punkty: <b id="points">0</b><br>
-  🔁 Rebirth: <b id="rebirth">0</b><br>
-  ⚡ Mnożnik: <b>x<span id="multiplier">1</span></b>
-</section>
-
-<section>
-  <h2>🖱️ Klikacz</h2>
-  <button onclick="addPoints(10)">+10 pkt</button>
-</section>
-
-<section>
-  <h2>🛒 Sklep</h2>
-
-  <div class="shop-item">
-    🎨 Kolor nicku (złoty)<br>
-    Cena: 50 000 pkt<br>
-    <button class="buy" onclick="buy('goldNick',50000)">Kup</button>
-  </div>
-
-  <div class="shop-item">
-    🥉 Ranga Bronze<br>
-    Cena: 100 000 pkt<br>
-    <button class="buy" onclick="buy('bronze',100000)">Kup</button>
-  </div>
-
-  <div class="shop-item">
-    🥈 Ranga Silver<br>
-    Cena: 500 000 pkt<br>
-    <button class="buy" onclick="buy('silver',500000)">Kup</button>
-  </div>
-
-  <div class="shop-item">
-    🥇 Ranga Gold<br>
-    Cena: 1 000 000 pkt<br>
-    <button class="buy" onclick="buy('gold',1000000)">Kup</button>
-  </div>
-
-  <div class="shop-item">
-    ⚡ Stały boost +1 do mnożnika<br>
-    Cena: 2 000 000 pkt<br>
-    <button class="buy" onclick="buy('boost',2000000)">Kup</button>
-  </div>
-
-</section>
-
-<section>
-  <h2>🔁 Rebirth</h2>
-  <p>Koszt: 100 000 000 pkt</p>
-  <button onclick="rebirth()">Rebirth</button>
-</section>
-
-<footer>
-  <a href="#">Regulamin</a>
-  <a href="#">Polityka prywatności</a>
-</footer>
-
-</div>
-
-<script>
-let player=null;
-
-function start(){
-  const n=nickInput.value.trim();
-  if(n.length<3)return alert("Min. 3 znaki");
-  player={
-    nick:n,
-    points:0,
-    rebirth:0,
-    multiplier:1,
-    items:{}
-  };
-  save();
-  show();
-}
-
-function show(){
-  start.style.display="none";
-  app.style.display="block";
-  update();
-}
-
-function addPoints(b){
-  player.points+=b*player.multiplier;
-  save();update();
-}
-
-function rebirth(){
-  if(player.points<100000000)return alert("Za mało punktów");
-  player.points=0;
-  player.rebirth++;
-  player.multiplier++;
-  save();update();
-}
-
-function buy(item,cost){
-  if(player.items[item])return alert("Już kupione");
-  if(player.points<cost)return alert("Za mało pkt");
-  player.points-=cost;
-  player.items[item]=true;
-
-  if(item==="boost")player.multiplier++;
-
-  save();update();
-}
-
-function update(){
-  points.textContent=player.points;
-  rebirth.textContent=player.rebirth;
-  multiplier.textContent=player.multiplier;
-
-  nick.textContent=player.nick;
-  nick.style.color=player.items.goldNick?"gold":"white";
-
-  let r="";
-  if(player.items.gold)r="🥇 Gold";
-  else if(player.items.silver)r="🥈 Silver";
-  else if(player.items.bronze)r="🥉 Bronze";
-  rankLabel.textContent=r?" ("+r+")":"";
-}
-
-function save(){
-  localStorage.setItem("player",JSON.stringify(player));
-}
-
-window.onload=()=>{
-  const p=localStorage.getItem("player");
-  if(p){
-    player=JSON.parse(p);
-    show();
-  }
-}
-</script>
-
+  <footer>
+    <p>&copy; 2026 PlayWatch – Wszystkie prawa zastrzeżone</p>
+  </footer>
 </body>
 </html>
