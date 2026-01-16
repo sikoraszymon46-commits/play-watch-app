@@ -6,34 +6,35 @@
 <title>PlayWatch – Gry i Zagadki</title>
 <link rel="stylesheet" href="style.css">
 
-<!-- Meta tag Google Search Console -->
+<!-- Meta Google Search Console -->
 <meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
 
 <!-- Google AdSense -->
 <script data-ad-client="ca-pub-9599322707323836" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-<!-- Firebase compat CDN -->
+<!-- Firebase compat -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<!-- EKRAN LOGOWANIA -->
+<!-- Ekran logowania -->
 <div id="loginScreen">
   <h1>🎮 PlayWatch</h1>
-  <p>Podaj swój nick, aby rozpocząć grę:</p>
+  <p>Podaj swój nick:</p>
   <input type="text" id="playerNick" placeholder="Twój nick">
   <button onclick="startGame()">Zaczynam!</button>
 </div>
 
-<!-- EKRAN GIER -->
+<!-- Ekran gry -->
 <div id="gameScreen" style="display:none;">
   <header>
     <h1>🎮 PlayWatch</h1>
     <p>Proste gry, zagadki i zabawa online</p>
   </header>
 
+  <!-- Punkty i rebirth -->
   <section class="points-section">
     <h2>⭐ Twoje punkty</h2>
     <p>Łączna liczba punktów: <strong><span id="totalPoints">0</span></strong></p>
@@ -41,6 +42,7 @@
     <button onclick="rebirth()">Rebirth (100.000.000 pkt)</button>
   </section>
 
+  <!-- Ranking -->
   <section class="ranking-section">
     <h2>🏆 Ranking TOP 100</h2>
     <ol id="ranking"></ol>
@@ -106,6 +108,7 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer>
     <a href="regulamin.html">Regulamin</a> |
     <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
@@ -113,6 +116,8 @@
   </footer>
 </div>
 
+<!-- Skrypt gry -->
 <script src="script.js"></script>
+
 </body>
 </html>
