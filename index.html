@@ -3,116 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlayWatch – Gry i Zagadki Online</title>
+
+<title>PlayWatch – Gry i Zabawa Online</title>
+
+<!-- Google Search Console -->
+<meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
+
+<!-- Google AdSense -->
+<script async
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
+  crossorigin="anonymous"></script>
 
 <link rel="stylesheet" href="style.css">
-
-<!-- Google AdSense – POPRAWNIE -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-     crossorigin="anonymous"></script>
-
 </head>
 
 <body>
 
+<!-- ================= START SCREEN ================= -->
+<div id="startScreen" class="start-screen">
+  <h1>🎮 PlayWatch</h1>
+  <p>Podaj nick, aby rozpocząć</p>
+
+  <input type="text" id="nicknameInput" placeholder="Twój nick">
+  <button onclick="startGame()">Zacznij</button>
+
+  <p class="info">
+    Gra jest darmowa. Punkty mają charakter wirtualny.
+  </p>
+</div>
+
+<!-- ================= MAIN APP ================= -->
+<div id="mainApp" style="display:none;">
+
 <header>
   <h1>🎮 PlayWatch</h1>
-  <p>Darmowe gry online, zagadki i rozrywka w przeglądarce</p>
+  <p>Gracz: <strong><span id="playerNick"></span></strong></p>
 </header>
 
-<section class="points-section">
-  <h2>⭐ Twoje punkty</h2>
-  <p>Łączna liczba punktów: <strong><span id="totalPoints">0</span></strong></p>
+<section class="stats">
+  <div>⭐ Punkty: <strong><span id="points">0</span></strong></div>
+  <div>🔁 Rebirth: <strong><span id="rebirth">0</span></strong></div>
+  <div>⚡ Mnożnik: <strong>x<span id="multiplier">1</span></strong></div>
 </section>
 
-<section class="about-section">
-  <h2>O stronie PlayWatch</h2>
-  <p>
-    PlayWatch to darmowa strona rozrywkowa online, oferująca proste gry logiczne,
-    zręcznościowe oraz zagadki. Strona działa bez instalowania aplikacji i jest
-    dostępna na komputerach oraz urządzeniach mobilnych.
-  </p>
+<!-- ================= GAMES ================= -->
 
-  <p>
-    Naszym celem jest zapewnienie bezpiecznej, przyjaznej i legalnej rozrywki
-    dla użytkowników w każdym wieku.
-  </p>
+<section class="game">
+  <h2>🖱️ Klikacz</h2>
+  <button onclick="addPoints(10)">+10 punktów</button>
 </section>
 
-<section class="info-section">
-  <h2>Jak działa PlayWatch?</h2>
-  <p>
-    Użytkownik może korzystać z gier bez rejestracji.
-    Punkty mają charakter wyłącznie rozrywkowy.
-  </p>
-
-  <h2>Informacje o reklamach</h2>
-  <p>
-    Na stronie mogą być wyświetlane reklamy Google AdSense.
-    Reklamy pomagają w utrzymaniu i rozwoju strony.
-  </p>
+<section class="game">
+  <h2>🎯 Odgadnij liczbę</h2>
+  <input type="number" id="guessInput" min="1" max="10">
+  <button onclick="guessNumber()">Sprawdź</button>
+  <p id="guessResult"></p>
 </section>
 
-<section class="game-section">
-  <h2>🧩 Gra 1 – Zagadki</h2>
-  <div class="game">
-    <p id="riddleText">Kliknij „Nowa zagadka”, aby wylosować zagadkę</p>
-    <input type="text" id="riddleAnswer" placeholder="Twoja odpowiedź">
-    <button onclick="sprawdzZagadke()">Sprawdź odpowiedź</button>
-    <button onclick="losujZagadke()">Nowa zagadka</button>
-    <p id="riddleResult"></p>
-  </div>
+<section class="game">
+  <h2>🧩 Zagadki</h2>
+  <p id="riddleText">Kliknij, aby wylosować zagadkę</p>
+  <input type="text" id="riddleAnswer">
+  <button onclick="checkRiddle()">Sprawdź</button>
+  <button onclick="newRiddle()">Nowa zagadka</button>
+  <p id="riddleResult"></p>
 </section>
 
-<section class="game-section">
-  <h2>🖱️ Gra 2 – Klikacz</h2>
-  <div class="game">
-    <p>Kliknięcia: <strong><span id="clicks">0</span></strong></p>
-    <button onclick="klik()">Kliknij mnie</button>
-  </div>
-</section>
+<!-- ================= REBIRTH ================= -->
 
-<section class="game-section">
-  <h2>🎲 Gra 3 – Losowa liczba</h2>
-  <div class="game">
-    <p>Liczba: <strong><span id="number">?</span></strong></p>
-    <button onclick="losuj()">Losuj 1–100</button>
-  </div>
-</section>
-
-<section class="game-section">
-  <h2>⚡ Gra 4 – Szybkie kliknięcia</h2>
-  <div class="game">
-    <p>Kliknij 5 razy jak najszybciej!</p>
-    <button id="fastClickBtn">Kliknij mnie</button>
-    <p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
-  </div>
-</section>
-
-<section class="game-section">
-  <h2>🎴 Gra 5 – Losowa karta</h2>
-  <div class="game">
-    <p>Karta: <span id="card">?</span></p>
-    <button onclick="losujKarte()">Losuj kartę</button>
-  </div>
-</section>
-
-<section class="game-section">
-  <h2>🎯 Gra 6 – Odgadnij liczbę</h2>
-  <div class="game">
-    <p>Wpisz liczbę od 1 do 10:</p>
-    <input type="number" id="guessNumber" min="1" max="10">
-    <button onclick="sprawdzLiczbe()">Sprawdź</button>
-    <p id="guessResult"></p>
-  </div>
+<section class="rebirth">
+  <h2>🔁 Rebirth</h2>
+  <p>Koszt: 100 000 000 pkt</p>
+  <button onclick="doRebirth()">Wykonaj rebirth (×2)</button>
 </section>
 
 <footer>
-  <a href="regulamin.html">Regulamin</a> |
-  <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
+  <a href="regulamin.html">Regulamin</a>
+  <a href="polityka-prywatnosci.html">Polityka prywatności</a>
   <a href="kontakt.html">Kontakt</a>
 </footer>
 
-<script src="script.js"></script>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+let player = null;
+
+const riddles = [
+  {q:"Co rośnie, ale nigdy nie spada?", a:"wiek"},
+  {q:"Co ma klucze, ale nie otwiera drzwi?", a:"klawiatura"},
+  {q:"Co można złamać, nie dotykając?", a:"obietnice"},
+  {q:"Co ma twarz, ale nie ma oczu?", a:"zegarek"}
+];
+
+let currentRiddle = null;
+
+window.onload = () => {
+  const saved = localStorage.getItem("playwatch_player");
+  if (saved) {
+    player = JSON.parse(saved);
+    showApp();
+  }
+};
+
+function startGame() {
+  const nick = document.getElementById("nicknameInput").value.trim();
+  if (nick.length < 3) {
+    alert("Nick musi mieć minimum 3 znaki");
+    return;
+  }
+
+  player = {
+    nick,
+    points: 0,
+    rebirth: 0,
+    multiplier: 1
+  };
+
+  save();
+  showApp();
+}
+
+function showApp() {
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("mainApp").style.display = "block";
+  document.getElementById("playerNick").textContent = player.nick;
+  updateUI();
+}
+
+function addPoints(base) {
+  player.points += base * player.multiplier;
+  save();
+  updateUI();
+}
+
+function guessNumber() {
+  const n = Math.floor(Math.random() * 10) + 1;
+  const g = Number(document.getElementById("guessInput").value);
+  document.getElementById("guessResult").textContent =
+    g === n ? "✅ Trafione! +50 pkt" : "❌ Nie tym razem";
+  if (g === n) addPoints(50);
+}
+
+function newRiddle() {
+  currentRiddle = riddles[Math.floor(Math.random() * riddles.length)];
+  document.getElementById("riddleText").textContent = currentRiddle.q;
+}
+
+function checkRiddle() {
+  const a = document.getElementById("riddleAnswer").value.toLowerCase();
+  if (currentRiddle && a === currentRiddle.a) {
+    document.getElementById("riddleResult").textContent = "✅ Dobrze! +100 pkt";
+    addPoints(100);
+  } else {
+    document.getElementById("riddleResult").textContent = "❌ Źle";
+  }
+}
+
+function doRebirth() {
+  if (player.points < 100000000) {
+    alert("Za mało punktów");
+    return;
+  }
+  player.points = 0;
+  player.rebirth++;
+  player.multiplier++;
+  save();
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById("points").textContent = player.points;
+  document.getElementById("rebirth").textContent = player.rebirth;
+  document.getElementById("multiplier").textContent = player.multiplier;
+}
+
+function save() {
+  localStorage.setItem("playwatch_player", JSON.stringify(player));
+}
+</script>
+
 </body>
-</html>
+     </html>
