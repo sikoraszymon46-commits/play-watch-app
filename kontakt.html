@@ -3,224 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlayWatch – Gry Online</title>
 
-<title>PlayWatch – Gry i Ranking</title>
-
-<meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
-
-<script async
-  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-  crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
+crossorigin="anonymous"></script>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #e5e7eb;
-}
-
-header {
-  background: #020617;
-  padding: 20px;
-  text-align: center;
-}
-
-h1 { margin: 0; }
-
-.start-screen {
-  text-align: center;
-  padding: 40px;
-}
-
-input, button {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 6px;
-  border: none;
-}
-
-button {
-  background: #2563eb;
-  color: white;
-  cursor: pointer;
-}
-
-.stats, .game, .rebirth, .ranking {
-  background: #020617;
-  margin: 15px;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 6px;
-  text-align: center;
-  border-bottom: 1px solid #1e293b;
-}
-
-th {
-  background: #020617;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-}
-footer a {
-  color: #60a5fa;
-  margin: 0 10px;
-}
+body{margin:0;font-family:Arial;background:#0f172a;color:#e5e7eb}
+header{text-align:center;padding:20px;background:#020617}
+section{background:#020617;margin:15px;padding:15px;border-radius:10px}
+button{padding:10px 14px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer}
+button.buy{background:#16a34a}
+button.lock{background:#334155}
+input{padding:8px;border-radius:6px;border:none}
+.shop-item{border:1px solid #1e293b;padding:10px;border-radius:8px;margin:10px 0}
+footer{text-align:center;padding:20px}
+footer a{color:#60a5fa;margin:0 10px}
+.start{text-align:center;padding:40px}
 </style>
 </head>
 
 <body>
 
-<div id="startScreen" class="start-screen">
+<div id="start" class="start">
   <h1>🎮 PlayWatch</h1>
-  <p>Podaj nick, aby wejść</p>
-  <input id="nickInput" placeholder="Nick">
-  <br>
+  <p>Podaj nick</p>
+  <input id="nickInput">
+  <br><br>
   <button onclick="start()">Start</button>
 </div>
 
-<div id="app" style="display:none;">
+<div id="app" style="display:none">
 
 <header>
   <h1>🎮 PlayWatch</h1>
-  <p>Gracz: <strong id="nick"></strong></p>
+  <p>
+    Gracz:
+    <b id="nick"></b>
+    <span id="rankLabel"></span>
+  </p>
 </header>
 
-<section class="stats">
+<section>
   ⭐ Punkty: <b id="points">0</b><br>
   🔁 Rebirth: <b id="rebirth">0</b><br>
   ⚡ Mnożnik: <b>x<span id="multiplier">1</span></b>
 </section>
 
-<section class="game">
+<section>
   <h2>🖱️ Klikacz</h2>
   <button onclick="addPoints(10)">+10 pkt</button>
 </section>
 
-<section class="rebirth">
-  <h2>🔁 Rebirth</h2>
-  <p>Koszt: 100 000 000 pkt</p>
-  <button onclick="rebirth()">Rebirth (×2)</button>
+<section>
+  <h2>🛒 Sklep</h2>
+
+  <div class="shop-item">
+    🎨 Kolor nicku (złoty)<br>
+    Cena: 50 000 pkt<br>
+    <button class="buy" onclick="buy('goldNick',50000)">Kup</button>
+  </div>
+
+  <div class="shop-item">
+    🥉 Ranga Bronze<br>
+    Cena: 100 000 pkt<br>
+    <button class="buy" onclick="buy('bronze',100000)">Kup</button>
+  </div>
+
+  <div class="shop-item">
+    🥈 Ranga Silver<br>
+    Cena: 500 000 pkt<br>
+    <button class="buy" onclick="buy('silver',500000)">Kup</button>
+  </div>
+
+  <div class="shop-item">
+    🥇 Ranga Gold<br>
+    Cena: 1 000 000 pkt<br>
+    <button class="buy" onclick="buy('gold',1000000)">Kup</button>
+  </div>
+
+  <div class="shop-item">
+    ⚡ Stały boost +1 do mnożnika<br>
+    Cena: 2 000 000 pkt<br>
+    <button class="buy" onclick="buy('boost',2000000)">Kup</button>
+  </div>
+
 </section>
 
-<section class="ranking">
-  <h2>🏆 Ranking TOP 100</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Nick</th>
-        <th>Punkty</th>
-        <th>Rebirth</th>
-        <th>Mnożnik</th>
-      </tr>
-    </thead>
-    <tbody id="rankingBody"></tbody>
-  </table>
+<section>
+  <h2>🔁 Rebirth</h2>
+  <p>Koszt: 100 000 000 pkt</p>
+  <button onclick="rebirth()">Rebirth</button>
 </section>
 
 <footer>
-  <a href="regulamin.html">Regulamin</a>
-  <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-  <a href="kontakt.html">Kontakt</a>
+  <a href="#">Regulamin</a>
+  <a href="#">Polityka prywatności</a>
 </footer>
 
 </div>
 
 <script>
-let player = null;
+let player=null;
 
-function start() {
-  const nick = document.getElementById("nickInput").value.trim();
-  if (nick.length < 3) {
-    alert("Nick min. 3 znaki");
-    return;
-  }
-
-  player = {
-    nick,
-    points: 0,
-    rebirth: 0,
-    multiplier: 1
+function start(){
+  const n=nickInput.value.trim();
+  if(n.length<3)return alert("Min. 3 znaki");
+  player={
+    nick:n,
+    points:0,
+    rebirth:0,
+    multiplier:1,
+    items:{}
   };
-
-  savePlayer();
-  showApp();
+  save();
+  show();
 }
 
-function showApp() {
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  document.getElementById("nick").textContent = player.nick;
-  updateUI();
+function show(){
+  start.style.display="none";
+  app.style.display="block";
+  update();
 }
 
-function addPoints(base) {
-  player.points += base * player.multiplier;
-  savePlayer();
-  updateUI();
+function addPoints(b){
+  player.points+=b*player.multiplier;
+  save();update();
 }
 
-function rebirth() {
-  if (player.points < 100000000) {
-    alert("Za mało punktów");
-    return;
-  }
-  player.points = 0;
+function rebirth(){
+  if(player.points<100000000)return alert("Za mało punktów");
+  player.points=0;
   player.rebirth++;
   player.multiplier++;
-  savePlayer();
-  updateUI();
+  save();update();
 }
 
-function updateUI() {
-  document.getElementById("points").textContent = player.points;
-  document.getElementById("rebirth").textContent = player.rebirth;
-  document.getElementById("multiplier").textContent = player.multiplier;
-  updateRanking();
+function buy(item,cost){
+  if(player.items[item])return alert("Już kupione");
+  if(player.points<cost)return alert("Za mało pkt");
+  player.points-=cost;
+  player.items[item]=true;
+
+  if(item==="boost")player.multiplier++;
+
+  save();update();
 }
 
-function savePlayer() {
-  let list = JSON.parse(localStorage.getItem("ranking")) || [];
-  list = list.filter(p => p.nick !== player.nick);
-  list.push(player);
-  localStorage.setItem("ranking", JSON.stringify(list));
+function update(){
+  points.textContent=player.points;
+  rebirth.textContent=player.rebirth;
+  multiplier.textContent=player.multiplier;
+
+  nick.textContent=player.nick;
+  nick.style.color=player.items.goldNick?"gold":"white";
+
+  let r="";
+  if(player.items.gold)r="🥇 Gold";
+  else if(player.items.silver)r="🥈 Silver";
+  else if(player.items.bronze)r="🥉 Bronze";
+  rankLabel.textContent=r?" ("+r+")":"";
 }
 
-function updateRanking() {
-  let list = JSON.parse(localStorage.getItem("ranking")) || [];
+function save(){
+  localStorage.setItem("player",JSON.stringify(player));
+}
 
-  list.sort((a,b) =>
-    b.rebirth - a.rebirth ||
-    b.points - a.points
-  );
-
-  list = list.slice(0, 100);
-
-  const body = document.getElementById("rankingBody");
-  body.innerHTML = "";
-
-  list.forEach((p,i) => {
-    body.innerHTML += `
-      <tr>
-        <td>${i+1}</td>
-        <td>${p.nick}</td>
-        <td>${p.points}</td>
-        <td>${p.rebirth}</td>
-        <td>x${p.multiplier}</td>
-      </tr>
-    `;
-  });
+window.onload=()=>{
+  const p=localStorage.getItem("player");
+  if(p){
+    player=JSON.parse(p);
+    show();
+  }
 }
 </script>
 
