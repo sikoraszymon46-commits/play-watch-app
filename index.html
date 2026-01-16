@@ -14,7 +14,6 @@
 src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 <style>
-/* Mega stylizacja na start */
 body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 0;}
 header, footer { text-align: center; padding: 20px; background: #0d1b33;}
 section { margin: 20px auto; padding: 15px; max-width: 800px; background: rgba(0,0,0,0.6); border-radius: 10px;}
@@ -24,7 +23,6 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 #gameScreen { display: none; }
 ol { padding-left: 20px; }
 </style>
-
 </head>
 <body>
 
@@ -126,6 +124,19 @@ function startGame() {
   if(nick === "") { alert("Podaj nick!"); return; }
   currentNick = nick;
   document.getElementById('displayNick').innerText = currentNick;
+
+  // Pobierz zapisane dane
+  let saved = JSON.parse(localStorage.getItem(currentNick));
+  if(saved){
+    totalPoints = saved.totalPoints;
+    clicks = saved.clicks;
+    fastClicks = saved.fastClicks;
+    rebirthCount = saved.rebirthCount;
+  } else {
+    totalPoints = 0; clicks=0; fastClicks=0; rebirthCount=0;
+  }
+
+  updateDisplay();
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('gameScreen').style.display = 'block';
   losujZagadke();
@@ -208,6 +219,7 @@ function sprawdzLiczbe(){
 function addPoints(p){
   totalPoints += p;
   document.getElementById('totalPoints').innerText = totalPoints;
+  saveData();
   updateRanking();
 }
 
@@ -217,19 +229,21 @@ function rebirth(){
     rebirthCount++;
     addPoints(rebirthCount*2);
     document.getElementById('rebirthCount').innerText = rebirthCount;
+    saveData();
     alert(`Rebirth ×${rebirthCount}!`);
   } else {
     alert("Nie masz wystarczająco punktów (100 000)!");
   }
 }
 
-// ====== Ranking (lokalny na start) ======
-let rankingData = [];
+// ====== Ranking ======
+let rankingData = JSON.parse(localStorage.getItem("rankingData") || "[]");
 function updateRanking(){
   let exists = rankingData.findIndex(x=>x.nick===currentNick);
   if(exists>=0){ rankingData[exists].points = totalPoints; }
   else{ rankingData.push({nick:currentNick, points:totalPoints}); }
   rankingData.sort((a,b)=>b.points-a.points);
+  localStorage.setItem("rankingData", JSON.stringify(rankingData));
   let top = rankingData.slice(0,100);
   let html = "";
   top.forEach(p=>{ html += `<li>${p.nick} - ${p.points} pkt</li>`; });
@@ -241,6 +255,19 @@ function bonusAdWatched(){
   let bonus = 50;
   addPoints(bonus);
   alert(`Bonus +${bonus} pkt za obejrzenie reklamy!`);
+}
+
+// ====== Zapis/odczyt danych ======
+function saveData(){
+  localStorage.setItem(currentNick, JSON.stringify({totalPoints, clicks, fastClicks, rebirthCount}));
+}
+
+function updateDisplay(){
+  document.getElementById('totalPoints').innerText = totalPoints;
+  document.getElementById('clicks').innerText = clicks;
+  document.getElementById('fastClicks').innerText = fastClicks;
+  document.getElementById('rebirthCount').innerText = rebirthCount;
+  updateRanking();
 }
 
 </script>
