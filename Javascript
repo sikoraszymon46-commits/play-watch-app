@@ -1,0 +1,132 @@
+// Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAp6tsQqV-jiscPzqlRS6cjsRHveR-5sGU",
+  authDomain: "playwatchranking.firebaseapp.com",
+  projectId: "playwatchranking",
+  storageBucket: "playwatchranking.firebasestorage.app",
+  messagingSenderId: "749619304668",
+  appId: "1:749619304668:web:9be4afbf186b2b560fbc19",
+  measurementId: "G-BN6QCD11C9"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const analytics = firebase.analytics();
+
+// Globalne zmienne
+let totalPoints = 0;
+let rebirth = 0;
+let playerNick = "";
+
+// Proste zagadki
+const zagadki = [
+  {q:"Co zawsze rośnie ale nigdy nie spada?", a:"wiek"},
+  {q:"Co ma klucze ale nie otwiera drzwi?", a:"fortepian"},
+  {q:"Co można złamać ale nie można dotknąć?", a:"obietnica"},
+  {q:"Co ma wiele twarzy ale nie ma oczu?", a:"zegarek"},
+  {q:"Co jest twoje ale inni używają częściej?", a:"twoje imię"}
+];
+
+function startGame(){
+  const input = document.getElementById("playerNick");
+  if(input.value.trim()===""){ alert("Wpisz nick!"); return;}
+  playerNick = input.value.trim();
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("gameScreen").style.display="block";
+  wczytajRanking();
+}
+
+function dodajPunkty(p){
+  totalPoints += p;
+  document.getElementById("totalPoints").textContent = totalPoints;
+
+  // Rebirth co 100.000.000 pkt
+  if(totalPoints >= 100000000){
+    rebirth++;
+    totalPoints = 0;
+    document.getElementById("rebirthCount").textContent = rebirth;
+  }
+
+  // Zapis do Firestore
+  db.collection("ranking").doc(playerNick).set({
+    nick: playerNick,
+    punkty: totalPoints,
+    rebirth: rebirth,
+    data: Date.now()
+  });
+}
+
+// --- Zagadki ---
+let currentRiddle = 0;
+function losujZagadke(){
+  currentRiddle = Math.floor(Math.random()*zagadki.length);
+  document.getElementById("riddleText").textContent = zagadki[currentRiddle].q;
+  document.getElementById("riddleResult").textContent="";
+}
+
+function sprawdzZagadke(){
+  const answer = document.getElementById("riddleAnswer").value.trim().toLowerCase();
+  if(answer===zagadki[currentRiddle].a){
+    document.getElementById("riddleResult").textContent="✔ Poprawna odpowiedź!";
+    dodajPunkty(10);
+  } else {
+    document.getElementById("riddleResult").textContent="✖ Spróbuj ponownie";
+  }
+}
+
+// --- Klikacz ---
+let clicks = 0;
+function klik(){ clicks++; dodajPunkty(1); document.getElementById("clicks").textContent = clicks; }
+
+// --- Losowa liczba ---
+function losuj(){ const num=Math.floor(Math.random()*100)+1; document.getElementById("number").textContent=num; dodajPunkty(num); }
+
+// --- Szybkie kliknięcia ---
+let fastClicks = 0;
+document.getElementById("fastClickBtn").onclick = function(){
+  fastClicks++;
+  dodajPunkty(5);
+  document.getElementById("fastClicks").textContent = fastClicks;
+}
+
+// --- Losowa karta ---
+function losujKarte(){
+  const karty = ["♠","♥","♦","♣"];
+  const liczby = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  const karta = liczby[Math.floor(Math.random()*liczby.length)] + karty[Math.floor(Math.random()*karty.length)];
+  document.getElementById("card").textContent = karta;
+  dodajPunkty(5);
+}
+
+// --- Odgadnij liczbę ---
+function sprawdzLiczbe(){
+  const guess = parseInt(document.getElementById("guessNumber").value);
+  const actual = Math.floor(Math.random()*10)+1;
+  if(guess===actual){ document.getElementById("guessResult").textContent="✔ Trafione!"; dodajPunkty(20);}
+  else document.getElementById("guessResult").textContent=`✖ Nie trafione, była ${actual}`;
+}
+
+// --- Ranking TOP 100 ---
+function wczytajRanking(){
+  const ranking = document.getElementById("ranking");
+  db.collection("ranking").orderBy("punkty","desc").limit(100)
+    .onSnapshot(snap=>{
+      ranking.innerHTML="";
+      snap.forEach(doc=>{
+        const d=doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${d.nick} – ${d.punkty} pkt (rebirth: ${d.rebirth})`;
+        ranking.appendChild(li);
+      });
+    });
+}
+
+// --- Bonus za oglądanie reklamy ---
+let bonusReady = true;
+function bonusReklama(){
+  if(bonusReady){
+    dodajPunkty(20); // np. bonus 2x
+    bonusReady=false;
+    setTimeout(()=>{ bonusReady=true; }, 600000); // 10 minut
+    alert("Bonus za reklamę dodany!");
+  } else alert("Poczekaj 10 minut przed kolejnym bonusem.");
+}
