@@ -104,7 +104,7 @@ ol { padding-left: 20px; }
 <footer>
 <a href="regulamin.html">Regulamin</a> |
 <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
-<a href="kontakt.html">Kontakt</a>
+<a href="mailto:sikoraszymon45@gmail.com">Kontakt: sikoraszymon45@gmail.com</a>
 </footer>
 
 <script>
@@ -231,10 +231,7 @@ function sprawdzLiczbe(){
 // ====== Punkty i rebirth ======
 function addPoints(p){
   totalPoints += p;
-
-  // Zapis punktów w localStorage
   localStorage.setItem('totalPoints', totalPoints);
-
   document.getElementById('totalPoints').innerText = totalPoints;
   updateRanking();
 }
