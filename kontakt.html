@@ -1,28 +1,228 @@
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kontakt – PlayWatch</title>
-<link rel="stylesheet" href="style.css">
+
+<title>PlayWatch – Gry i Ranking</title>
+
+<meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
+
+<script async
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
+  crossorigin="anonymous"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+header {
+  background: #020617;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 { margin: 0; }
+
+.start-screen {
+  text-align: center;
+  padding: 40px;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.stats, .game, .rebirth, .ranking {
+  background: #020617;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 6px;
+  text-align: center;
+  border-bottom: 1px solid #1e293b;
+}
+
+th {
+  background: #020617;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+}
+footer a {
+  color: #60a5fa;
+  margin: 0 10px;
+}
+</style>
 </head>
+
 <body>
-<header><h1>Kontakt – PlayWatch</h1></header>
-<section>
-<h2>Formularz kontaktowy</h2>
-<form>
-<input type="text" placeholder="Twoje imię" required>
-<input type="email" placeholder="Twój email" required>
-<textarea placeholder="Twoja wiadomość" rows="5" required></textarea>
-<button type="submit">Wyślij</button>
-</form>
-<p><a href="index.html">← Powrót na stronę główną</a></p>
+
+<div id="startScreen" class="start-screen">
+  <h1>🎮 PlayWatch</h1>
+  <p>Podaj nick, aby wejść</p>
+  <input id="nickInput" placeholder="Nick">
+  <br>
+  <button onclick="start()">Start</button>
+</div>
+
+<div id="app" style="display:none;">
+
+<header>
+  <h1>🎮 PlayWatch</h1>
+  <p>Gracz: <strong id="nick"></strong></p>
+</header>
+
+<section class="stats">
+  ⭐ Punkty: <b id="points">0</b><br>
+  🔁 Rebirth: <b id="rebirth">0</b><br>
+  ⚡ Mnożnik: <b>x<span id="multiplier">1</span></b>
 </section>
+
+<section class="game">
+  <h2>🖱️ Klikacz</h2>
+  <button onclick="addPoints(10)">+10 pkt</button>
+</section>
+
+<section class="rebirth">
+  <h2>🔁 Rebirth</h2>
+  <p>Koszt: 100 000 000 pkt</p>
+  <button onclick="rebirth()">Rebirth (×2)</button>
+</section>
+
+<section class="ranking">
+  <h2>🏆 Ranking TOP 100</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nick</th>
+        <th>Punkty</th>
+        <th>Rebirth</th>
+        <th>Mnożnik</th>
+      </tr>
+    </thead>
+    <tbody id="rankingBody"></tbody>
+  </table>
+</section>
+
 <footer>
-<a href="regulamin.html">Regulamin</a>
-<a href="polityka-prywatnosci.html">Polityka prywatności</a>
-<a href="kontakt.html">Kontakt</a>
+  <a href="regulamin.html">Regulamin</a>
+  <a href="polityka-prywatnosci.html">Polityka prywatności</a>
+  <a href="kontakt.html">Kontakt</a>
 </footer>
+
+</div>
+
+<script>
+let player = null;
+
+function start() {
+  const nick = document.getElementById("nickInput").value.trim();
+  if (nick.length < 3) {
+    alert("Nick min. 3 znaki");
+    return;
+  }
+
+  player = {
+    nick,
+    points: 0,
+    rebirth: 0,
+    multiplier: 1
+  };
+
+  savePlayer();
+  showApp();
+}
+
+function showApp() {
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("nick").textContent = player.nick;
+  updateUI();
+}
+
+function addPoints(base) {
+  player.points += base * player.multiplier;
+  savePlayer();
+  updateUI();
+}
+
+function rebirth() {
+  if (player.points < 100000000) {
+    alert("Za mało punktów");
+    return;
+  }
+  player.points = 0;
+  player.rebirth++;
+  player.multiplier++;
+  savePlayer();
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById("points").textContent = player.points;
+  document.getElementById("rebirth").textContent = player.rebirth;
+  document.getElementById("multiplier").textContent = player.multiplier;
+  updateRanking();
+}
+
+function savePlayer() {
+  let list = JSON.parse(localStorage.getItem("ranking")) || [];
+  list = list.filter(p => p.nick !== player.nick);
+  list.push(player);
+  localStorage.setItem("ranking", JSON.stringify(list));
+}
+
+function updateRanking() {
+  let list = JSON.parse(localStorage.getItem("ranking")) || [];
+
+  list.sort((a,b) =>
+    b.rebirth - a.rebirth ||
+    b.points - a.points
+  );
+
+  list = list.slice(0, 100);
+
+  const body = document.getElementById("rankingBody");
+  body.innerHTML = "";
+
+  list.forEach((p,i) => {
+    body.innerHTML += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${p.nick}</td>
+        <td>${p.points}</td>
+        <td>${p.rebirth}</td>
+        <td>x${p.multiplier}</td>
+      </tr>
+    `;
+  });
+}
+</script>
+
 </body>
 </html>
