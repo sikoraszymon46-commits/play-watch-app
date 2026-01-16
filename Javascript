@@ -1,132 +1,150 @@
-// Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAp6tsQqV-jiscPzqlRS6cjsRHveR-5sGU",
-  authDomain: "playwatchranking.firebaseapp.com",
-  projectId: "playwatchranking",
-  storageBucket: "playwatchranking.firebasestorage.app",
-  messagingSenderId: "749619304668",
-  appId: "1:749619304668:web:9be4afbf186b2b560fbc19",
-  measurementId: "G-BN6QCD11C9"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const analytics = firebase.analytics();
-
-// Globalne zmienne
+let currentNick = '';
 let totalPoints = 0;
-let rebirth = 0;
-let playerNick = "";
+let rebirthCount = 0;
+let clicks = 0;
+let fastClicks = 0;
 
-// Proste zagadki
-const zagadki = [
-  {q:"Co zawsze rośnie ale nigdy nie spada?", a:"wiek"},
-  {q:"Co ma klucze ale nie otwiera drzwi?", a:"fortepian"},
-  {q:"Co można złamać ale nie można dotknąć?", a:"obietnica"},
-  {q:"Co ma wiele twarzy ale nie ma oczu?", a:"zegarek"},
-  {q:"Co jest twoje ale inni używają częściej?", a:"twoje imię"}
-];
+// ranking lokalny w localStorage
+let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
 
+// ===================== LOGOWANIE =====================
 function startGame(){
-  const input = document.getElementById("playerNick");
-  if(input.value.trim()===""){ alert("Wpisz nick!"); return;}
-  playerNick = input.value.trim();
-  document.getElementById("loginScreen").style.display="none";
-  document.getElementById("gameScreen").style.display="block";
-  wczytajRanking();
+    let nick = document.getElementById('playerNick').value.trim();
+    if(nick===''){ alert('Podaj nick!'); return; }
+    currentNick = nick;
+
+    // przywrócenie punktów z LocalStorage
+    let savedPoints = parseInt(localStorage.getItem(currentNick+'_points'));
+    let savedRebirth = parseInt(localStorage.getItem(currentNick+'_rebirths'));
+    totalPoints = isNaN(savedPoints)?0:savedPoints;
+    rebirthCount = isNaN(savedRebirth)?0:savedRebirth;
+
+    document.getElementById('displayNick').innerText = currentNick;
+    document.getElementById('totalPoints').innerText = totalPoints;
+    document.getElementById('rebirthCount').innerText = rebirthCount;
+
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+
+    losujZagadke();
+    updateRanking();
 }
 
-function dodajPunkty(p){
-  totalPoints += p;
-  document.getElementById("totalPoints").textContent = totalPoints;
-
-  // Rebirth co 100.000.000 pkt
-  if(totalPoints >= 100000000){
-    rebirth++;
-    totalPoints = 0;
-    document.getElementById("rebirthCount").textContent = rebirth;
-  }
-
-  // Zapis do Firestore
-  db.collection("ranking").doc(playerNick).set({
-    nick: playerNick,
-    punkty: totalPoints,
-    rebirth: rebirth,
-    data: Date.now()
-  });
-}
-
-// --- Zagadki ---
+// ===================== ZAGADKI =====================
+const zagadki = [
+    {q:'Co zawsze rośnie ale nigdy nie spada?', a:'wiek'},
+    {q:'Co ma klucze ale nie może otworzyć drzwi?', a:'fortepian'},
+    {q:'Co można złamać ale nie można dotknąć?', a:'obietnica'},
+    {q:'Co ma wiele twarzy ale nie ma oczu?', a:'moneta'},
+    {q:'Co jest Twoje, ale inni używają częściej niż Ty?', a:'imię'}
+];
 let currentRiddle = 0;
+
 function losujZagadke(){
-  currentRiddle = Math.floor(Math.random()*zagadki.length);
-  document.getElementById("riddleText").textContent = zagadki[currentRiddle].q;
-  document.getElementById("riddleResult").textContent="";
+    currentRiddle = Math.floor(Math.random()*zagadki.length);
+    document.getElementById('riddleText').innerText = zagadki[currentRiddle].q;
+    document.getElementById('riddleAnswer').value = '';
+    document.getElementById('riddleResult').innerText = '';
 }
 
 function sprawdzZagadke(){
-  const answer = document.getElementById("riddleAnswer").value.trim().toLowerCase();
-  if(answer===zagadki[currentRiddle].a){
-    document.getElementById("riddleResult").textContent="✔ Poprawna odpowiedź!";
-    dodajPunkty(10);
-  } else {
-    document.getElementById("riddleResult").textContent="✖ Spróbuj ponownie";
-  }
+    let ans = document.getElementById('riddleAnswer').value.toLowerCase().trim();
+    if(ans === zagadki[currentRiddle].a){
+        addPoints(10);
+        document.getElementById('riddleResult').innerText = 'Dobrze! +10 pkt';
+    } else{
+        document.getElementById('riddleResult').innerText = 'Źle!';
+    }
 }
 
-// --- Klikacz ---
-let clicks = 0;
-function klik(){ clicks++; dodajPunkty(1); document.getElementById("clicks").textContent = clicks; }
-
-// --- Losowa liczba ---
-function losuj(){ const num=Math.floor(Math.random()*100)+1; document.getElementById("number").textContent=num; dodajPunkty(num); }
-
-// --- Szybkie kliknięcia ---
-let fastClicks = 0;
-document.getElementById("fastClickBtn").onclick = function(){
-  fastClicks++;
-  dodajPunkty(5);
-  document.getElementById("fastClicks").textContent = fastClicks;
+// ===================== KLIKACZE =====================
+function klik(){
+    clicks++;
+    addPoints(1);
+    document.getElementById('clicks').innerText = clicks;
 }
 
-// --- Losowa karta ---
+// ===================== LOSOWA LICZBA =====================
+function losuj(){
+    let n = Math.floor(Math.random()*100)+1;
+    document.getElementById('number').innerText = n;
+    addPoints(5);
+}
+
+// ===================== SZYBKIE KLIKI =====================
+document.getElementById('fastClickBtn').addEventListener('click', ()=>{
+    fastClicks++;
+    document.getElementById('fastClicks').innerText = fastClicks;
+    addPoints(2);
+});
+
+// ===================== LOSOWA KARTA =====================
 function losujKarte(){
-  const karty = ["♠","♥","♦","♣"];
-  const liczby = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-  const karta = liczby[Math.floor(Math.random()*liczby.length)] + karty[Math.floor(Math.random()*karty.length)];
-  document.getElementById("card").textContent = karta;
-  dodajPunkty(5);
+    const karty = ['♠','♥','♦','♣'];
+    let karta = karty[Math.floor(Math.random()*karty.length)];
+    document.getElementById('card').innerText = karta;
+    addPoints(3);
 }
 
-// --- Odgadnij liczbę ---
+// ===================== ODGADNIJ LICZBĘ =====================
 function sprawdzLiczbe(){
-  const guess = parseInt(document.getElementById("guessNumber").value);
-  const actual = Math.floor(Math.random()*10)+1;
-  if(guess===actual){ document.getElementById("guessResult").textContent="✔ Trafione!"; dodajPunkty(20);}
-  else document.getElementById("guessResult").textContent=`✖ Nie trafione, była ${actual}`;
+    let guess = parseInt(document.getElementById('guessNumber').value);
+    let rand = Math.floor(Math.random()*10)+1;
+    if(guess===rand){
+        addPoints(15);
+        document.getElementById('guessResult').innerText = 'Dobrze! +15 pkt';
+    } else{
+        document.getElementById('guessResult').innerText = 'Źle! Wylosowana: '+rand;
+    }
 }
 
-// --- Ranking TOP 100 ---
-function wczytajRanking(){
-  const ranking = document.getElementById("ranking");
-  db.collection("ranking").orderBy("punkty","desc").limit(100)
-    .onSnapshot(snap=>{
-      ranking.innerHTML="";
-      snap.forEach(doc=>{
-        const d=doc.data();
-        const li = document.createElement("li");
-        li.textContent = `${d.nick} – ${d.punkty} pkt (rebirth: ${d.rebirth})`;
-        ranking.appendChild(li);
-      });
-    });
+// ===================== REBIRTH =====================
+function rebirth(){
+    if(totalPoints >= 100000000){
+        totalPoints = Math.floor(totalPoints/2);
+        rebirthCount++;
+        document.getElementById('rebirthCount').innerText = rebirthCount;
+        saveData();
+        updateRanking();
+        alert('Rebirth! ×2 punkty w przyszłości');
+    } else{
+        alert('Potrzebujesz 100.000.000 pkt do Rebirth');
+    }
 }
 
-// --- Bonus za oglądanie reklamy ---
-let bonusReady = true;
-function bonusReklama(){
-  if(bonusReady){
-    dodajPunkty(20); // np. bonus 2x
-    bonusReady=false;
-    setTimeout(()=>{ bonusReady=true; }, 600000); // 10 minut
-    alert("Bonus za reklamę dodany!");
-  } else alert("Poczekaj 10 minut przed kolejnym bonusem.");
+// ===================== BONUS ZA REKLAMĘ =====================
+function bonusAdWatched(){
+    addPoints(50); // przykładowy bonus
+    alert('Bonus +50 pkt za obejrzenie reklamy!');
+}
+
+// ===================== PUNKTY I LOCALSTORAGE =====================
+function addPoints(p){
+    totalPoints += p;
+    document.getElementById('totalPoints').innerText = totalPoints;
+    saveData();
+    updateRanking();
+}
+
+function saveData(){
+    localStorage.setItem(currentNick+'_points', totalPoints);
+    localStorage.setItem(currentNick+'_rebirths', rebirthCount);
+}
+
+// ===================== RANKING LOKALNY =====================
+function updateRanking(){
+    // sprawdzamy czy już w rankingu
+    let exists = ranking.findIndex(x=>x.nick===currentNick);
+    if(exists>=0) ranking[exists].points = totalPoints;
+    else ranking.push({nick: currentNick, points: totalPoints});
+
+    // sortowanie malejąco i limit TOP100
+    ranking.sort((a,b)=>b.points - a.points);
+    if(ranking.length>100) ranking = ranking.slice(0,100);
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+
+    // wyświetlenie
+    const ol = document.getElementById('ranking');
+    ol.innerHTML = '';
+    ranking.forEach(r=>{ ol.innerHTML += `<li>${r.nick}: ${r.points} pkt</li>` });
 }
