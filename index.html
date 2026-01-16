@@ -3,185 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlayWatch – Gry i Ranking</title>
+<link rel="stylesheet" href="style.css">
 
-<title>PlayWatch – Gry i Zabawa Online</title>
-
-<!-- Google Search Console -->
+<!-- Meta tag Google Search Console -->
 <meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
 
 <!-- Google AdSense -->
-<script async
-  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-  crossorigin="anonymous"></script>
+<script data-ad-client="ca-pub-9599322707323836" async
+src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-<link rel="stylesheet" href="style.css">
+<!-- Firebase compat -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
 </head>
-
 <body>
 
-<!-- ================= START SCREEN ================= -->
-<div id="startScreen" class="start-screen">
-  <h1>🎮 PlayWatch</h1>
-  <p>Podaj nick, aby rozpocząć</p>
-
-  <input type="text" id="nicknameInput" placeholder="Twój nick">
-  <button onclick="startGame()">Zacznij</button>
-
-  <p class="info">
-    Gra jest darmowa. Punkty mają charakter wirtualny.
-  </p>
+<!-- Ekran logowania -->
+<div id="loginScreen">
+  <h2>Wpisz swój nick</h2>
+  <input type="text" id="playerNick" placeholder="Twój nick">
+  <button onclick="startGame()">Start</button>
 </div>
 
-<!-- ================= MAIN APP ================= -->
-<div id="mainApp" style="display:none;">
+<!-- Ekran gry -->
+<div id="gameScreen" style="display:none;">
 
 <header>
   <h1>🎮 PlayWatch</h1>
-  <p>Gracz: <strong><span id="playerNick"></span></strong></p>
+  <p>Proste gry, zagadki i zabawa online</p>
 </header>
 
-<section class="stats">
-  <div>⭐ Punkty: <strong><span id="points">0</span></strong></div>
-  <div>🔁 Rebirth: <strong><span id="rebirth">0</span></strong></div>
-  <div>⚡ Mnożnik: <strong>x<span id="multiplier">1</span></strong></div>
+<section class="points-section">
+  <h2>⭐ Twoje punkty</h2>
+  <p>Łączna liczba punktów: <strong><span id="totalPoints">0</span></strong></p>
+  <p>Rebirth: <span id="rebirthCount">0</span></p>
 </section>
 
-<!-- ================= GAMES ================= -->
-
-<section class="game">
-  <h2>🖱️ Klikacz</h2>
-  <button onclick="addPoints(10)">+10 punktów</button>
+<!-- GRA 1: Zagadki -->
+<section class="game-section">
+<h2>🧩 Gra 1 – Zagadki</h2>
+<p id="riddleText">Kliknij "Nowa zagadka"</p>
+<input type="text" id="riddleAnswer" placeholder="Twoja odpowiedź">
+<button onclick="sprawdzZagadke()">Sprawdź odpowiedź</button>
+<button onclick="losujZagadke()">Nowa zagadka</button>
+<p id="riddleResult"></p>
 </section>
 
-<section class="game">
-  <h2>🎯 Odgadnij liczbę</h2>
-  <input type="number" id="guessInput" min="1" max="10">
-  <button onclick="guessNumber()">Sprawdź</button>
-  <p id="guessResult"></p>
+<!-- GRA 2: Klikacz -->
+<section class="game-section">
+<h2>🖱️ Gra 2 – Klikacz</h2>
+<p>Kliknięcia: <span id="clicks">0</span></p>
+<button onclick="klik()">Kliknij mnie</button>
 </section>
 
-<section class="game">
-  <h2>🧩 Zagadki</h2>
-  <p id="riddleText">Kliknij, aby wylosować zagadkę</p>
-  <input type="text" id="riddleAnswer">
-  <button onclick="checkRiddle()">Sprawdź</button>
-  <button onclick="newRiddle()">Nowa zagadka</button>
-  <p id="riddleResult"></p>
+<!-- GRA 3: Losowa liczba -->
+<section class="game-section">
+<h2>🎲 Gra 3 – Losowa liczba</h2>
+<p>Liczba: <span id="number">?</span></p>
+<button onclick="losuj()">Losuj 1–100</button>
 </section>
 
-<!-- ================= REBIRTH ================= -->
+<!-- GRA 4: Szybkie kliknięcia -->
+<section class="game-section">
+<h2>⚡ Gra 4 – Szybkie kliknięcia</h2>
+<p>Kliknij 5 razy jak najszybciej!</p>
+<button id="fastClickBtn">Kliknij mnie</button>
+<p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
+</section>
 
-<section class="rebirth">
-  <h2>🔁 Rebirth</h2>
-  <p>Koszt: 100 000 000 pkt</p>
-  <button onclick="doRebirth()">Wykonaj rebirth (×2)</button>
+<!-- GRA 5: Losowa karta -->
+<section class="game-section">
+<h2>🎴 Gra 5 – Losowa karta</h2>
+<p>Karta: <span id="card">?</span></p>
+<button onclick="losujKarte()">Losuj kartę</button>
+</section>
+
+<!-- GRA 6: Odgadnij liczbę -->
+<section class="game-section">
+<h2>🎯 Gra 6 – Odgadnij liczbę</h2>
+<p>Wpisz liczbę 1–10:</p>
+<input type="number" id="guessNumber" min="1" max="10">
+<button onclick="sprawdzLiczbe()">Sprawdź</button>
+<p id="guessResult"></p>
+</section>
+
+<!-- Ranking TOP 100 -->
+<section class="game-section">
+<h2>🏆 Ranking TOP 100</h2>
+<ol id="ranking"></ol>
+</section>
+
+<!-- Bonus reklama -->
+<section class="game-section">
+<h2>🎁 Bonus za reklamę</h2>
+<button onclick="bonusReklama()">Odbierz bonus za oglądanie reklamy</button>
 </section>
 
 <footer>
-  <a href="regulamin.html">Regulamin</a>
+  <a href="regulamin.html">Regulamin</a> | 
   <a href="polityka-prywatnosci.html">Polityka prywatności</a>
-  <a href="kontakt.html">Kontakt</a>
 </footer>
 
 </div>
 
-<!-- ================= SCRIPT ================= -->
-<script>
-let player = null;
-
-const riddles = [
-  {q:"Co rośnie, ale nigdy nie spada?", a:"wiek"},
-  {q:"Co ma klucze, ale nie otwiera drzwi?", a:"klawiatura"},
-  {q:"Co można złamać, nie dotykając?", a:"obietnice"},
-  {q:"Co ma twarz, ale nie ma oczu?", a:"zegarek"}
-];
-
-let currentRiddle = null;
-
-window.onload = () => {
-  const saved = localStorage.getItem("playwatch_player");
-  if (saved) {
-    player = JSON.parse(saved);
-    showApp();
-  }
-};
-
-function startGame() {
-  const nick = document.getElementById("nicknameInput").value.trim();
-  if (nick.length < 3) {
-    alert("Nick musi mieć minimum 3 znaki");
-    return;
-  }
-
-  player = {
-    nick,
-    points: 0,
-    rebirth: 0,
-    multiplier: 1
-  };
-
-  save();
-  showApp();
-}
-
-function showApp() {
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("mainApp").style.display = "block";
-  document.getElementById("playerNick").textContent = player.nick;
-  updateUI();
-}
-
-function addPoints(base) {
-  player.points += base * player.multiplier;
-  save();
-  updateUI();
-}
-
-function guessNumber() {
-  const n = Math.floor(Math.random() * 10) + 1;
-  const g = Number(document.getElementById("guessInput").value);
-  document.getElementById("guessResult").textContent =
-    g === n ? "✅ Trafione! +50 pkt" : "❌ Nie tym razem";
-  if (g === n) addPoints(50);
-}
-
-function newRiddle() {
-  currentRiddle = riddles[Math.floor(Math.random() * riddles.length)];
-  document.getElementById("riddleText").textContent = currentRiddle.q;
-}
-
-function checkRiddle() {
-  const a = document.getElementById("riddleAnswer").value.toLowerCase();
-  if (currentRiddle && a === currentRiddle.a) {
-    document.getElementById("riddleResult").textContent = "✅ Dobrze! +100 pkt";
-    addPoints(100);
-  } else {
-    document.getElementById("riddleResult").textContent = "❌ Źle";
-  }
-}
-
-function doRebirth() {
-  if (player.points < 100000000) {
-    alert("Za mało punktów");
-    return;
-  }
-  player.points = 0;
-  player.rebirth++;
-  player.multiplier++;
-  save();
-  updateUI();
-}
-
-function updateUI() {
-  document.getElementById("points").textContent = player.points;
-  document.getElementById("rebirth").textContent = player.rebirth;
-  document.getElementById("multiplier").textContent = player.multiplier;
-}
-
-function save() {
-  localStorage.setItem("playwatch_player", JSON.stringify(player));
-}
-</script>
-
+<script src="script.js"></script>
 </body>
-     </html>
+</html>
