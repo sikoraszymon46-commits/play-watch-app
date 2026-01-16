@@ -86,19 +86,16 @@ ol { padding-left: 20px; }
 <p id="guessResult"></p>
 </section>
 
-<!-- Rebirth -->
 <section>
 <h2>🔄 Rebirth</h2>
 <button onclick="rebirth()">Rebirth ×2</button>
 </section>
 
-<!-- Ranking -->
 <section>
 <h2>🏆 Ranking TOP 100</h2>
 <ol id="ranking"></ol>
 </section>
 
-<!-- Bonus za reklamę -->
 <section>
 <h2>💰 Bonus za reklamę</h2>
 <button onclick="bonusAdWatched()">Oglądałem reklamę</button>
@@ -118,28 +115,44 @@ let fastClicks = 0;
 let rebirthCount = 0;
 let currentNick = "";
 
+// ====== Sprawdzenie lokalStorage przy ładowaniu ======
+window.onload = function() {
+  let savedNick = localStorage.getItem('playerNick');
+  if(savedNick) {
+    currentNick = savedNick;
+    document.getElementById('displayNick').innerText = currentNick;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+
+    let savedPoints = localStorage.getItem('totalPoints');
+    if(savedPoints) totalPoints = parseInt(savedPoints);
+    document.getElementById('totalPoints').innerText = totalPoints;
+
+    losujZagadke();
+    updateRanking();
+  }
+}
+
 // ====== Logowanie ======
 function startGame() {
   let nick = document.getElementById('playerNick').value.trim();
   if(nick === "") { alert("Podaj nick!"); return; }
   currentNick = nick;
+
+  localStorage.setItem('playerNick', currentNick);
+
   document.getElementById('displayNick').innerText = currentNick;
-
-  // Pobierz zapisane dane
-  let saved = JSON.parse(localStorage.getItem(currentNick));
-  if(saved){
-    totalPoints = saved.totalPoints;
-    clicks = saved.clicks;
-    fastClicks = saved.fastClicks;
-    rebirthCount = saved.rebirthCount;
-  } else {
-    totalPoints = 0; clicks=0; fastClicks=0; rebirthCount=0;
-  }
-
-  updateDisplay();
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('gameScreen').style.display = 'block';
+
+  let savedPoints = localStorage.getItem('totalPoints');
+  if(savedPoints) {
+    totalPoints = parseInt(savedPoints);
+    document.getElementById('totalPoints').innerText = totalPoints;
+  }
+
   losujZagadke();
+  updateRanking();
 }
 
 // ====== Gry ======
@@ -218,8 +231,11 @@ function sprawdzLiczbe(){
 // ====== Punkty i rebirth ======
 function addPoints(p){
   totalPoints += p;
+
+  // Zapis punktów w localStorage
+  localStorage.setItem('totalPoints', totalPoints);
+
   document.getElementById('totalPoints').innerText = totalPoints;
-  saveData();
   updateRanking();
 }
 
@@ -229,7 +245,6 @@ function rebirth(){
     rebirthCount++;
     addPoints(rebirthCount*2);
     document.getElementById('rebirthCount').innerText = rebirthCount;
-    saveData();
     alert(`Rebirth ×${rebirthCount}!`);
   } else {
     alert("Nie masz wystarczająco punktów (100 000)!");
@@ -237,13 +252,12 @@ function rebirth(){
 }
 
 // ====== Ranking ======
-let rankingData = JSON.parse(localStorage.getItem("rankingData") || "[]");
+let rankingData = [];
 function updateRanking(){
   let exists = rankingData.findIndex(x=>x.nick===currentNick);
   if(exists>=0){ rankingData[exists].points = totalPoints; }
   else{ rankingData.push({nick:currentNick, points:totalPoints}); }
   rankingData.sort((a,b)=>b.points-a.points);
-  localStorage.setItem("rankingData", JSON.stringify(rankingData));
   let top = rankingData.slice(0,100);
   let html = "";
   top.forEach(p=>{ html += `<li>${p.nick} - ${p.points} pkt</li>`; });
@@ -256,20 +270,6 @@ function bonusAdWatched(){
   addPoints(bonus);
   alert(`Bonus +${bonus} pkt za obejrzenie reklamy!`);
 }
-
-// ====== Zapis/odczyt danych ======
-function saveData(){
-  localStorage.setItem(currentNick, JSON.stringify({totalPoints, clicks, fastClicks, rebirthCount}));
-}
-
-function updateDisplay(){
-  document.getElementById('totalPoints').innerText = totalPoints;
-  document.getElementById('clicks').innerText = clicks;
-  document.getElementById('fastClicks').innerText = fastClicks;
-  document.getElementById('rebirthCount').innerText = rebirthCount;
-  updateRanking();
-}
-
 </script>
 
 </body>
