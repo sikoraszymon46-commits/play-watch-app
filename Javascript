@@ -1,150 +1,156 @@
-let currentNick = '';
+<script>
+// ====== Zmienne gry ======
 let totalPoints = 0;
-let rebirthCount = 0;
 let clicks = 0;
 let fastClicks = 0;
+let rebirthCount = 0;
+let currentNick = "";
 
-// ranking lokalny w localStorage
-let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-
-// ===================== LOGOWANIE =====================
-function startGame(){
-    let nick = document.getElementById('playerNick').value.trim();
-    if(nick===''){ alert('Podaj nick!'); return; }
-    currentNick = nick;
-
-    // przywrócenie punktów z LocalStorage
-    let savedPoints = parseInt(localStorage.getItem(currentNick+'_points'));
-    let savedRebirth = parseInt(localStorage.getItem(currentNick+'_rebirths'));
-    totalPoints = isNaN(savedPoints)?0:savedPoints;
-    rebirthCount = isNaN(savedRebirth)?0:savedRebirth;
-
+// ====== Inicjalizacja przy wejściu na stronę ======
+window.onload = function() {
+  // Sprawdź, czy mamy zapisany nick w localStorage
+  const savedNick = localStorage.getItem("currentNick");
+  if(savedNick){
+    currentNick = savedNick;
+    let savedData = JSON.parse(localStorage.getItem(currentNick));
+    if(savedData){
+      totalPoints = savedData.totalPoints;
+      clicks = savedData.clicks;
+      fastClicks = savedData.fastClicks;
+      rebirthCount = savedData.rebirthCount;
+    }
     document.getElementById('displayNick').innerText = currentNick;
-    document.getElementById('totalPoints').innerText = totalPoints;
-    document.getElementById('rebirthCount').innerText = rebirthCount;
-
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('gameScreen').style.display = 'block';
-
+    updateDisplay();
     losujZagadke();
-    updateRanking();
+  }
 }
 
-// ===================== ZAGADKI =====================
+// ====== Logowanie ======
+function startGame() {
+  let nick = document.getElementById('playerNick').value.trim();
+  if(nick === "") { alert("Podaj nick!"); return; }
+  currentNick = nick;
+  localStorage.setItem("currentNick", currentNick); // Zapisz nick
+  document.getElementById('displayNick').innerText = currentNick;
+
+  // Sprawdź, czy mamy zapisane punkty
+  let saved = JSON.parse(localStorage.getItem(currentNick));
+  if(saved){
+    totalPoints = saved.totalPoints;
+    clicks = saved.clicks;
+    fastClicks = saved.fastClicks;
+    rebirthCount = saved.rebirthCount;
+  } else {
+    totalPoints = 0; clicks=0; fastClicks=0; rebirthCount=0;
+  }
+
+  updateDisplay();
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'block';
+  losujZagadke();
+}
+
+// ====== Gry ======
 const zagadki = [
-    {q:'Co zawsze rośnie ale nigdy nie spada?', a:'wiek'},
-    {q:'Co ma klucze ale nie może otworzyć drzwi?', a:'fortepian'},
-    {q:'Co można złamać ale nie można dotknąć?', a:'obietnica'},
-    {q:'Co ma wiele twarzy ale nie ma oczu?', a:'moneta'},
-    {q:'Co jest Twoje, ale inni używają częściej niż Ty?', a:'imię'}
+  {q:"Co zawsze rośnie, ale nigdy nie spada?", a:"wiek"},
+  {q:"Co ma klucze, ale nie otwiera drzwi?", a:"fortepian"},
+  {q:"Co można złamać, ale nie można dotknąć?", a:"obietnica"},
+  {q:"Co ma wiele twarzy, ale nie ma oczu?", a:"moneta"},
+  {q:"Co jest Twoje, a inni używają częściej niż Ty?", a:"imię"}
 ];
-let currentRiddle = 0;
 
 function losujZagadke(){
-    currentRiddle = Math.floor(Math.random()*zagadki.length);
-    document.getElementById('riddleText').innerText = zagadki[currentRiddle].q;
-    document.getElementById('riddleAnswer').value = '';
-    document.getElementById('riddleResult').innerText = '';
+  let los = Math.floor(Math.random()*zagadki.length);
+  document.getElementById('riddleText').innerText = zagadki[los].q;
+  document.getElementById('riddleAnswer').value = "";
+  document.getElementById('riddleResult').innerText = "";
+  document.getElementById('riddleText').setAttribute('data-answer', zagadki[los].a);
 }
 
 function sprawdzZagadke(){
-    let ans = document.getElementById('riddleAnswer').value.toLowerCase().trim();
-    if(ans === zagadki[currentRiddle].a){
-        addPoints(10);
-        document.getElementById('riddleResult').innerText = 'Dobrze! +10 pkt';
-    } else{
-        document.getElementById('riddleResult').innerText = 'Źle!';
-    }
+  let answer = document.getElementById('riddleAnswer').value.toLowerCase().trim();
+  let correct = document.getElementById('riddleText').getAttribute('data-answer');
+  if(answer === correct){
+    document.getElementById('riddleResult').innerText = "✅ Poprawnie!";
+    addPoints(10);
+  } else {
+    document.getElementById('riddleResult').innerText = "❌ Błędnie!";
+  }
 }
 
-// ===================== KLIKACZE =====================
-function klik(){
-    clicks++;
-    addPoints(1);
-    document.getElementById('clicks').innerText = clicks;
-}
+function klik(){ clicks++; addPoints(1); document.getElementById('clicks').innerText = clicks; }
+function losuj(){ let num=Math.floor(Math.random()*100)+1; document.getElementById('number').innerText=num; addPoints(num); }
 
-// ===================== LOSOWA LICZBA =====================
-function losuj(){
-    let n = Math.floor(Math.random()*100)+1;
-    document.getElementById('number').innerText = n;
-    addPoints(5);
-}
-
-// ===================== SZYBKIE KLIKI =====================
-document.getElementById('fastClickBtn').addEventListener('click', ()=>{
-    fastClicks++;
-    document.getElementById('fastClicks').innerText = fastClicks;
-    addPoints(2);
+let fastClickTarget = 5;
+document.getElementById('fastClickBtn').addEventListener('click', function(){
+  fastClicks++; addPoints(5); document.getElementById('fastClicks').innerText = fastClicks;
+  if(fastClicks>=fastClickTarget){ alert("Brawo! Zaliczyłeś szybkiego klikacza!"); fastClicks=0; document.getElementById('fastClicks').innerText=fastClicks; }
 });
 
-// ===================== LOSOWA KARTA =====================
-function losujKarte(){
-    const karty = ['♠','♥','♦','♣'];
-    let karta = karty[Math.floor(Math.random()*karty.length)];
-    document.getElementById('card').innerText = karta;
-    addPoints(3);
+function losujKarte(){ 
+  const karty=["♠A","♠2","♠3","♠4","♠5","♠6","♠7","♠8","♠9","♠10","♠J","♠Q","♠K",
+  "♥A","♥2","♥3","♥4","♥5","♥6","♥7","♥8","♥9","♥10","♥J","♥Q","♥K",
+  "♦A","♦2","♦3","♦4","♦5","♦6","♦7","♦8","♦9","♦10","♦J","♦Q","♦K",
+  "♣A","♣2","♣3","♣4","♣5","♣6","♣7","♣8","♣9","♣10","♣J","♣Q","♣K"];
+  let los=karty[Math.floor(Math.random()*karty.length)];
+  document.getElementById('card').innerText=los;
+  addPoints(10);
 }
 
-// ===================== ODGADNIJ LICZBĘ =====================
 function sprawdzLiczbe(){
-    let guess = parseInt(document.getElementById('guessNumber').value);
-    let rand = Math.floor(Math.random()*10)+1;
-    if(guess===rand){
-        addPoints(15);
-        document.getElementById('guessResult').innerText = 'Dobrze! +15 pkt';
-    } else{
-        document.getElementById('guessResult').innerText = 'Źle! Wylosowana: '+rand;
-    }
+  let guess=parseInt(document.getElementById('guessNumber').value);
+  let correct=Math.floor(Math.random()*10)+1;
+  if(guess===correct){ document.getElementById('guessResult').innerText="✅ Trafiłeś!"; addPoints(20); }
+  else { document.getElementById('guessResult').innerText=`❌ Pomyłka! Prawidłowa: ${correct}`; }
 }
 
-// ===================== REBIRTH =====================
-function rebirth(){
-    if(totalPoints >= 100000000){
-        totalPoints = Math.floor(totalPoints/2);
-        rebirthCount++;
-        document.getElementById('rebirthCount').innerText = rebirthCount;
-        saveData();
-        updateRanking();
-        alert('Rebirth! ×2 punkty w przyszłości');
-    } else{
-        alert('Potrzebujesz 100.000.000 pkt do Rebirth');
-    }
-}
-
-// ===================== BONUS ZA REKLAMĘ =====================
-function bonusAdWatched(){
-    addPoints(50); // przykładowy bonus
-    alert('Bonus +50 pkt za obejrzenie reklamy!');
-}
-
-// ===================== PUNKTY I LOCALSTORAGE =====================
+// ====== Punkty i rebirth ======
 function addPoints(p){
-    totalPoints += p;
-    document.getElementById('totalPoints').innerText = totalPoints;
+  totalPoints+=p;
+  document.getElementById('totalPoints').innerText=totalPoints;
+  saveData();
+  updateRanking();
+}
+
+function rebirth(){
+  if(totalPoints>=100000){
+    totalPoints=0;
+    rebirthCount++;
+    addPoints(rebirthCount*2);
+    document.getElementById('rebirthCount').innerText=rebirthCount;
     saveData();
-    updateRanking();
+    alert(`Rebirth ×${rebirthCount}!`);
+  } else { alert("Nie masz wystarczająco punktów (100 000)!"); }
 }
 
-function saveData(){
-    localStorage.setItem(currentNick+'_points', totalPoints);
-    localStorage.setItem(currentNick+'_rebirths', rebirthCount);
-}
-
-// ===================== RANKING LOKALNY =====================
+// ====== Ranking ======
+let rankingData = JSON.parse(localStorage.getItem("rankingData") || "[]");
 function updateRanking(){
-    // sprawdzamy czy już w rankingu
-    let exists = ranking.findIndex(x=>x.nick===currentNick);
-    if(exists>=0) ranking[exists].points = totalPoints;
-    else ranking.push({nick: currentNick, points: totalPoints});
-
-    // sortowanie malejąco i limit TOP100
-    ranking.sort((a,b)=>b.points - a.points);
-    if(ranking.length>100) ranking = ranking.slice(0,100);
-    localStorage.setItem('ranking', JSON.stringify(ranking));
-
-    // wyświetlenie
-    const ol = document.getElementById('ranking');
-    ol.innerHTML = '';
-    ranking.forEach(r=>{ ol.innerHTML += `<li>${r.nick}: ${r.points} pkt</li>` });
+  let exists = rankingData.findIndex(x=>x.nick===currentNick);
+  if(exists>=0){ rankingData[exists].points = totalPoints; }
+  else{ rankingData.push({nick:currentNick, points:totalPoints}); }
+  rankingData.sort((a,b)=>b.points-a.points);
+  localStorage.setItem("rankingData", JSON.stringify(rankingData));
+  let top = rankingData.slice(0,100);
+  let html = "";
+  top.forEach(p=>{ html+=`<li>${p.nick} - ${p.points} pkt</li>`; });
+  document.getElementById('ranking').innerHTML=html;
 }
+
+// ====== Bonus reklama ======
+function bonusAdWatched(){ addPoints(50); alert("Bonus +50 pkt za obejrzenie reklamy!"); }
+
+// ====== Zapis/odczyt danych ======
+function saveData(){
+  localStorage.setItem(currentNick, JSON.stringify({totalPoints, clicks, fastClicks, rebirthCount}));
+}
+function updateDisplay(){
+  document.getElementById('totalPoints').innerText=totalPoints;
+  document.getElementById('clicks').innerText=clicks;
+  document.getElementById('fastClicks').innerText=fastClicks;
+  document.getElementById('rebirthCount').innerText=rebirthCount;
+  updateRanking();
+}
+</script>
