@@ -5,22 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PlayWatch – Gry i Ranking</title>
 <style>
-body { font-family: Arial; margin: 0; padding: 0; background:#f0f0f0;}
-header, footer { background:#333; color:#fff; padding:10px; text-align:center;}
-section { padding:10px; margin:10px; background:#fff; border-radius:5px;}
-input, button { padding:5px; margin:5px;}
-#gameScreen { display:none; }
+  body { font-family: Arial, sans-serif; margin:0; padding:0; background:#121212; color:#fff; }
+  header, footer { background:#1e1e1e; padding:15px; text-align:center; }
+  section { background:#1e1e1e; margin:10px; padding:15px; border-radius:8px; }
+  input, button { padding:8px; margin:5px; border-radius:5px; border:none; }
+  button { background:#6200ee; color:#fff; cursor:pointer; }
+  button:hover { background:#3700b3; }
+  #gameScreen { display:none; }
+  #ranking li { margin:3px 0; }
 </style>
 </head>
 <body>
 
+<!-- Ekran logowania -->
 <div id="loginScreen">
-  <h1>🎮 Witaj!</h1>
+  <h1>🎮 Witaj w PlayWatch</h1>
   <p>Podaj nick:</p>
   <input type="text" id="playerNick" placeholder="Twój nick">
   <button onclick="startGame()">Zaczynam!</button>
 </div>
 
+<!-- Ekran gry -->
 <div id="gameScreen">
   <header>
     <h1>PlayWatch</h1>
@@ -37,9 +42,13 @@ input, button { padding:5px; margin:5px;}
   </section>
 
   <section>
-    <h2>🏆 Ranking lokalny</h2>
+    <h2>🏆 Ranking lokalny (TOP 100)</h2>
     <ol id="ranking"></ol>
   </section>
+
+  <footer>
+    <p>&copy; 2026 PlayWatch</p>
+  </footer>
 </div>
 
 <script>
@@ -49,15 +58,17 @@ let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
 const riddles = [
   {q:'Co zawsze rośnie ale nigdy nie spada?', a:'wiek'},
   {q:'Co ma klucze ale nie może otworzyć drzwi?', a:'fortepian'},
+  {q:'Co można złamać ale nie można dotknąć?', a:'obietnica'},
+  {q:'Co ma wiele twarzy ale nie ma oczu?', a:'zegarek'},
+  {q:'Co jest Twoje, a inni używają częściej niż Ty?', a:'imię'},
 ];
 let currentRiddle = 0;
 
 function startGame(){
   nick = document.getElementById('playerNick').value.trim();
   if(!nick){ alert('Podaj nick!'); return; }
-  
-  points = parseInt(localStorage.getItem(nick+'_points')) || 0;
 
+  points = parseInt(localStorage.getItem(nick+'_points')) || 0;
   document.getElementById('displayNick').innerText = nick;
   document.getElementById('totalPoints').innerText = points;
 
@@ -77,14 +88,14 @@ function newRiddle(){
 
 function checkRiddle(){
   const answer = document.getElementById('riddleAnswer').value.toLowerCase().trim();
-  if(answer===riddles[currentRiddle].a){
+  if(answer === riddles[currentRiddle].a){
     points += 10;
-    alert('+10 pkt');
+    document.getElementById('riddleResult').innerText = '+10 punktów!';
     document.getElementById('totalPoints').innerText = points;
     saveData();
     updateRanking();
   } else {
-    alert('Źle!');
+    document.getElementById('riddleResult').innerText = 'Źle!';
   }
 }
 
@@ -96,7 +107,7 @@ function updateRanking(){
   let exists = ranking.findIndex(x=>x.nick===nick);
   if(exists>=0) ranking[exists].points = points;
   else ranking.push({nick:nick, points:points});
-  
+
   ranking.sort((a,b)=>b.points-a.points);
   if(ranking.length>100) ranking = ranking.slice(0,100);
   localStorage.setItem('ranking', JSON.stringify(ranking));
