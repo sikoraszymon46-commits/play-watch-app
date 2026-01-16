@@ -52,3 +52,32 @@ footer a {
 @media screen and (max-width:600px){
   input[type=text], input[type=number] { width:100%; }
   }
+.start-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e1e2f, #121212);
+  color: white;
+  text-align: center;
+}
+
+.start-screen input {
+  padding: 12px;
+  font-size: 16px;
+  margin: 10px 0;
+  width: 220px;
+  border-radius: 6px;
+  border: none;
+}
+
+.start-screen button {
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #00c853;
+  color: white;
+}
