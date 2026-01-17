@@ -3,31 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlayWatch – Mega Gry</title>
-
-<!-- AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836" crossorigin="anonymous"></script>
+<title>PlayWatch – Mega Gry i Zagadki</title>
 
 <style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+body{
+  font-family:Arial, sans-serif;
+  background:linear-gradient(to right,#1e3c72,#2a5298);
   color:#fff;
+  margin:0;
 }
-header, footer {
-  background:#0a1525;
-  padding:15px;
+header,footer{
+  background:#0d1b33;
   text-align:center;
+  padding:20px;
 }
-section {
-  max-width:800px;
+section{
   margin:20px auto;
+  max-width:800px;
   background:rgba(0,0,0,0.6);
   padding:15px;
-  border-radius:12px;
+  border-radius:10px;
 }
-button {
+button{
   padding:10px 15px;
   border:none;
   border-radius:6px;
@@ -35,31 +32,35 @@ button {
   font-weight:bold;
   cursor:pointer;
 }
-input {
+input{
   padding:8px;
   border-radius:5px;
   border:none;
 }
-#loginScreen {
+#loginScreen{
   height:100vh;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
 }
-#gameScreen { display:none; }
+#gameScreen{display:none;}
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div id="loginScreen">
   <h1>🎮 PlayWatch</h1>
-  <input id="nickInput" placeholder="Twój nick">
-  <button onclick="login()">Start</button>
+  <p>Podaj nick:</p>
+  <input id="nickInput" placeholder="Nick">
+  <button onclick="login()">Zaczynam</button>
 </div>
 
+<!-- GRA -->
 <div id="gameScreen">
+
 <header>
   <h2>Nick: <span id="nick"></span></h2>
   <h3>Punkty: <span id="points">0</span></h3>
@@ -69,130 +70,95 @@ input {
 
 <section>
   <h2>🖱 Klikacz</h2>
-  <button onclick="addClick()">Kliknij</button>
+  <button onclick="clickPoint()">Kliknij (+pkt)</button>
 </section>
 
 <section>
   <h2>🔄 Rebirth</h2>
   <p>Koszt: <span id="rebirthCost">1000</span> pkt</p>
-  <button onclick="doRebirth()">Rebirth</button>
-</section>
-
-<section>
-  <h2>🏆 Ranking (publiczny)</h2>
-  <ol id="ranking"></ol>
+  <button onclick="rebirth()">Rebirth</button>
 </section>
 
 <footer>
 Kontakt: <b>sikoraszymon45@gmail.com</b>
 </footer>
+
 </div>
 
 <script>
-// ====== DANE ======
-let nick = localStorage.getItem("nick") || "";
-let points = Number(localStorage.getItem("points")) || 0;
-let rebirths = Number(localStorage.getItem("rebirths")) || 0;
+let nick = "";
+let points = 0;
+let rebirths = 0;
 
-// ====== LOGOWANIE ======
+/* ===== LOGIN ===== */
 function login(){
-  nick = document.getElementById("nickInput").value.trim();
-  if(!nick) return alert("Podaj nick!");
-  localStorage.setItem("nick", nick);
-  startGame();
+  const n = document.getElementById("nickInput").value.trim();
+  if(!n){ alert("Podaj nick"); return; }
+  nick = n;
+  save();
+  showGame();
 }
 
-function startGame(){
+function showGame(){
   document.getElementById("loginScreen").style.display="none";
   document.getElementById("gameScreen").style.display="block";
   document.getElementById("nick").innerText = nick;
   updateUI();
-  save();
-  loadRanking();
 }
 
-// ====== PUNKTY ======
+/* ===== LOGIKA ===== */
 function multiplier(){
   return 1 + rebirths;
 }
 
-function addClick(){
-  points += 1 * multiplier();
-  updateUI();
+function clickPoint(){
+  points += multiplier();
   save();
-  saveToRanking();
+  updateUI();
 }
 
-// ====== REBIRTH ======
-function rebirthCost(){
-  if(rebirths === 0) return 1000;
-  return Math.pow(10, rebirths + 2);
+function rebirthPrice(){
+  const prices = [1000,1000000,10000000,100000000,1000000000,10000000000];
+  return prices[rebirths] || prices[prices.length-1]*10**(rebirths-prices.length+1);
 }
 
-function doRebirth(){
-  let cost = rebirthCost();
-  if(points < cost) return alert("Za mało punktów!");
+function rebirth(){
+  const cost = rebirthPrice();
+  if(points < cost){
+    alert("Za mało punktów");
+    return;
+  }
   points -= cost;
   rebirths++;
-  updateUI();
   save();
-  saveToRanking();
+  updateUI();
 }
 
-// ====== UI ======
+/* ===== UI ===== */
 function updateUI(){
   document.getElementById("points").innerText = points;
   document.getElementById("rebirths").innerText = rebirths;
   document.getElementById("multiplier").innerText = multiplier();
-  document.getElementById("rebirthCost").innerText = rebirthCost().toLocaleString();
+  document.getElementById("rebirthCost").innerText = rebirthPrice().toLocaleString();
 }
 
-// ====== ZAPIS ======
+/* ===== ZAPIS ===== */
 function save(){
-  localStorage.setItem("points", points);
-  localStorage.setItem("rebirths", rebirths);
+  localStorage.setItem("pw_nick", nick);
+  localStorage.setItem("pw_points", points);
+  localStorage.setItem("pw_rebirths", rebirths);
 }
 
-// ====== AUTO START ======
-if(nick) startGame();
-
-// ================= FIREBASE (PUBLIC RANKING) =================
-// 🔴 TU MUSISZ WKLEIĆ SWOJĄ KONFIGURACJĘ Z FIREBASE 🔴
-
-/*
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-const firebaseConfig = {
-  apiKey: "XXXX",
-  authDomain: "XXXX",
-  databaseURL: "XXXX",
-  projectId: "XXXX",
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-function saveToRanking(){
-  db.ref("ranking/"+nick).set({
-    nick:nick,
-    points:points,
-    rebirths:rebirths
-  });
-}
-
-function loadRanking(){
-  db.ref("ranking").on("value", snap=>{
-    let data = snap.val();
-    if(!data) return;
-    let arr = Object.values(data).sort((a,b)=>b.points-a.points);
-    let html="";
-    arr.slice(0,100).forEach(p=>{
-      html+=`<li>${p.nick} - ${p.points}</li>`;
-    });
-    document.getElementById("ranking").innerHTML=html;
-  });
-}
-*/
+/* ===== WCZYTANIE ===== */
+document.addEventListener("DOMContentLoaded",()=>{
+  const n = localStorage.getItem("pw_nick");
+  if(n){
+    nick = n;
+    points = Number(localStorage.getItem("pw_points")) || 0;
+    rebirths = Number(localStorage.getItem("pw_rebirths")) || 0;
+    showGame();
+  }
+});
 </script>
 
 </body>
