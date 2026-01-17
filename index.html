@@ -5,78 +5,85 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PlayWatch – Mega Gry i Zagadki</title>
 
+<meta name="google-site-verification" content="QfLBnMd0__vsX3u2wqf8pPBeqENz4B0Pn5aK794mkqQ" />
+
+<script data-ad-client="ca-pub-9599322707323836" async
+src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 <style>
-body{
-  font-family:Arial, sans-serif;
-  background:linear-gradient(to right,#1e3c72,#2a5298);
-  color:#fff;
-  margin:0;
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  color: #fff;
+  margin: 0;
 }
-header,footer{
-  background:#0d1b33;
-  text-align:center;
-  padding:20px;
+header, footer {
+  text-align: center;
+  padding: 20px;
+  background: #0d1b33;
 }
-section{
-  margin:20px auto;
-  max-width:800px;
-  background:rgba(0,0,0,0.6);
-  padding:15px;
-  border-radius:10px;
+section {
+  margin: 20px auto;
+  padding: 15px;
+  max-width: 800px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
 }
-button{
-  padding:10px 15px;
-  border:none;
-  border-radius:6px;
-  background:#ff9800;
-  font-weight:bold;
-  cursor:pointer;
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  background: #ff9800;
+  font-weight: bold;
+  cursor: pointer;
 }
-input{
-  padding:8px;
-  border-radius:5px;
-  border:none;
+input {
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
 }
-#loginScreen{
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+#loginScreen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-#gameScreen{display:none;}
+#gameScreen { display: none; }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <h1>🎮 PlayWatch</h1>
-  <p>Podaj nick:</p>
-  <input id="nickInput" placeholder="Nick">
-  <button onclick="login()">Zaczynam</button>
+  <input id="playerNick" placeholder="Twój nick">
+  <button onclick="startGame()">Zaczynam</button>
 </div>
 
-<!-- GRA -->
 <div id="gameScreen">
 
 <header>
-  <h2>Nick: <span id="nick"></span></h2>
-  <h3>Punkty: <span id="points">0</span></h3>
-  <h4>Rebirthy: <span id="rebirths">0</span></h4>
-  <h4>Mnożnik: ×<span id="multiplier">1</span></h4>
+  <h2>Nick: <span id="displayNick"></span></h2>
+  <p>Punkty: <span id="totalPoints">0</span></p>
+  <p>Rebirthy: <span id="rebirthCount">0</span></p>
+  <p>Mnożnik: ×<span id="rebirthMultiplier">1</span></p>
 </header>
 
 <section>
-  <h2>🖱 Klikacz</h2>
-  <button onclick="clickPoint()">Kliknij (+pkt)</button>
+  <button onclick="klik()">Kliknij (+1)</button>
 </section>
 
 <section>
-  <h2>🔄 Rebirth</h2>
+  <h3>🔄 Rebirth</h3>
   <p>Koszt: <span id="rebirthCost">1000</span> pkt</p>
   <button onclick="rebirth()">Rebirth</button>
+</section>
+
+<section>
+  <h3>🏆 Ranking TOP 100</h3>
+  <ol id="ranking"></ol>
 </section>
 
 <footer>
@@ -86,79 +93,90 @@ Kontakt: <b>sikoraszymon45@gmail.com</b>
 </div>
 
 <script>
-let nick = "";
-let points = 0;
-let rebirths = 0;
+/* ====== DANE ====== */
+let nick = localStorage.getItem("nick");
+let points = parseInt(localStorage.getItem("points")) || 0;
+let rebirths = parseInt(localStorage.getItem("rebirths")) || 0;
+let ranking = JSON.parse(localStorage.getItem("ranking")) || [];
 
-/* ===== LOGIN ===== */
-function login(){
-  const n = document.getElementById("nickInput").value.trim();
-  if(!n){ alert("Podaj nick"); return; }
+/* ====== FUNKCJE ====== */
+function getMultiplier() {
+  return Math.pow(2, rebirths);
+}
+
+function getRebirthCost() {
+  if (rebirths === 0) return 1000;
+  return Math.pow(10, rebirths) * 1000;
+}
+
+function save() {
+  localStorage.setItem("points", points);
+  localStorage.setItem("rebirths", rebirths);
+}
+
+/* ====== LOGIN ====== */
+function startGame() {
+  const n = document.getElementById("playerNick").value.trim();
+  if (!n) return alert("Podaj nick");
   nick = n;
-  save();
-  showGame();
+  localStorage.setItem("nick", nick);
+  initGame();
 }
 
-function showGame(){
-  document.getElementById("loginScreen").style.display="none";
-  document.getElementById("gameScreen").style.display="block";
-  document.getElementById("nick").innerText = nick;
+function initGame() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("gameScreen").style.display = "block";
+  document.getElementById("displayNick").innerText = nick;
   updateUI();
 }
 
-/* ===== LOGIKA ===== */
-function multiplier(){
-  return 1 + rebirths;
+/* ====== UI ====== */
+function updateUI() {
+  document.getElementById("totalPoints").innerText = points;
+  document.getElementById("rebirthCount").innerText = rebirths;
+  document.getElementById("rebirthMultiplier").innerText = getMultiplier();
+  document.getElementById("rebirthCost").innerText = getRebirthCost();
+  updateRanking();
 }
 
-function clickPoint(){
-  points += multiplier();
+/* ====== GRA ====== */
+function klik() {
+  points += 1 * getMultiplier();
   save();
   updateUI();
 }
 
-function rebirthPrice(){
-  const prices = [1000,1000000,10000000,100000000,1000000000,10000000000];
-  return prices[rebirths] || prices[prices.length-1]*10**(rebirths-prices.length+1);
-}
-
-function rebirth(){
-  const cost = rebirthPrice();
-  if(points < cost){
+/* ====== REBIRTH ====== */
+function rebirth() {
+  const cost = getRebirthCost();
+  if (points < cost) {
     alert("Za mało punktów");
     return;
   }
-  points -= cost;
+  points = 0;
   rebirths++;
   save();
   updateUI();
+  alert("Rebirth! Nowy mnożnik ×" + getMultiplier());
 }
 
-/* ===== UI ===== */
-function updateUI(){
-  document.getElementById("points").innerText = points;
-  document.getElementById("rebirths").innerText = rebirths;
-  document.getElementById("multiplier").innerText = multiplier();
-  document.getElementById("rebirthCost").innerText = rebirthPrice().toLocaleString();
+/* ====== RANKING ====== */
+function updateRanking() {
+  const i = ranking.findIndex(x => x.nick === nick);
+  if (i >= 0) ranking[i].points = points;
+  else ranking.push({nick, points});
+
+  ranking.sort((a,b)=>b.points-a.points);
+  ranking = ranking.slice(0,100);
+
+  document.getElementById("ranking").innerHTML =
+    ranking.map(r=>`<li>${r.nick} – ${r.points}</li>`).join("");
+
+  localStorage.setItem("ranking", JSON.stringify(ranking));
 }
 
-/* ===== ZAPIS ===== */
-function save(){
-  localStorage.setItem("pw_nick", nick);
-  localStorage.setItem("pw_points", points);
-  localStorage.setItem("pw_rebirths", rebirths);
-}
-
-/* ===== WCZYTANIE ===== */
-document.addEventListener("DOMContentLoaded",()=>{
-  const n = localStorage.getItem("pw_nick");
-  if(n){
-    nick = n;
-    points = Number(localStorage.getItem("pw_points")) || 0;
-    rebirths = Number(localStorage.getItem("pw_rebirths")) || 0;
-    showGame();
-  }
-});
+/* ====== AUTO START ====== */
+if (nick) initGame();
 </script>
 
 </body>
