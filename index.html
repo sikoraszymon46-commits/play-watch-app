@@ -4,39 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PlayWatch – Mega Gry i Zagadki</title>
-
-<!-- Stylizacja -->
 <style>
-body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 0; }
-header, footer { text-align: center; padding: 20px; background: #0d1b33; }
-section { margin: 20px auto; padding: 15px; max-width: 800px; background: rgba(0,0,0,0.6); border-radius: 10px; }
-button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; background: #ff9800; color: #000; font-weight: bold; }
-input { padding: 8px; border-radius: 5px; border: none; width: 150px; }
-#loginScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
-#gameScreen { display: none; }
-ol { padding-left: 20px; }
+body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin:0; padding:0;}
+header, footer { text-align:center; padding:20px; background:#0d1b33;}
+section { margin:20px auto; padding:15px; max-width:800px; background: rgba(0,0,0,0.6); border-radius:10px;}
+button { padding:10px 15px; margin:5px; cursor:pointer; border:none; border-radius:5px; background:#ff9800; color:#000; font-weight:bold;}
+input { padding:8px; border-radius:5px; border:none; width:150px;}
+#loginScreen { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh;}
+#gameScreen { display:none;}
+ol { padding-left:20px;}
 </style>
 </head>
 <body>
 
-<!-- Ekran logowania -->
 <div id="loginScreen">
-  <h1>🎮 Witaj w PlayWatch!</h1>
-  <p>Podaj swój nick, aby rozpocząć:</p>
-  <input type="text" id="playerNick" placeholder="Twój nick">
-  <button onclick="startGame()">Zaczynam!</button>
+<h1>🎮 Witaj w PlayWatch!</h1>
+<p>Podaj swój nick, aby rozpocząć:</p>
+<input type="text" id="playerNick" placeholder="Twój nick">
+<button onclick="startGame()">Zaczynam!</button>
 </div>
 
-<!-- Ekran gry -->
 <div id="gameScreen">
 <header>
-  <h1>🎮 PlayWatch</h1>
-  <p>Nick: <span id="displayNick"></span></p>
-  <p>Punkty: <span id="totalPoints">0</span></p>
-  <p>Rebirthy: <span id="rebirthCount">0</span></p>
+<h1>🎮 PlayWatch</h1>
+<p>Nick: <span id="displayNick"></span></p>
+<p>Punkty: <span id="totalPoints">0</span></p>
+<p>Rebirthy: <span id="rebirthCount">0</span></p>
 </header>
 
-<!-- Gry -->
 <section>
 <h2>🧩 Zagadki</h2>
 <p id="riddleText">Kliknij "Nowa zagadka"</p>
@@ -79,19 +74,16 @@ ol { padding-left: 20px; }
 <p id="guessResult"></p>
 </section>
 
-<!-- Rebirth -->
 <section>
 <h2>🔄 Rebirth</h2>
 <button onclick="rebirth()">Rebirth</button>
 </section>
 
-<!-- Ranking -->
 <section>
 <h2>🏆 Ranking TOP 100</h2>
 <ol id="ranking"></ol>
 </section>
 
-<!-- Bonus -->
 <section>
 <h2>💰 Bonus za reklamę</h2>
 <button onclick="bonusAdWatched()">Oglądałem reklamę</button>
@@ -100,15 +92,14 @@ ol { padding-left: 20px; }
 <footer>
 <a href="regulamin.html">Regulamin</a> |
 <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
-<a href="mailto:sikoraszymon45@gmail.com">Kontakt: sikoraszymon45@gmail.com</a>
+<a href="mailto:sikoraszymon45@gmail.com">Kontakt</a>
 </footer>
 
-<!-- Skrypty -->
+<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-// Konfiguracja Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA5cPX0gRrjInMdk7B_tf2Z8Fb3zb_RgWk",
   authDomain: "playwatchranking-6d8eb.firebaseapp.com",
@@ -119,18 +110,21 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+window.db = db; // dostęp globalny
+</script>
 
+<script>
 // ====== Zmienne gry ======
-let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
-let clicks = parseInt(localStorage.getItem('clicks')) || 0;
-let fastClicks = parseInt(localStorage.getItem('fastClicks')) || 0;
-let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
-let rebirthMultiplier = 1 + rebirthCount;
-let currentNick = localStorage.getItem('currentNick') || "";
-let rankingData = JSON.parse(localStorage.getItem('rankingData')) || [];
+window.totalPoints = parseInt(localStorage.getItem('totalPoints'))||0;
+window.clicks = parseInt(localStorage.getItem('clicks'))||0;
+window.fastClicks = parseInt(localStorage.getItem('fastClicks'))||0;
+window.rebirthCount = parseInt(localStorage.getItem('rebirthCount'))||0;
+window.rebirthMultiplier = 1 + window.rebirthCount;
+window.currentNick = localStorage.getItem('currentNick')||"";
+window.rankingData = JSON.parse(localStorage.getItem('rankingData'))||[];
 
 // ====== Gry ======
-const zagadki = [
+window.zagadki = [
   {q:"Co zawsze rośnie, ale nigdy nie spada?", a:"wiek"},
   {q:"Co ma klucze, ale nie otwiera drzwi?", a:"fortepian"},
   {q:"Co można złamać, ale nie można dotknąć?", a:"obietnica"},
@@ -138,97 +132,70 @@ const zagadki = [
   {q:"Co jest Twoje, a inni używają częściej niż Ty?", a:"imię"}
 ];
 
-// ====== Funkcje gry ======
-function startGame(){
-  let nick = document.getElementById('playerNick').value.trim();
-  if(!nick){ alert("Podaj nick!"); return; }
-  currentNick = nick;
-  localStorage.setItem('currentNick', currentNick);
-  document.getElementById('displayNick').innerText = currentNick;
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('gameScreen').style.display = 'block';
+// ====== Funkcje globalne ======
+window.startGame = function(){
+  let nick=document.getElementById('playerNick').value.trim();
+  if(!nick){alert("Podaj nick!"); return;}
+  window.currentNick=nick;
+  localStorage.setItem('currentNick',nick);
+  document.getElementById('displayNick').innerText=nick;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
   updateAllDisplays();
   losujZagadke();
-}
+};
 
-function updateAllDisplays(){
-  document.getElementById('totalPoints').innerText = totalPoints;
-  document.getElementById('clicks').innerText = clicks;
-  document.getElementById('fastClicks').innerText = fastClicks;
-  document.getElementById('rebirthCount').innerText = rebirthCount;
-  updateRanking();
-}
-
-function losujZagadke(){
-  let los = Math.floor(Math.random()*zagadki.length);
-  document.getElementById('riddleText').innerText = zagadki[los].q;
-  document.getElementById('riddleAnswer').value = "";
-  document.getElementById('riddleResult').innerText = "";
-  document.getElementById('riddleText').setAttribute('data-answer', zagadki[los].a);
-}
-
-function sprawdzZagadke(){
-  let answer = document.getElementById('riddleAnswer').value.toLowerCase().trim();
-  let correct = document.getElementById('riddleText').getAttribute('data-answer');
-  if(answer === correct){ addPoints(10); document.getElementById('riddleResult').innerText="✅ Poprawnie!"; }
-  else { document.getElementById('riddleResult').innerText="❌ Błędnie!"; }
-}
-
-function klik(){ clicks++; addPoints(1); document.getElementById('clicks').innerText=clicks; localStorage.setItem('clicks',clicks); }
-
-function losuj(){ let num=Math.floor(Math.random()*100)+1; document.getElementById('number').innerText=num; addPoints(num); }
-
-document.getElementById('fastClickBtn').addEventListener('click',()=>{
-  fastClicks++; addPoints(5); document.getElementById('fastClicks').innerText=fastClicks;
-  localStorage.setItem('fastClicks',fastClicks);
-  if(fastClicks>=5){ alert("Brawo! Zaliczyłeś szybkiego klikacza!"); fastClicks=0; document.getElementById('fastClicks').innerText=fastClicks; localStorage.setItem('fastClicks',fastClicks);}
-});
-
-function losujKarte(){ 
-  const karty = ["♠A","♠2","♠3","♠4","♠5","♠6","♠7","♠8","♠9","♠10","♠J","♠Q","♠K",
-                 "♥A","♥2","♥3","♥4","♥5","♥6","♥7","♥8","♥9","♥10","♥J","♥Q","♥K",
-                 "♦A","♦2","♦3","♦4","♦5","♦6","♦7","♦8","♦9","♦10","♦J","♦Q","♦K",
-                 "♣A","♣2","♣3","♣4","♣5","♣6","♣7","♣8","♣9","♣10","♣J","♣Q","♣K"];
-  document.getElementById('card').innerText=karty[Math.floor(Math.random()*karty.length)];
-  addPoints(10);
-}
-
-function sprawdzLiczbe(){ let guess=parseInt(document.getElementById('guessNumber').value); let correct=Math.floor(Math.random()*10)+1; if(guess===correct){ addPoints(20); document.getElementById('guessResult').innerText="✅ Trafiłeś!"; } else { document.getElementById('guessResult').innerText=`❌ Pomyłka! Prawidłowa: ${correct}`; } }
-
-function addPoints(p){
-  totalPoints += p * rebirthMultiplier;
+window.updateAllDisplays = function(){
   document.getElementById('totalPoints').innerText=totalPoints;
-  localStorage.setItem('totalPoints',totalPoints);
+  document.getElementById('clicks').innerText=clicks;
+  document.getElementById('fastClicks').innerText=fastClicks;
+  document.getElementById('rebirthCount').innerText=rebirthCount;
   updateRanking();
-}
+};
 
-function rebirth(){
+window.losujZagadke = function(){
+  let los=Math.floor(Math.random()*zagadki.length);
+  document.getElementById('riddleText').innerText=zagadki[los].q;
+  document.getElementById('riddleAnswer').value="";
+  document.getElementById('riddleResult').innerText="";
+  document.getElementById('riddleText').setAttribute('data-answer',zagadki[los].a);
+};
+
+window.sprawdzZagadke=function(){
+  let answer=document.getElementById('riddleAnswer').value.toLowerCase().trim();
+  let correct=document.getElementById('riddleText').getAttribute('data-answer');
+  if(answer===correct){ addPoints(10); document.getElementById('riddleResult').innerText="✅ Poprawnie!"; }
+  else { document.getElementById('riddleResult').innerText="❌ Błędnie!"; }
+};
+
+window.klik=function(){ clicks++; addPoints(1); document.getElementById('clicks').innerText=clicks; localStorage.setItem('clicks',clicks); };
+window.losuj=function(){ let num=Math.floor(Math.random()*100)+1; document.getElementById('number').innerText=num; addPoints(num); };
+window.losujKarte=function(){ const karty=["♠A","♠2","♠3","♠4","♠5","♠6","♠7","♠8","♠9","♠10","♠J","♠Q","♠K","♥A","♥2","♥3","♥4","♥5","♥6","♥7","♥8","♥9","♥10","♥J","♥Q","♥K","♦A","♦2","♦3","♦4","♦5","♦6","♦7","♦8","♦9","♦10","♦J","♦Q","♦K","♣A","♣2","♣3","♣4","♣5","♣6","♣7","♣8","♣9","♣10","♣J","♣Q","♣K"]; document.getElementById('card').innerText=karty[Math.floor(Math.random()*karty.length)]; addPoints(10);};
+window.sprawdzLiczbe=function(){ let guess=parseInt(document.getElementById('guessNumber').value); let correct=Math.floor(Math.random()*10)+1; if(guess===correct){ addPoints(20); document.getElementById('guessResult').innerText="✅ Trafiłeś!"; } else { document.getElementById('guessResult').innerText=`❌ Pomyłka! Prawidłowa: ${correct}`; }};
+
+window.addPoints=function(p){ totalPoints += p*rebirthMultiplier; document.getElementById('totalPoints').innerText=totalPoints; localStorage.setItem('totalPoints',totalPoints); updateRanking();};
+
+window.rebirth=function(){ 
   const rebirthCosts=[1000,1000000,10000000,100000000,1000000000];
-  let cost = rebirthCosts[rebirthCount] || 1000000000;
-  if(totalPoints>=cost){ 
-    totalPoints=0; 
-    rebirthCount++; 
-    rebirthMultiplier = 1 + rebirthCount;
-    document.getElementById('rebirthCount').innerText=rebirthCount; 
+  let cost=rebirthCosts[rebirthCount]||1000000000;
+  if(totalPoints>=cost){ totalPoints=0; rebirthCount++; rebirthMultiplier=1+rebirthCount;
+    document.getElementById('rebirthCount').innerText=rebirthCount;
     document.getElementById('totalPoints').innerText=totalPoints;
     localStorage.setItem('totalPoints',totalPoints);
     localStorage.setItem('rebirthCount',rebirthCount);
-    alert(`Rebirth! Mnożnik ×${rebirthMultiplier} aktywny!`); 
+    alert(`Rebirth! Mnożnik ×${rebirthMultiplier} aktywny!`);
   } else { alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}`); }
-}
+};
 
-function updateRanking(){
+window.updateRanking=function(){
   let exists = rankingData.findIndex(x=>x.nick===currentNick);
-  if(exists>=0){ rankingData[exists].points=totalPoints; } 
-  else { rankingData.push({nick:currentNick, points:totalPoints}); }
+  if(exists>=0){ rankingData[exists].points=totalPoints; } else { rankingData.push({nick:currentNick, points:totalPoints}); }
   rankingData.sort((a,b)=>b.points-a.points);
   document.getElementById('ranking').innerHTML=rankingData.slice(0,100).map(p=>`<li>${p.nick} - ${p.points} pkt</li>`).join('');
   localStorage.setItem('rankingData',JSON.stringify(rankingData));
-  // Tutaj możesz dodać Firestore do rankingu online
-  // await addDoc(collection(db,'ranking'), {nick:currentNick, points:totalPoints});
-}
+};
 
-function bonusAdWatched(){ addPoints(50); alert("Bonus +50 pkt!"); }
+window.bonusAdWatched=function(){ addPoints(50); alert("Bonus +50 pkt!");};
 
 // Auto-logowanie
 if(currentNick!==""){ 
@@ -238,6 +205,12 @@ if(currentNick!==""){
   updateAllDisplays();
   losujZagadke();
 }
+
+// Szybkie kliknięcia
+document.getElementById('fastClickBtn').addEventListener('click',function(){ 
+  fastClicks++; addPoints(5); document.getElementById('fastClicks').innerText=fastClicks; localStorage.setItem('fastClicks',fastClicks);
+  if(fastClicks>=5){ alert("Brawo! Zaliczyłeś szybkiego klikacza!"); fastClicks=0; document.getElementById('fastClicks').innerText=fastClicks; localStorage.setItem('fastClicks',fastClicks);}
+});
 </script>
 
 </body>
