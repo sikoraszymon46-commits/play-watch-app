@@ -23,7 +23,7 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
   <h1>🎮 Witaj w PlayWatch!</h1>
   <p>Podaj swój nick, aby rozpocząć:</p>
   <input type="text" id="playerNick" placeholder="Twój nick">
-  <button onclick="startGame()">Zaczynam!</button>
+  <button id="startBtn">Zaczynam!</button>
 </div>
 
 <!-- Ekran gry -->
@@ -39,13 +39,13 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 <section>
 <h2>🖱️ Klikacz</h2>
 <p>Kliknięcia: <span id="clicks">0</span></p>
-<button onclick="klik()">Kliknij mnie</button>
+<button id="clickBtn">Kliknij mnie</button>
 </section>
 
 <section>
 <h2>🎲 Losowa liczba</h2>
 <p>Liczba: <span id="number">?</span></p>
-<button onclick="losuj()">Losuj 1–100</button>
+<button id="randomBtn">Losuj 1–100</button>
 </section>
 
 <section>
@@ -58,27 +58,27 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 <section>
 <h2>🎴 Losowa karta</h2>
 <p>Karta: <span id="card">?</span></p>
-<button onclick="losujKarte()">Losuj kartę</button>
+<button id="cardBtn">Losuj kartę</button>
 </section>
 
 <section>
 <h2>🎯 Odgadnij liczbę</h2>
 <p>Wpisz liczbę 1–10:</p>
 <input type="number" id="guessNumber" min="1" max="10">
-<button onclick="sprawdzLiczbe()">Sprawdź</button>
+<button id="guessBtn">Sprawdź</button>
 <p id="guessResult"></p>
 </section>
 
 <!-- Rebirth -->
 <section>
 <h2>🔄 Rebirth</h2>
-<button onclick="rebirth()">Rebirth ×2</button>
+<button id="rebirthBtn">Rebirth ×2</button>
 </section>
 
 <!-- Bonus za reklamę -->
 <section>
 <h2>💰 Bonus za reklamę</h2>
-<button onclick="bonusAdWatched()">Oglądałem reklamę</button>
+<button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
 <footer>
@@ -87,7 +87,7 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 Kontakt: <strong>sikoraszymon45@gmail.com</strong>
 </footer>
 
-<!-- Kod gry -->
+<!-- LOGIKA GRY -->
 <script>
 let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
 let clicks = parseInt(localStorage.getItem('clicks')) || 0;
@@ -96,8 +96,8 @@ let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
 let rebirthMultiplier = rebirthCount + 1;
 let currentNick = localStorage.getItem('currentNick') || "";
 
-// Logowanie
-function startGame(){
+// START GRY
+document.getElementById('startBtn').addEventListener('click', function(){
   let nick = document.getElementById('playerNick').value.trim();
   if(!nick){ alert("Podaj nick!"); return; }
   currentNick = nick;
@@ -106,9 +106,9 @@ function startGame(){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('gameScreen').style.display = 'block';
   updateAllDisplays();
-}
+});
 
-// Aktualizacja widoku
+// FUNKCJE
 function updateAllDisplays(){
   document.getElementById('totalPoints').innerText = totalPoints;
   document.getElementById('clicks').innerText = clicks;
@@ -116,24 +116,21 @@ function updateAllDisplays(){
   document.getElementById('rebirthCount').innerText = rebirthCount;
 }
 
-// Gry
-function klik(){
-  clicks++;
-  addPoints(1);
+document.getElementById('clickBtn').addEventListener('click', function(){
+  clicks++; addPoints(1);
   document.getElementById('clicks').innerText = clicks;
   localStorage.setItem('clicks', clicks);
-}
+});
 
-function losuj(){
+document.getElementById('randomBtn').addEventListener('click', function(){
   let num = Math.floor(Math.random()*100)+1;
   document.getElementById('number').innerText = num;
   addPoints(num);
-}
+});
 
 let fastClickTarget = 5;
 document.getElementById('fastClickBtn').addEventListener('click', function(){
-  fastClicks++;
-  addPoints(5);
+  fastClicks++; addPoints(5);
   document.getElementById('fastClicks').innerText = fastClicks;
   localStorage.setItem('fastClicks', fastClicks);
   if(fastClicks >= fastClickTarget){
@@ -144,7 +141,7 @@ document.getElementById('fastClickBtn').addEventListener('click', function(){
   }
 });
 
-function losujKarte(){
+document.getElementById('cardBtn').addEventListener('click', function(){
   const karty = ["♠A","♠2","♠3","♠4","♠5","♠6","♠7","♠8","♠9","♠10","♠J","♠Q","♠K",
                  "♥A","♥2","♥3","♥4","♥5","♥6","♥7","♥8","♥9","♥10","♥J","♥Q","♥K",
                  "♦A","♦2","♦3","♦4","♦5","♦6","♦7","♦8","♦9","♦10","♦J","♦Q","♦K",
@@ -152,9 +149,9 @@ function losujKarte(){
   let los = karty[Math.floor(Math.random()*karty.length)];
   document.getElementById('card').innerText = los;
   addPoints(10);
-}
+});
 
-function sprawdzLiczbe(){
+document.getElementById('guessBtn').addEventListener('click', function(){
   let guess = parseInt(document.getElementById('guessNumber').value);
   let correct = Math.floor(Math.random()*10)+1;
   if(guess === correct){
@@ -163,36 +160,32 @@ function sprawdzLiczbe(){
   } else {
     document.getElementById('guessResult').innerText = `❌ Pomyłka! Prawidłowa: ${correct}`;
   }
-}
+});
 
-// Punkty i rebirth
-function addPoints(p){
-  totalPoints += p * rebirthMultiplier;
-  document.getElementById('totalPoints').innerText = totalPoints;
-  localStorage.setItem('totalPoints', totalPoints);
-}
-
-function rebirth(){
-  let cost = 1000 * Math.pow(10, rebirthCount); // Przykład rosnącego kosztu
+document.getElementById('rebirthBtn').addEventListener('click', function(){
+  let cost = 1000 * Math.pow(10, rebirthCount);
   if(totalPoints >= cost){
     totalPoints = 0;
     rebirthCount++;
     rebirthMultiplier = rebirthCount + 1;
-    document.getElementById('rebirthCount').innerText = rebirthCount;
-    document.getElementById('totalPoints').innerText = totalPoints;
+    updateAllDisplays();
     localStorage.setItem('totalPoints', totalPoints);
     localStorage.setItem('rebirthCount', rebirthCount);
     alert(`Rebirth ×${rebirthMultiplier}! Wszystkie punkty są teraz mnożone.`);
   } else {
     alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);
   }
-}
+});
 
-// Bonus za reklamę
-function bonusAdWatched(){
-  let bonus = 50;
-  addPoints(bonus);
-  alert(`Bonus +${bonus} pkt za obejrzenie reklamy!`);
+document.getElementById('bonusBtn').addEventListener('click', function(){
+  addPoints(50);
+  alert("Bonus +50 pkt za obejrzenie reklamy!");
+});
+
+function addPoints(p){
+  totalPoints += p * rebirthMultiplier;
+  document.getElementById('totalPoints').innerText = totalPoints;
+  localStorage.setItem('totalPoints', totalPoints);
 }
 
 // Auto-logowanie
@@ -202,56 +195,45 @@ if(currentNick!==""){
   document.getElementById('displayNick').innerText = currentNick;
   updateAllDisplays();
 }
-  <script type="module">
-  // IMPORTY FIREBASE (CDN)
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    getDocs
-  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-
-  // KONFIGURACJA FIREBASE (TWOJA)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCz0_955oFzkQiAyiF9HU5IbfRCoVoVjFc",
-    authDomain: "playwatch-admin.firebaseapp.com",
-    projectId: "playwatch-admin",
-    storageBucket: "playwatch-admin.firebasestorage.app",
-    messagingSenderId: "1083558018258",
-    appId: "1:1083558018258:web:2e7abe903e07d3a13bc10b"
-  };
-
-  // INICJALIZACJA FIREBASE
-  const app = initializeApp(firebaseConfig);
-
-  // INICJALIZACJA FIRESTORE (BAZA DANYCH)
-  const db = getFirestore(app);
-
-  // FUNKCJA TESTOWA – DODANIE GRACZA
-  async function dodajTestowegoGracza() {
-    await addDoc(collection(db, "players"), {
-      nick: "TestPlayer",
-      punkty: 1000,
-      rebirth: 0,
-      createdAt: new Date()
-    });
-    console.log("✅ Gracz dodany");
-  }
-
-  // FUNKCJA TESTOWA – POBRANIE GRACZY
-  async function pobierzGraczy() {
-    const snapshot = await getDocs(collection(db, "players"));
-    snapshot.forEach(doc => {
-      console.log(doc.id, doc.data());
-    });
-  }
-
-  // ODPAŁAMY TEST
-  dodajTestowegoGracza();
-  pobierzGraczy();
 </script>
 
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCz0_955oFzkQiAyiF9HU5IbfRCoVoVjFc",
+  authDomain: "playwatch-admin.firebaseapp.com",
+  projectId: "playwatch-admin",
+  storageBucket: "playwatch-admin.firebasestorage.app",
+  messagingSenderId: "1083558018258",
+  appId: "1:1083558018258:web:2e7abe903e07d3a13bc10b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Test: dodanie gracza
+async function dodajTestowegoGracza() {
+  await addDoc(collection(db, "players"), {
+    nick: "TestPlayer",
+    punkty: 1000,
+    rebirth: 0,
+    createdAt: new Date()
+  });
+  console.log("✅ Gracz dodany");
+}
+
+// Test: pobranie graczy
+async function pobierzGraczy() {
+  const snapshot = await getDocs(collection(db, "players"));
+  snapshot.forEach(doc => console.log(doc.id, doc.data()));
+}
+
+// Odpalamy test
+dodajTestowegoGracza();
+pobierzGraczy();
 </script>
 
 </body>
