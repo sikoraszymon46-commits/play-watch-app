@@ -202,6 +202,56 @@ if(currentNick!==""){
   document.getElementById('displayNick').innerText = currentNick;
   updateAllDisplays();
 }
+  <script type="module">
+  // IMPORTY FIREBASE (CDN)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  // KONFIGURACJA FIREBASE (TWOJA)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCz0_955oFzkQiAyiF9HU5IbfRCoVoVjFc",
+    authDomain: "playwatch-admin.firebaseapp.com",
+    projectId: "playwatch-admin",
+    storageBucket: "playwatch-admin.firebasestorage.app",
+    messagingSenderId: "1083558018258",
+    appId: "1:1083558018258:web:2e7abe903e07d3a13bc10b"
+  };
+
+  // INICJALIZACJA FIREBASE
+  const app = initializeApp(firebaseConfig);
+
+  // INICJALIZACJA FIRESTORE (BAZA DANYCH)
+  const db = getFirestore(app);
+
+  // FUNKCJA TESTOWA – DODANIE GRACZA
+  async function dodajTestowegoGracza() {
+    await addDoc(collection(db, "players"), {
+      nick: "TestPlayer",
+      punkty: 1000,
+      rebirth: 0,
+      createdAt: new Date()
+    });
+    console.log("✅ Gracz dodany");
+  }
+
+  // FUNKCJA TESTOWA – POBRANIE GRACZY
+  async function pobierzGraczy() {
+    const snapshot = await getDocs(collection(db, "players"));
+    snapshot.forEach(doc => {
+      console.log(doc.id, doc.data());
+    });
+  }
+
+  // ODPAŁAMY TEST
+  dodajTestowegoGracza();
+  pobierzGraczy();
+</script>
+
 </script>
 
 </body>
