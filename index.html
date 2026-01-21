@@ -14,6 +14,9 @@ button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-
 input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 #loginScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;}
 #gameScreen { display: none; }
+#adminPanel { margin-top: 20px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; display:none;}
+#playersList { list-style: none; padding-left: 0; }
+#playersList li { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.2);}
 </style>
 </head>
 <body>
@@ -79,6 +82,13 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 <section>
 <h2>💰 Bonus za reklamę</h2>
 <button id="bonusBtn">Oglądałem reklamę</button>
+</section>
+
+<!-- Panel admina – domyślnie ukryty -->
+<section id="adminPanel">
+  <h2>📝 Panel admina – lista graczy</h2>
+  <button id="loadPlayersBtn">Pokaż graczy</button>
+  <ul id="playersList"></ul>
 </section>
 
 <footer>
@@ -234,6 +244,26 @@ async function pobierzGraczy() {
 // Odpalamy test
 dodajTestowegoGracza();
 pobierzGraczy();
+
+// PANEL ADMINA – widoczny tylko po haśle
+let adminPassword = "tajne123"; // ustaw swoje hasło
+let entered = prompt("Wpisz hasło admina, aby zobaczyć panel graczy:");
+if(entered === adminPassword){
+  document.getElementById('adminPanel').style.display = 'block';
+}
+
+// Pokaż graczy w panelu
+document.getElementById('loadPlayersBtn').addEventListener('click', async () => {
+  const playersList = document.getElementById('playersList');
+  playersList.innerHTML = '';
+  const snapshot = await getDocs(collection(db, "players"));
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const li = document.createElement('li');
+    li.innerText = `${data.nick} – Punkty: ${data.punkty}, Rebirth: ${data.rebirth}`;
+    playersList.appendChild(li);
+  });
+});
 </script>
 
 </body>
