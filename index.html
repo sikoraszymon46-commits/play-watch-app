@@ -210,7 +210,7 @@ if(currentNick!==""){
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCz0_955oFzkQiAyiF9HU5IbfRCoVoVjFc",
@@ -224,27 +224,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Test: dodanie gracza
-async function dodajTestowegoGracza() {
-  await addDoc(collection(db, "players"), {
-    nick: "TestPlayer",
-    punkty: 1000,
-    rebirth: 0,
-    createdAt: new Date()
-  });
-  console.log("✅ Gracz dodany");
-}
-
-// Test: pobranie graczy
-async function pobierzGraczy() {
-  const snapshot = await getDocs(collection(db, "players"));
-  snapshot.forEach(doc => console.log(doc.id, doc.data()));
-}
-
-// Odpalamy test
-dodajTestowegoGracza();
-pobierzGraczy();
-
 // PANEL ADMINA – widoczny tylko po haśle
 let adminPassword = "tajne123"; // ustaw swoje hasło
 let entered = prompt("Wpisz hasło admina, aby zobaczyć panel graczy:");
@@ -253,16 +232,24 @@ if(entered === adminPassword){
 }
 
 // Pokaż graczy w panelu
-document.getElementById('loadPlayersBtn').addEventListener('click', async () => {
+document.getElementById('loadPlayersBtn').addEventListener('click', async function() {
   const playersList = document.getElementById('playersList');
   playersList.innerHTML = '';
-  const snapshot = await getDocs(collection(db, "players"));
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement('li');
-    li.innerText = `${data.nick} – Punkty: ${data.punkty}, Rebirth: ${data.rebirth}`;
-    playersList.appendChild(li);
-  });
+  try {
+    const snapshot = await getDocs(collection(db, "players"));
+    if(snapshot.empty){
+      playersList.innerHTML = "<li>Brak graczy w bazie</li>";
+    }
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const li = document.createElement('li');
+      li.innerText = `${data.nick} – Punkty: ${data.punkty}, Rebirth: ${data.rebirth}`;
+      playersList.appendChild(li);
+    });
+  } catch(error){
+    console.error("Błąd pobierania graczy:", error);
+    alert("Błąd pobierania graczy. Sprawdź konsolę.");
+  }
 });
 </script>
 
