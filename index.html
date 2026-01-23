@@ -38,7 +38,6 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
   <p>Rebirthy: <span id="rebirthCount">0</span></p>
 </header>
 
-<!-- Gry -->
 <section>
 <h2>🖱️ Klikacz</h2>
 <p>Kliknięcia: <span id="clicks">0</span></p>
@@ -72,22 +71,19 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 <p id="guessResult"></p>
 </section>
 
-<!-- Rebirth -->
 <section>
 <h2>🔄 Rebirth</h2>
 <button id="rebirthBtn">Rebirth ×2</button>
 </section>
 
-<!-- Bonus za reklamę -->
 <section>
 <h2>💰 Bonus za reklamę</h2>
 <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
-<!-- Panel admina – domyślnie ukryty -->
+<!-- Panel admina -->
 <section id="adminPanel">
   <h2>📝 Panel admina – lista graczy</h2>
-  <button id="loadPlayersBtn">Pokaż graczy</button>
   <ul id="playersList"></ul>
 </section>
 
@@ -224,33 +220,42 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// PANEL ADMINA – widoczny tylko po haśle
-let adminPassword = "tajne123"; // ustaw swoje hasło
+// PANEL ADMINA
+let adminPassword = "tajne123"; 
 let entered = prompt("Wpisz hasło admina, aby zobaczyć panel graczy:");
 if(entered === adminPassword){
   document.getElementById('adminPanel').style.display = 'block';
 }
 
-// Pokaż graczy w panelu
-document.getElementById('loadPlayersBtn').addEventListener('click', async function() {
+// Funkcja wyświetlania graczy
+async function pokazGraczy() {
   const playersList = document.getElementById('playersList');
   playersList.innerHTML = '';
   try {
     const snapshot = await getDocs(collection(db, "players"));
     if(snapshot.empty){
       playersList.innerHTML = "<li>Brak graczy w bazie</li>";
+    } else {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement('li');
+        li.innerText = `${data.nick} – Punkty: ${data.punkty}, Rebirth: ${data.rebirth}`;
+        playersList.appendChild(li);
+      });
     }
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const li = document.createElement('li');
-      li.innerText = `${data.nick} – Punkty: ${data.punkty}, Rebirth: ${data.rebirth}`;
-      playersList.appendChild(li);
-    });
   } catch(error){
     console.error("Błąd pobierania graczy:", error);
-    alert("Błąd pobierania graczy. Sprawdź konsolę.");
+    playersList.innerHTML = "<li>Błąd pobierania danych</li>";
   }
-});
+}
+
+// Automatyczne odświeżanie co 5 sekund
+setInterval(() => {
+  const panel = document.getElementById('adminPanel');
+  if(panel.style.display === 'block'){
+    pokazGraczy();
+  }
+}, 5000);
 </script>
 
 </body>
