@@ -20,6 +20,8 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 </style>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
      crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -83,11 +85,6 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
-<!-- Panel admina -->
-<section id="adminPanel">
-  <h2>📝 Panel admina – lista graczy</h2>
-  <ul id="playersList"></ul>
-</section>
 
 <footer>
 <a href="regulamin.html">Regulamin</a> |
@@ -222,41 +219,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// PANEL ADMINA
-let adminPassword = "tajne123"; 
-let entered = prompt("Wpisz hasło admina, aby zobaczyć panel graczy:");
-if(entered === adminPassword){
-  document.getElementById('adminPanel').style.display = 'block';
+
 }
 
-// Funkcja wyświetlania graczy
-async function pokazGraczy() {
-  const playersList = document.getElementById('playersList');
-  playersList.innerHTML = '';
-  try {
-    const snapshot = await getDocs(collection(db, "players"));
-    if(snapshot.empty){
-      playersList.innerHTML = "<li>Brak graczy w bazie</li>";
-    } else {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const li = document.createElement('li');
-        li.innerText = `${data.nick} – Punkty: ${data.punkty}, Rebirth: ${data.rebirth}`;
-        playersList.appendChild(li);
-      });
-    }
-  } catch(error){
-    console.error("Błąd pobierania graczy:", error);
-    playersList.innerHTML = "<li>Błąd pobierania danych</li>";
-  }
-}
-
-// Automatyczne odświeżanie co 5 sekund
-setInterval(() => {
-  const panel = document.getElementById('adminPanel');
-  if(panel.style.display === 'block'){
-    pokazGraczy();
-  }
 }, 5000);
 </script>
 
