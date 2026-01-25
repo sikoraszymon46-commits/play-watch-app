@@ -16,7 +16,7 @@ input { padding: 8px; border-radius: 5px; border: none; width: 200px;}
 </head>
 <body>
 
-<!-- Logowanie -->
+<!-- Ekran logowania -->
 <div id="loginScreen">
 <h1>🎮 Witaj w PlayWatch!</h1>
 <p>Podaj swój nick:</p>
@@ -24,9 +24,8 @@ input { padding: 8px; border-radius: 5px; border: none; width: 200px;}
 <button id="startBtn">Zaczynam!</button>
 </div>
 
-<!-- Gry -->
+<!-- Ekran gry -->
 <div id="gameScreen">
-
 <header>
 <h1>🎮 PlayWatch</h1>
 <p>Nick: <span id="displayNick"></span></p>
@@ -34,16 +33,11 @@ input { padding: 8px; border-radius: 5px; border: none; width: 200px;}
 <p>Rebirthy: <span id="rebirthCount">0</span></p>
 </header>
 
+<!-- Klikacz -->
 <section>
 <h2>🖱️ Klikacz</h2>
 <p>Kliknięcia: <span id="clicks">0</span></p>
 <button id="clickBtn">Kliknij mnie</button>
-</section>
-
-<section>
-<h2>🎲 Losowa liczba</h2>
-<p>Liczba: <span id="number">?</span></p>
-<button id="randomBtn">Losuj 1–100</button>
 </section>
 
 <!-- Geografia -->
@@ -82,45 +76,14 @@ input { padding: 8px; border-radius: 5px; border: none; width: 200px;}
 <p id="engResult"></p>
 </section>
 
-<!-- Niemiecki -->
-<section>
-<h2>🇩🇪 Niemiecki</h2>
-<p id="gerQuestion"></p>
-<input type="text" id="gerAnswer" placeholder="Odpowiedź">
-<button id="gerBtn">Sprawdź</button>
-<p id="gerResult"></p>
-</section>
-
-<!-- Chemia -->
-<section>
-<h2>⚗️ Chemia</h2>
-<p id="chemQuestion"></p>
-<input type="text" id="chemAnswer" placeholder="Odpowiedź">
-<button id="chemBtn">Sprawdź</button>
-<p id="chemResult"></p>
-</section>
-
-<!-- Biologia -->
-<section>
-<h2>🧬 Biologia</h2>
-<p id="bioQuestion"></p>
-<input type="text" id="bioAnswer" placeholder="Odpowiedź">
-<button id="bioBtn">Sprawdź</button>
-<p id="bioResult"></p>
-</section>
-
-<!-- Fizyka -->
-<section>
-<h2>🔬 Fizyka</h2>
-<p id="phyQuestion"></p>
-<input type="text" id="phyAnswer" placeholder="Odpowiedź">
-<button id="phyBtn">Sprawdź</button>
-<p id="phyResult"></p>
-</section>
+<!-- Tutaj w kolejnej części dodamy: Niemiecki, Chemia, Biologia, Fizyka -->
 
 <section>
 <h2>🔄 Rebirth</h2>
 <button id="rebirthBtn">Rebirth ×2</button>
+</section>
+
+<section>
 <h2>💰 Bonus za reklamę</h2>
 <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
@@ -128,237 +91,249 @@ input { padding: 8px; border-radius: 5px; border: none; width: 200px;}
 <footer>
 <a href="regulamin.html">Regulamin</a> |
 <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
-<a href="onas.html">O nas</a> |
-<a href="kontakt.html">Kontakt</a>
-</footer>
-
-<script>
-// --- ZMIENNE OGÓLNE ---
-let totalPoints=parseInt(localStorage.getItem('totalPoints'))||0;
-let clicks=parseInt(localStorage.getItem('clicks'))||0;
-let rebirthCount=parseInt(localStorage.getItem('rebirthCount'))||0;
-let rebirthMultiplier=rebirthCount+1;
-let currentNick=localStorage.getItem('currentNick')||"";
-
+<a href="o-nas.html">O nas</a> |
+Kontakt: <strong>sikoraszymon45@gmail.com</strong>
+</footer><script>
 // --- START GRY ---
-document.getElementById('startBtn').addEventListener('click',function(){
-  let nick=document.getElementById('playerNick').value.trim();
-  if(!nick){ alert("Podaj nick!"); return; }
-  currentNick=nick;
-  localStorage.setItem('currentNick',currentNick);
-  document.getElementById('displayNick').innerText=currentNick;
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('gameScreen').style.display='block';
-  updateAllDisplays();
-  loadAllQuestions();
+let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+let clicks = parseInt(localStorage.getItem('clicks')) || 0;
+let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
+let rebirthMultiplier = rebirthCount + 1;
+let currentNick = localStorage.getItem('currentNick') || "";
+
+document.getElementById('startBtn').addEventListener('click', function(){
+    let nick = document.getElementById('playerNick').value.trim();
+    if(!nick){ alert("Podaj nick!"); return; }
+    currentNick = nick;
+    localStorage.setItem('currentNick', currentNick);
+    document.getElementById('displayNick').innerText = currentNick;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+    updateAllDisplays();
+    loadAllQuestions();
 });
 
-// --- FUNKCJE OGÓLNE ---
+// --- Klikacz ---
+document.getElementById('clickBtn').addEventListener('click', function(){
+    clicks++;
+    addPoints(1);
+    document.getElementById('clicks').innerText = clicks;
+    localStorage.setItem('clicks', clicks);
+});
+
+// --- Rebirth ---
+document.getElementById('rebirthBtn').addEventListener('click', function(){
+    let cost = 1000 * Math.pow(10, rebirthCount);
+    if(totalPoints >= cost){
+        totalPoints = 0;
+        rebirthCount++;
+        rebirthMultiplier = rebirthCount + 1;
+        updateAllDisplays();
+        localStorage.setItem('totalPoints', totalPoints);
+        localStorage.setItem('rebirthCount', rebirthCount);
+        alert(`Rebirth ×${rebirthMultiplier}! Wszystkie punkty teraz mnożone.`);
+    } else {
+        alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);
+    }
+});
+
+// --- Bonus za reklamę ---
+document.getElementById('bonusBtn').addEventListener('click', function(){
+    addPoints(50);
+    alert("Bonus +50 pkt!");
+});
+
+// --- Funkcje pomocnicze ---
+function addPoints(p){
+    totalPoints += p * rebirthMultiplier;
+    document.getElementById('totalPoints').innerText = totalPoints;
+    localStorage.setItem('totalPoints', totalPoints);
+}
+
 function updateAllDisplays(){
-  document.getElementById('totalPoints').innerText=totalPoints;
-  document.getElementById('clicks').innerText=clicks;
-  document.getElementById('rebirthCount').innerText=rebirthCount;
-}
-document.getElementById('clickBtn').addEventListener('click',function(){ clicks++; addPoints(1); updateAllDisplays(); localStorage.setItem('clicks',clicks); });
-document.getElementById('randomBtn').addEventListener('click',function(){ let num=Math.floor(Math.random()*100)+1; addPoints(num); document.getElementById('number').innerText=num; });
-function addPoints(p){ totalPoints+=p*rebirthMultiplier; document.getElementById('totalPoints').innerText=totalPoints; localStorage.setItem('totalPoints',totalPoints); }
-document.getElementById('rebirthBtn').addEventListener('click',function(){ let cost=1000*Math.pow(10,rebirthCount); if(totalPoints>=cost){ totalPoints=0; rebirthCount++; rebirthMultiplier=rebirthCount+1; updateAllDisplays(); localStorage.setItem('totalPoints',totalPoints); localStorage.setItem('rebirthCount',rebirthCount); alert(`Rebirth ×${rebirthMultiplier}!`);}else alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`); });
-document.getElementById('bonusBtn').addEventListener('click',function(){ addPoints(50); alert("Bonus +50 pkt!"); });
-if(currentNick!==""){ document.getElementById('loginScreen').style.display='none'; document.getElementById('gameScreen').style.display='block'; document.getElementById('displayNick').innerText=currentNick; updateAllDisplays(); loadAllQuestions(); }
-
-// --- FUNKCJA PYTAŃ ---
-function showQuestion(arr,index,idQuestion){ document.getElementById(idQuestion).innerText=arr[index].q; }
-function checkAnswer(arr,index,inputId,resultId){
-  let user=document.getElementById(inputId).value.trim();
-  if(user.toLowerCase()===arr[index].a.toLowerCase()){ document.getElementById(resultId).innerText="✅ Poprawnie!"; addPoints(10);}
-  else document.getElementById(resultId).innerText=`❌ Błąd! Poprawna: ${arr[index].a}`;
-  index++;
-  return index%arr.length;
+    document.getElementById('totalPoints').innerText = totalPoints;
+    document.getElementById('clicks').innerText = clicks;
+    document.getElementById('rebirthCount').innerText = rebirthCount;
 }
 
-// --- PYTANIA 25 DLA KAŻDEGO PRZEDMIOTU ---
-
-let geoQuestions=[ // geografia 25
-{q:"Stolica Polski?",a:"Warszawa"},
-{q:"Stolica Niemiec?",a:"Berlin"},
-{q:"Stolica Francji?",a:"Paryż"},
-{q:"Stolica Włoch?",a:"Rzym"},
-{q:"Stolica Hiszpanii?",a:"Madryt"},
-{q:"Stolica Czech?",a:"Praga"},
-{q:"Stolica Rosji?",a:"Moskwa"},
-{q:"Stolica Anglii?",a:"Londyn"},
-{q:"Stolica Szwecji?",a:"Sztokholm"},
-{q:"Stolica Norwegii?",a:"Oslo"},
-{q:"Stolica Finlandii?",a:"Helsinki"},
-{q:"Stolica Portugalii?",a:"Lizbona"},
-{q:"Stolica Grecji?",a:"Ateny"},
-{q:"Stolica Belgii?",a:"Bruksela"},
-{q:"Stolica Holandii?",a:"Amsterdam"},
-{q:"Stolica Austrii?",a:"Wiedeń"},
-{q:"Stolica Szwajcarii?",a:"Bern"},
-{q:"Stolica Danii?",a:"Kopenhaga"},
-{q:"Stolica Irlandii?",a:"Dublin"},
-{q:"Stolica Islandii?",a:"Reykjavik"},
-{q:"Stolica Węgier?",a:"Budapeszt"},
-{q:"Stolica Chorwacji?",a:"Zagrzeb"},
-{q:"Stolica Bułgarii?",a:"Sofia"},
-{q:"Stolica Rumunii?",a:"Bukareszt"},
-{q:"Stolica Litwy?",a:"Wilno"}
+// --- PYTANIA 25 dla każdego przedmiotu ---
+let geoQuestions = [
+    {q:"Stolica Polski?", a:"Warszawa"},
+    {q:"Stolica Niemiec?", a:"Berlin"},
+    {q:"Stolica Francji?", a:"Paryż"},
+    {q:"Stolica Włoch?", a:"Rzym"},
+    {q:"Stolica Hiszpanii?", a:"Madryt"},
+    {q:"Stolica Portugalii?", a:"Lizbona"},
+    {q:"Stolica Holandii?", a:"Amsterdam"},
+    {q:"Stolica Belgii?", a:"Bruksela"},
+    {q:"Stolica Austrii?", a:"Wiedeń"},
+    {q:"Stolica Szwajcarii?", a:"Bern"},
+    {q:"Stolica Rosji?", a:"Moskwa"},
+    {q:"Stolica Ukrainy?", a:"Kijów"},
+    {q:"Stolica Białorusi?", a:"Mińsk"},
+    {q:"Stolica Litwy?", a:"Wilno"},
+    {q:"Stolica Łotwy?", a:"Ryga"},
+    {q:"Stolica Estonii?", a:"Tallin"},
+    {q:"Stolica Finlandii?", a:"Helsinki"},
+    {q:"Stolica Szwecji?", a:"Sztokholm"},
+    {q:"Stolica Norwegii?", a:"Oslo"},
+    {q:"Stolica Danii?", a:"Kopenhaga"},
+    {q:"Stolica Irlandii?", a:"Dublin"},
+    {q:"Stolica Wielkiej Brytanii?", a:"Londyn"},
+    {q:"Stolica Grecji?", a:"Ateny"},
+    {q:"Stolica Turcji?", a:"Ankara"},
+    {q:"Stolica Japonii?", a:"Tokio"}
 ];
 
-let histQuestions=[ // historia 25
-{q:"Rok chrztu Polski?",a:"966"},
-{q:"Kto był pierwszym królem Polski?",a:"Bolesław Chrobry"},
-{q:"Rok bitwy pod Grunwaldem?",a:"1410"},
-{q:"Rok uchwalenia Konstytucji 3 Maja?",a:"1791"},
-{q:"Rok rozbioru Polski?",a:"1772"},
-{q:"Kto był królem w 966?",a:"Mieszko I"},
-{q:"Rok bitwy pod Wiedniem?",a:"1683"},
-{q:"Rok powstania Solidarności?",a:"1980"},
-{q:"Rok odzyskania niepodległości?",a:"1918"},
-{q:"Rok wybuchu II wojny światowej?",a:"1939"},
-{q:"Rok bitwy pod Racławicami?",a:"1794"},
-{q:"Kto podpisał Unię Lubelską?",a:"Zygmunt II August"},
-{q:"Kto był królem Polski w 1025?",a:"Bolesław Chrobry"},
-{q:"Rok bitwy pod Legnicą?",a:"1241"},
-{q:"Rok zajęcia Warszawy przez Niemców?",a:"1939"},
-{q:"Rok odzyskania Gdańska?",a:"1920"},
-{q:"Kto był władcą Polski w 1333?",a:"Kazimierz Wielki"},
-{q:"Rok wojny polsko-bolszewickiej?",a:"1920"},
-{q:"Kto był królem Polski w 1573?",a:"Henryk Walezy"},
-{q:"Rok uchwalenia Konstytucji Lipcowej?",a:"1791"},
-{q:"Rok bitwy pod Płowcami?",a:"1331"},
-{q:"Kto był władcą Polski w 1370?",a:"Kazimierz III Wielki"},
-{q:"Rok wybuchu powstania listopadowego?",a:"1830"},
-{q:"Kto był królem w 1506?",a:"Zygmunt I Stary"},
-{q:"Rok wojny trzydziestoletniej?",a:"1618"}
+let histQuestions = [
+    {q:"Rok chrztu Polski?", a:"966"},
+    {q:"Kto był pierwszym królem Polski?", a:"Bolesław Chrobry"},
+    {q:"Rok bitwy pod Grunwaldem?", a:"1410"},
+    {q:"Rok rozbiorów Polski?", a:"1772"},
+    {q:"Kto dowodził powstaniem listopadowym?", a:"Józef Chłopicki"},
+    {q:"Rok odzyskania niepodległości?", a:"1918"},
+    {q:"Pierwszy prezydent II RP?", a:"Gabriel Narutowicz"},
+    {q:"Rok wybuchu II wojny światowej?", a:"1939"},
+    {q:"Rok powstania warszawskiego?", a:"1944"},
+    {q:"Kto był marszałkiem Polski po 1918?", a:"Józef Piłsudski"},
+    {q:"Rok Unii Lubelskiej?", a:"1569"},
+    {q:"Rok bitwy pod Wiedniem?", a:"1683"},
+    {q:"Kto był królem Polski w 966?", a:"Mieszko I"},
+    {q:"Rok uchwalenia Konstytucji 3 Maja?", a:"1791"},
+    {q:"Rok Powstania Styczniowego?", a:"1863"},
+    {q:"Pierwszy książę Polski?", a:"Mieszko I"},
+    {q:"Rok śmierci Kazimierza Wielkiego?", a:"1370"},
+    {q:"Rok bitwy pod Racławicami?", a:"1794"},
+    {q:"Rok bitwy pod Cedynią?", a:"972"},
+    {q:"Kto dowodził wojskami polskimi pod Grunwaldem?", a:"Władysław Jagiełło"},
+    {q:"Rok powstania państwa Polskiego?", a:"966"},
+    {q:"Rok bitwy pod Legnicą?", a:"1241"},
+    {q:"Kto był ostatnim królem Polski?", a:"Stanisław August Poniatowski"},
+    {q:"Rok rozbioru Prus?", a:"1772"},
+    {q:"Rok bitwy pod Kłuszynem?", a:"1610"}
 ];
 
-// --- POLSKI, ANGIELSKI, NIEMIECKI, CHEMIA, BIOLOGIA, FIZYKA ---
-// Z powodu ograniczeń rozmiaru w tym przykładzie pokażę mechanizm dla kolejnych 3, resztę kopiujesz wg schematu geografia i historia.
-// W pełnej wersji można wkleić 25 pytań dla każdego przedmiotu analogicznie.
-
-let polQuestions=[
-{q:"W jakim przypadku jest 'domu'?",a:"Dopełniacz"},
-{q:"Jaką częścią mowy jest 'biegnie'?",a:"Czasownik"},
-{q:"Zdanie oznajmujące: 'Pies szczeka.'",a:"Pies szczeka."},
-{q:"Kto napisał 'Pan Tadeusz'?",a:"Adam Mickiewicz"},
-{q:"W którym wieku żył Mickiewicz?",a:"XIX"},
-{q:"W jakim przypadku jest 'książce'?",a:"Miejscownik"},
-{q:"Jaką częścią mowy jest 'ładny'?",a:"Przymiotnik"},
-{q:"Zdanie pytające: 'Czy pada deszcz?'",a:"Czy pada deszcz?"},
-{q:"Zdanie rozkazujące: 'Zrób zadanie!'",a:"Zrób zadanie!"},
-{q:"Kto napisał 'Lalka'?",a:"Bolesław Prus"},
-{q:"W którym wieku żył Prus?",a:"XIX"},
-{q:"W jakim przypadku jest 'samochodem'?",a:"Narzędnik"},
-{q:"Jaką częścią mowy jest 'szybko'?",a:"Przysłówek"},
-{q:"Zdanie: 'Kocham cię.'",a:"Kocham cię."},
-{q:"Kto napisał 'Krzyżacy'?",a:"Henryk Sienkiewicz"},
-{q:"W którym wieku żył Sienkiewicz?",a:"XIX"},
-{q:"W jakim przypadku jest 'stół'?",a:"Mianownik"},
-{q:"Jaką częścią mowy jest 'iść'?",a:"Czasownik"},
-{q:"Zdanie: 'Idź do szkoły!'",a:"Idź do szkoły!"},
-{q:"Kto napisał 'Quo Vadis'?",a:"Henryk Sienkiewicz"},
-{q:"W którym wieku żył Kochanowski?",a:"XVI"},
-{q:"W jakim przypadku jest 'miasta'?",a:"Dopełniacz"},
-{q:"Jaką częścią mowy jest 'pięknie'?",a:"Przysłówek"},
-{q:"Zdanie: 'Uczę się.'",a:"Uczę się."}
+// Polski – przykładowe 25 pytań
+let polQuestions = [
+    {q:"Czym jest zdanie oznajmujące?", a:"Zdanie stwierdzające"},
+    {q:"Czym jest zdanie pytające?", a:"Zdanie pytające"},
+    {q:"Czym jest imiesłów przymiotnikowy czynny?", a:"np. biegający"},
+    {q:"Czym jest imiesłów przymiotnikowy bierny?", a:"np. zrobiony"},
+    {q:"Podaj 1 przypadek w polskim.", a:"Mianownik"},
+    {q:"Podaj 2 przypadek w polskim.", a:"Dopełniacz"},
+    {q:"Podaj 3 przypadek w polskim.", a:"Celownik"},
+    {q:"Podaj 4 przypadek w polskim.", a:"Biernik"},
+    {q:"Podaj 5 przypadek w polskim.", a:"Wołacz"},
+    {q:"Podaj 6 przypadek w polskim.", a:"Miejscownik"},
+    {q:"Podaj 7 przypadek w polskim.", a:"Narzędnik"},
+    {q:"Kto napisał 'Pan Tadeusz'?", a:"Adam Mickiewicz"},
+    {q:"Kto napisał 'Lalka'?", a:"Bolesław Prus"},
+    {q:"Kto napisał 'Krzyżacy'?", a:"Henryk Sienkiewicz"},
+    {q:"Kto napisał 'Quo Vadis'?", a:"Henryk Sienkiewicz"},
+    {q:"Czym jest czasownik?", a:"Słowo określające czynność"},
+    {q:"Czym jest rzeczownik?", a:"Słowo oznaczające osobę, rzecz lub miejsce"},
+    {q:"Czym jest przymiotnik?", a:"Słowo określające rzeczownik"},
+    {q:"Czym jest przysłówek?", a:"Słowo określające czasownik"},
+    {q:"Czym jest zaimek?", a:"Słowo zastępujące rzeczownik"},
+    {q:"Czym jest liczebnik?", a:"Słowo określające liczbę"},
+    {q:"Czym jest spójnik?", a:"Słowo łączące zdania"},
+    {q:"Czym jest przyimek?", a:"Słowo określające relację"},
+    {q:"Czym jest partykuła?", a:"Słowo dodające znaczenie"},
+    {q:"Czym jest wykrzyknik?", a:"Słowo wyrażające emocje"}
 ];
 
-let engQuestions=[
-{q:"Apple po polsku?",a:"Jabłko"},
-{q:"Dog po polsku?",a:"Pies"},
-{q:"Cat po polsku?",a:"Kot"},
-{q:"House po polsku?",a:"Dom"},
-{q:"Car po polsku?",a:"Samochód"},
-{q:"School po polsku?",a:"Szkoła"},
-{q:"Sun po polsku?",a:"Słońce"},
-{q:"Moon po polsku?",a:"Księżyc"},
-{q:"Tree po polsku?",a:"Drzewo"},
-{q:"Water po polsku?",a:"Woda"},
-{q:"Food po polsku?",a:"Jedzenie"},
-{q:"Book po polsku?",a:"Książka"},
-{q:"Chair po polsku?",a:"Krzesło"},
-{q:"Table po polsku?",a:"Stół"},
-{q:"Window po polsku?",a:"Okno"},
-{q:"Pen po polsku?",a:"Długopis"},
-{q:"Paper po polsku?",a:"Papier"},
-{q:"Computer po polsku?",a:"Komputer"},
-{q:"Phone po polsku?",a:"Telefon"},
-{q:"Milk po polsku?",a:"Mleko"},
-{q:"Bread po polsku?",a:"Chleb"},
-{q:"Coffee po polsku?",a:"Kawa"},
-{q:"Tea po polsku?",a:"Herbata"},
-{q:"Dog po niemiecku?",a:"Hund"},
-{q:"Cat po niemiecku?",a:"Katze"}
+// Angielski – 25 słówek
+let engQuestions = [
+    {q:"Apple po polsku?", a:"Jabłko"},
+    {q:"Dog po polsku?", a:"Pies"},
+    {q:"Cat po polsku?", a:"Kot"},
+    {q:"House po polsku?", a:"Dom"},
+    {q:"School po polsku?", a:"Szkoła"},
+    {q:"Book po polsku?", a:"Książka"},
+    {q:"Chair po polsku?", a:"Krzesło"},
+    {q:"Table po polsku?", a:"Stół"},
+    {q:"Water po polsku?", a:"Woda"},
+    {q:"Milk po polsku?", a:"Mleko"},
+    {q:"Sun po polsku?", a:"Słońce"},
+    {q:"Moon po polsku?", a:"Księżyc"},
+    {q:"Star po polsku?", a:"Gwiazda"},
+    {q:"Car po polsku?", a:"Samochód"},
+    {q:"Bike po polsku?", a:"Rower"},
+    {q:"Street po polsku?", a:"Ulica"},
+    {q:"City po polsku?", a:"Miasto"},
+    {q:"Village po polsku?", a:"Wieś"},
+    {q:"River po polsku?", a:"Rzeka"},
+    {q:"Mountain po polsku?", a:"Góra"},
+    {q:"Sea po polsku?", a:"Morze"},
+    {q:"Coffee po polsku?", a:"Kawa"},
+    {q:"Tea po polsku?", a:"Herbata"},
+    {q:"Bread po polsku?", a:"Chleb"},
+    {q:"Teacher po polsku?", a:"Nauczyciel"}
 ];
 
 let geoIndex=0, histIndex=0, polIndex=0, engIndex=0;
 
-// --- EVENTY SPRAWDZANIA ---
-document.getElementById('geoBtn').addEventListener('click',()=>{ geoIndex=checkAnswer(geoQuestions,geoIndex,'geoAnswer','geoResult'); showQuestion(geoQuestions,geoIndex,'geoQuestion'); document.getElementById('geoAnswer').value=""; });
-document.getElementById('histBtn').addEventListener('click',()=>{ histIndex=checkAnswer(histQuestions,histIndex,'histAnswer','histResult'); showQuestion(histQuestions,histIndex,'histQuestion'); document.getElementById('histAnswer').value=""; });
-document.getElementById('polBtn').addEventListener('click',()=>{ polIndex=checkAnswer(polQuestions,polIndex,'polAnswer','polResult'); showQuestion(polQuestions,polIndex,'polQuestion'); document.getElementById('polAnswer').value=""; });
-document.getElementById('engBtn').addEventListener('click',()=>{ engIndex=checkAnswer(engQuestions,engIndex,'engAnswer','engResult'); showQuestion(engQuestions,engIndex,'engQuestion'); document.get
-document.getElementById('engBtn').addEventListener('click',()=>{ 
-    engIndex = checkAnswer(engQuestions, engIndex, 'engAnswer', 'engResult'); 
-    showQuestion(engQuestions, engIndex, 'engQuestion'); 
-    document.getElementById('engAnswer').value=""; 
+// --- Funkcja pokazująca pytanie ---
+function showQuestion(arr, index, elementId){
+    document.getElementById(elementId).innerText = arr[index].q;
+}
+
+// --- Funkcja sprawdzania odpowiedzi ---
+function checkAnswer(arr, index, inputId, resultId){
+    let answer = document.getElementById(inputId).value.trim().toLowerCase();
+    let correct = arr[index].a.toLowerCase();
+    if(answer === correct){
+        document.getElementById(resultId).innerText = "✅ Poprawna!";
+        addPoints(10);
+    } else {
+        document.getElementById(resultId).innerText = "❌ Niepoprawna! Prawidłowa: " + arr[index].a;
+    }
+    index++;
+    if(index >= arr.length) index = 0; // reset po 25
+    return index;
+}
+
+// --- Event Listenery dla gier ---
+document.getElementById('geoBtn').addEventListener('click',()=>{
+    geoIndex = checkAnswer(geoQuestions, geoIndex, 'geoAnswer', 'geoResult');
+    showQuestion(geoQuestions, geoIndex, 'geoQuestion');
+    document.getElementById('geoAnswer').value = "";
 });
 
-// Funkcja ładowania wszystkich pierwszych pytań
+document.getElementById('histBtn').addEventListener('click',()=>{
+    histIndex = checkAnswer(histQuestions, histIndex, 'histAnswer', 'histResult');
+    showQuestion(histQuestions, histIndex, 'histQuestion');
+    document.getElementById('histAnswer').value = "";
+});
+
+document.getElementById('polBtn').addEventListener('click',()=>{
+    polIndex = checkAnswer(polQuestions, polIndex, 'polAnswer', 'polResult');
+    showQuestion(polQuestions, polIndex, 'polQuestion');
+    document.getElementById('polAnswer').value = "";
+});
+
+document.getElementById('engBtn').addEventListener('click',()=>{
+    engIndex = checkAnswer(engQuestions, engIndex, 'engAnswer', 'engResult');
+    showQuestion(engQuestions, engIndex, 'engQuestion');
+    document.getElementById('engAnswer').value = "";
+});
+
+// --- Auto logowanie ---
+if(currentNick!==""){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+    document.getElementById('displayNick').innerText = currentNick;
+    updateAllDisplays();
+    loadAllQuestions();
+}
+
+// --- Funkcja ładująca pierwsze pytania ---
 function loadAllQuestions(){
     showQuestion(geoQuestions, geoIndex, 'geoQuestion');
     showQuestion(histQuestions, histIndex, 'histQuestion');
     showQuestion(polQuestions, polIndex, 'polQuestion');
     showQuestion(engQuestions, engIndex, 'engQuestion');
-    // Tutaj analogicznie dodasz dla niemieckiego, chemii, biologii, fizyki
-    // np.: showQuestion(gerQuestions, gerIndex, 'gerQuestion');
 }
-
-// --- MECHANIZM RESETU PYTAŃ PO 25 ---
-// Funkcja checkAnswer automatycznie robi reset, gdy indeks przekroczy długość tablicy, więc po 25 pytaniach zaczyna od nowa
-
-// --- PRZYKŁAD DLA NIEMIECKIEGO, CHEMII, BIOLOGII, FIZYKI ---
-// Możesz stworzyć zmienne gerQuestions, chemQuestions, bioQuestions, phyQuestions analogicznie do geoQuestions, histQuestions itd. z 25 pytaniami każde
-
-let gerQuestions=[
-    {q:"Hund po polsku?", a:"Pies"},
-    {q:"Katze po polsku?", a:"Kot"},
-    {q:"Haus po polsku?", a:"Dom"},
-    {q:"Buch po polsku?", a:"Książka"},
-    {q:"Stuhl po polsku?", a:"Krzesło"},
-    {q:"Tisch po polsku?", a:"Stół"},
-    {q:"Fenster po polsku?", a:"Okno"},
-    {q:"Apfel po polsku?", a:"Jabłko"},
-    {q:"Milch po polsku?", a:"Mleko"},
-    {q:"Wasser po polsku?", a:"Woda"},
-    {q:"Schule po polsku?", a:"Szkoła"},
-    {q:"Lehrer po polsku?", a:"Nauczyciel"},
-    {q:"Student po polsku?", a:"Uczeń"},
-    {q:"Brot po polsku?", a:"Chleb"},
-    {q:"Kaffee po polsku?", a:"Kawa"},
-    {q:"Tee po polsku?", a:"Herbata"},
-    {q:"Auto po polsku?", a:"Samochód"},
-    {q:"Fahrrad po polsku?", a:"Rower"},
-    {q:"Straße po polsku?", a:"Ulica"},
-    {q:"Stadt po polsku?", a:"Miasto"},
-    {q:"Dorf po polsku?", a:"Wieś"},
-    {q:"Fluss po polsku?", a:"Rzeka"},
-    {q:"Berg po polsku?", a:"Góra"},
-    {q:"Meer po polsku?", a:"Morze"},
-    {q:"Sonne po polsku?", a:"Słońce"}
-];
-let gerIndex=0;
-document.getElementById('gerBtn').addEventListener('click',()=>{ 
-    gerIndex = checkAnswer(gerQuestions, gerIndex, 'gerAnswer', 'gerResult'); 
-    showQuestion(gerQuestions, gerIndex, 'gerQuestion'); 
-    document.getElementById('gerAnswer').value=""; 
-});
-
-// Analogicznie dodaj chemQuestions, bioQuestions, phyQuestions po 25 pytań każde
-// I event listener dla nich np.: chemBtn, bioBtn, phyBtn
-
 </script>
 </body>
-</html>                                                                
+  </html>
