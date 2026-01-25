@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PlayWatch – Mega Gry i Zagadki</title>
 <link rel="stylesheet" href="style.css">
+
 <style>
 body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 0;}
 header, footer { text-align: center; padding: 20px; background: #0d1b33;}
-section { margin: 20px auto; padding: 15px; max-width: 900px; background: rgba(0,0,0,0.7); border-radius: 12px;}
+section { margin: 20px auto; padding: 15px; max-width: 800px; background: rgba(0,0,0,0.6); border-radius: 10px;}
 button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; background: #ff9800; color: #000; font-weight: bold;}
-input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
+input, select { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 #loginScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;}
 #gameScreen { display: none; }
 </style>
@@ -34,84 +35,93 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
   <p>Rebirthy: <span id="rebirthCount">0</span></p>
 </header>
 
-<!-- Gry -->
+<!-- Klikacz -->
 <section>
 <h2>🖱️ Klikacz</h2>
 <p>Kliknięcia: <span id="clicks">0</span></p>
 <button id="clickBtn">Kliknij mnie</button>
 </section>
 
+<!-- Losowa liczba -->
 <section>
 <h2>🎲 Losowa liczba</h2>
 <p>Liczba: <span id="number">?</span></p>
 <button id="randomBtn">Losuj 1–100</button>
 </section>
 
-<section>
-<h2>⚡ Szybkie kliknięcia</h2>
-<p>Kliknij 5 razy jak najszybciej!</p>
-<button id="fastClickBtn">Kliknij mnie</button>
-<p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
-</section>
-
-<section>
-<h2>🎴 Losowa karta</h2>
-<p>Karta: <span id="card">?</span></p>
-<button id="cardBtn">Losuj kartę</button>
-</section>
-
-<section>
-<h2>🎯 Odgadnij liczbę</h2>
-<p>Wpisz liczbę 1–10:</p>
-<input type="number" id="guessNumber" min="1" max="10">
-<button id="guessBtn">Sprawdź</button>
-<p id="guessResult"></p>
-</section>
-
-<!-- Matematyczna gra -->
-<section>
-<h2>🧮 Matematyczna zagadka</h2>
-<p>Rozwiąż prostą zagadkę: <span id="mathQuestion">?</span></p>
-<input type="number" id="mathAnswer" placeholder="Twoja odpowiedź">
-<button id="mathBtn">Sprawdź</button>
-<p id="mathResult"></p>
-</section>
-
-<!-- Geograficzna gra -->
-<section>
-<h2>🌍 Geograficzna zagadka</h2>
-<p>Jaka jest stolica kraju: <span id="geoQuestion">?</span></p>
-<input type="text" id="geoAnswer" placeholder="Twoja odpowiedź">
-<button id="geoBtn">Sprawdź</button>
-<p id="geoResult"></p>
-</section>
-
+<!-- Rebirth -->
 <section>
 <h2>🔄 Rebirth</h2>
 <button id="rebirthBtn">Rebirth ×2</button>
 </section>
 
+<!-- Bonus za reklamę -->
 <section>
 <h2>💰 Bonus za reklamę</h2>
 <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
+<!-- Geograficzna -->
+<section>
+<h2>🌍 Gra geograficzna</h2>
+<p>Podaj stolicę kraju: <span id="geoQuestion">?</span></p>
+<input type="text" id="geoAnswer" placeholder="Twoja odpowiedź">
+<button id="geoBtn">Sprawdź</button>
+<p id="geoResult"></p>
+</section>
+
+<!-- Matematyczna -->
+<section>
+<h2>➕ Gra matematyczna</h2>
+<p>Rozwiąż: <span id="mathQuestion">?</span></p>
+<input type="number" id="mathAnswer" placeholder="Twoja odpowiedź">
+<button id="mathBtn">Sprawdź</button>
+<p id="mathResult"></p>
+</section>
+
+<!-- Historyczna -->
+<section>
+<h2>📜 Gra historyczna</h2>
+<p>Co wydarzyło się w roku: <span id="historyQuestion">?</span></p>
+<input type="text" id="historyAnswer" placeholder="Twoja odpowiedź">
+<button id="historyBtn">Sprawdź</button>
+<p id="historyResult"></p>
+</section>
+
+<!-- Polski -->
+<section>
+<h2>🖋️ Gra o języku polskim</h2>
+<p id="polishQuestion">?</p>
+<input type="text" id="polishAnswer" placeholder="Twoja odpowiedź">
+<button id="polishBtn">Sprawdź</button>
+<p id="polishResult"></p>
+</section>
+
+<!-- Angielski -->
+<section>
+<h2>🇬🇧 Gra angielska</h2>
+<p id="englishQuestion">?</p>
+<input type="text" id="englishAnswer" placeholder="Twoja odpowiedź">
+<button id="englishBtn">Sprawdź</button>
+<p id="englishResult"></p>
+</section>
+
 <footer>
 <a href="regulamin.html">Regulamin</a> |
 <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
-<a href="o-nas.html">O nas</a>
+<a href="o-nas.html">O nas</a> |
+Kontakt: <strong>sikoraszymon45@gmail.com</strong>
 </footer>
 
 <!-- LOGIKA GRY -->
 <script>
+// ---- Punkty i logowanie ----
 let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
 let clicks = parseInt(localStorage.getItem('clicks')) || 0;
-let fastClicks = parseInt(localStorage.getItem('fastClicks')) || 0;
 let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
 let rebirthMultiplier = rebirthCount + 1;
 let currentNick = localStorage.getItem('currentNick') || "";
 
-// START GRY
 document.getElementById('startBtn').addEventListener('click', function(){
   let nick = document.getElementById('playerNick').value.trim();
   if(!nick){ alert("Podaj nick!"); return; }
@@ -123,61 +133,27 @@ document.getElementById('startBtn').addEventListener('click', function(){
   updateAllDisplays();
 });
 
-// FUNKCJE
 function updateAllDisplays(){
   document.getElementById('totalPoints').innerText = totalPoints;
   document.getElementById('clicks').innerText = clicks;
-  document.getElementById('fastClicks').innerText = fastClicks;
   document.getElementById('rebirthCount').innerText = rebirthCount;
 }
 
+// ---- Klikacz ----
 document.getElementById('clickBtn').addEventListener('click', function(){
   clicks++; addPoints(1);
   document.getElementById('clicks').innerText = clicks;
   localStorage.setItem('clicks', clicks);
 });
 
+// ---- Losowa liczba ----
 document.getElementById('randomBtn').addEventListener('click', function(){
   let num = Math.floor(Math.random()*100)+1;
   document.getElementById('number').innerText = num;
   addPoints(num);
 });
 
-let fastClickTarget = 5;
-document.getElementById('fastClickBtn').addEventListener('click', function(){
-  fastClicks++; addPoints(5);
-  document.getElementById('fastClicks').innerText = fastClicks;
-  localStorage.setItem('fastClicks', fastClicks);
-  if(fastClicks >= fastClickTarget){
-    alert("Brawo! Zaliczyłeś szybkiego klikacza!");
-    fastClicks=0;
-    document.getElementById('fastClicks').innerText = fastClicks;
-    localStorage.setItem('fastClicks', fastClicks);
-  }
-});
-
-document.getElementById('cardBtn').addEventListener('click', function(){
-  const karty = ["♠A","♠2","♠3","♠4","♠5","♠6","♠7","♠8","♠9","♠10","♠J","♠Q","♠K",
-                 "♥A","♥2","♥3","♥4","♥5","♥6","♥7","♥8","♥9","♥10","♥J","♥Q","♥K",
-                 "♦A","♦2","♦3","♦4","♦5","♦6","♦7","♦8","♦9","♦10","♦J","♦Q","♦K",
-                 "♣A","♣2","♣3","♣4","♣5","♣6","♣7","♣8","♣9","♣10","♣J","♣Q","♣K"];
-  let los = karty[Math.floor(Math.random()*karty.length)];
-  document.getElementById('card').innerText = los;
-  addPoints(10);
-});
-
-document.getElementById('guessBtn').addEventListener('click', function(){
-  let guess = parseInt(document.getElementById('guessNumber').value);
-  let correct = Math.floor(Math.random()*10)+1;
-  if(guess === correct){
-    document.getElementById('guessResult').innerText = "✅ Trafiłeś!";
-    addPoints(20);
-  } else {
-    document.getElementById('guessResult').innerText = `❌ Pomyłka! Prawidłowa: ${correct}`;
-  }
-});
-
-// Rebirth i bonus
+// ---- Rebirth ----
 document.getElementById('rebirthBtn').addEventListener('click', function(){
   let cost = 1000 * Math.pow(10, rebirthCount);
   if(totalPoints >= cost){
@@ -188,22 +164,24 @@ document.getElementById('rebirthBtn').addEventListener('click', function(){
     localStorage.setItem('totalPoints', totalPoints);
     localStorage.setItem('rebirthCount', rebirthCount);
     alert(`Rebirth ×${rebirthMultiplier}! Wszystkie punkty są teraz mnożone.`);
-  } else { alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`); }
+  } else {
+    alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);
+  }
 });
 
+// ---- Bonus ----
 document.getElementById('bonusBtn').addEventListener('click', function(){
   addPoints(50);
   alert("Bonus +50 pkt za obejrzenie reklamy!");
 });
 
-// Punkty
 function addPoints(p){
   totalPoints += p * rebirthMultiplier;
   document.getElementById('totalPoints').innerText = totalPoints;
   localStorage.setItem('totalPoints', totalPoints);
 }
 
-// Auto-logowanie
+// ---- Auto-logowanie ----
 if(currentNick!==""){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('gameScreen').style.display = 'block';
@@ -211,31 +189,7 @@ if(currentNick!==""){
   updateAllDisplays();
 }
 
-// ==== Matematyczna gra ====
-let mathCurrentAnswer = 0;
-function generateMathQuestion() {
-  let a = Math.floor(Math.random()*20)+1;
-  let b = Math.floor(Math.random()*20)+1;
-  let operations = ['+', '-', '*'];
-  let op = operations[Math.floor(Math.random()*operations.length)];
-  let question = `${a} ${op} ${b}`;
-  mathCurrentAnswer = eval(question);
-  document.getElementById('mathQuestion').innerText = question;
-}
-document.getElementById('mathBtn').addEventListener('click', function(){
-  let answer = parseInt(document.getElementById('mathAnswer').value);
-  if(answer === mathCurrentAnswer){
-    document.getElementById('mathResult').innerText = "✅ Brawo! +15 pkt";
-    addPoints(15);
-  } else {
-    document.getElementById('mathResult').innerText = `❌ Pomyłka! Poprawna odpowiedź: ${mathCurrentAnswer}`;
-  }
-  generateMathQuestion();
-  document.getElementById('mathAnswer').value = '';
-});
-generateMathQuestion();
-
-// ==== Geograficzna gra ====
+// ---- Geograficzna ----
 const geoQuestions = [
   {country:"Polska", capital:"Warszawa"},
   {country:"Francja", capital:"Paryż"},
@@ -246,21 +200,108 @@ const geoQuestions = [
   {country:"Brazylia", capital:"Brasília"},
   {country:"Kanada", capital:"Ottawa"}
 ];
-let geoCurrentIndex = Math.floor(Math.random()*geoQuestions.length);
-document.getElementById('geoQuestion').innerText = geoQuestions[geoCurrentIndex].country;
+let geoPool = [...geoQuestions];
+let geoCurrent = null;
+
+function nextGeoQuestion() {
+  if(geoPool.length===0){ geoPool = [...geoQuestions]; }
+  const index = Math.floor(Math.random()*geoPool.length);
+  geoCurrent = geoPool[index];
+  geoPool.splice(index,1);
+  document.getElementById('geoQuestion').innerText = geoCurrent.country;
+}
+
 document.getElementById('geoBtn').addEventListener('click', function(){
   let answer = document.getElementById('geoAnswer').value.trim().toLowerCase();
-  let correct = geoQuestions[geoCurrentIndex].capital.toLowerCase();
-  if(answer === correct){
-    document.getElementById('geoResult').innerText = "✅ Brawo! +20 pkt";
-    addPoints(20);
-  } else {
-    document.getElementById('geoResult').innerText = `❌ Pomyłka! Poprawna odpowiedź: ${geoQuestions[geoCurrentIndex].capital}`;
-  }
-  geoCurrentIndex = Math.floor(Math.random()*geoQuestions.length);
-  document.getElementById('geoQuestion').innerText = geoQuestions[geoCurrentIndex].country;
-  document.getElementById('geoAnswer').value = '';
+  let correct = geoCurrent.capital.toLowerCase();
+  if(answer===correct){ addPoints(20); document.getElementById('geoResult').innerText="✅ Brawo!"; }
+  else{ document.getElementById('geoResult').innerText=`❌ Pomyłka! Poprawna: ${geoCurrent.capital}`; }
+  document.getElementById('geoAnswer').value='';
+  nextGeoQuestion();
 });
+nextGeoQuestion();
+
+// ---- Matematyczna ----
+function generateMath(){
+  let a=Math.floor(Math.random()*20)+1;
+  let b=Math.floor(Math.random()*20)+1;
+  document.getElementById('mathQuestion').innerText=`${a} + ${b}`;
+  return a+b;
+}
+let mathAnswerValue = generateMath();
+
+document.getElementById('mathBtn').addEventListener('click', function(){
+  let ans = parseInt(document.getElementById('mathAnswer').value);
+  if(ans===mathAnswerValue){ addPoints(15); document.getElementById('mathResult').innerText="✅ Brawo!"; }
+  else{ document.getElementById('mathResult').innerText=`❌ Pomyłka! Poprawna: ${mathAnswerValue}`; }
+  document.getElementById('mathAnswer').value='';
+  mathAnswerValue=generateMath();
+});
+
+// ---- Historyczna ----
+const historyQuestions=[
+  {year:966,event:"Mieszko I"},
+  {year:1410,event:"Bitwa pod Grunwaldem"},
+  {year:1795,event:"III rozbiór Polski"}
+];
+let historyCurrent=null;
+
+function nextHistory(){
+  const index=Math.floor(Math.random()*historyQuestions.length);
+  historyCurrent=historyQuestions[index];
+  document.getElementById('historyQuestion').innerText=historyCurrent.year;
+}
+
+document.getElementById('historyBtn').addEventListener('click', function(){
+  let answer=document.getElementById('historyAnswer').value.trim().toLowerCase();
+  if(answer===historyCurrent.event.toLowerCase()){ addPoints(20); document.getElementById('historyResult').innerText="✅ Brawo!"; }
+  else{ document.getElementById('historyResult').innerText=`❌ Pomyłka! Poprawna: ${historyCurrent.event}`; }
+  document.getElementById('historyAnswer').value='';
+  nextHistory();
+});
+nextHistory();
+
+// ---- Polski ----
+const polishQuestions=[
+  {q:"Kto napisał 'Pan Tadeusz'?", a:"Adam Mickiewicz"},
+  {q:"W którym wieku urodził się Juliusz Słowacki?", a:"XIX"},
+  {q:"Czym zajmował się Henryk Sienkiewicz?", a:"Pisarz"}
+];
+let polishCurrent=null;
+function nextPolish(){
+  const index=Math.floor(Math.random()*polishQuestions.length);
+  polishCurrent=polishQuestions[index];
+  document.getElementById('polishQuestion').innerText=polishCurrent.q;
+}
+document.getElementById('polishBtn').addEventListener('click',function(){
+  let answer=document.getElementById('polishAnswer').value.trim().toLowerCase();
+  if(answer===polishCurrent.a.toLowerCase()){ addPoints(20); document.getElementById('polishResult').innerText="✅ Brawo!"; }
+  else{ document.getElementById('polishResult').innerText=`❌ Pomyłka! Poprawna: ${polishCurrent.a}`; }
+  document.getElementById('polishAnswer').value='';
+  nextPolish();
+});
+nextPolish();
+
+// ---- Angielski ----
+const englishQuestions=[
+  {eng:"Dog", pl:"Pies"},
+  {eng:"Cat", pl:"Kot"},
+  {eng:"Sun", pl:"Słońce"}
+];
+let englishCurrent=null;
+function nextEnglish(){
+  const index=Math.floor(Math.random()*englishQuestions.length);
+  englishCurrent=englishQuestions[index];
+  document.getElementById('englishQuestion').innerText=`${englishCurrent.eng} → ?`;
+}
+document.getElementById('englishBtn').addEventListener('click',function(){
+  let answer=document.getElementById('englishAnswer').value.trim().toLowerCase();
+  if(answer===englishCurrent.pl.toLowerCase()){ addPoints(20); document.getElementById('englishResult').innerText="✅ Brawo!"; }
+  else{ document.getElementById('englishResult').innerText=`❌ Pomyłka! Poprawna: ${englishCurrent.pl}`; }
+  document.getElementById('englishAnswer').value='';
+  nextEnglish();
+});
+nextEnglish();
 </script>
 
 </body>
