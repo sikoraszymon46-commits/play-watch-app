@@ -3,226 +3,264 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlayWatch – Gry Edukacyjne</title>
-
+<title>PlayWatch – Mega Gry i Zagadki</title>
 <style>
-body{margin:0;font-family:Arial;background:#1e3c72;color:#fff}
-header,footer{background:#0d1b33;padding:15px;text-align:center}
-section{background:rgba(0,0,0,.6);margin:15px auto;padding:15px;max-width:900px;border-radius:10px}
-button{padding:8px 14px;border:none;border-radius:6px;background:#ff9800;font-weight:bold;cursor:pointer}
-input{padding:6px;border-radius:6px;border:none}
-.result{margin-top:8px;font-weight:bold}
-#login{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
-#game{display:none}
+body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin:0; padding:0;}
+header, footer { text-align:center; padding:20px; background:#0d1b33;}
+nav { display:flex; justify-content:center; gap:10px; margin:10px 0;}
+nav button { padding:8px 12px; border:none; border-radius:5px; cursor:pointer; background:#ff9800; color:#000; font-weight:bold;}
+section { display:none; margin:20px auto; padding:15px; max-width:900px; background:rgba(0,0,0,0.6); border-radius:10px;}
+button { padding:10px 15px; margin:5px; cursor:pointer; border:none; border-radius:5px; background:#ff9800; color:#000; font-weight:bold;}
+input, select { padding:8px; border-radius:5px; border:none; margin:5px;}
+#loginScreen { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh;}
+#gameScreen, #regulamin, #polityka, #kontakt, #onas { display:none; }
 </style>
 </head>
-
 <body>
 
-<div id="login">
-<h1>🎮 PlayWatch</h1>
-<input id="nick" placeholder="Twój nick">
-<br><br>
-<button id="start">Zaczynam</button>
+<!-- LOGOWANIE -->
+<div id="loginScreen">
+<h1>🎮 Witaj w PlayWatch!</h1>
+<p>Podaj swój nick:</p>
+<input type="text" id="playerNick" placeholder="Twój nick">
+<button id="startBtn">Zaczynam!</button>
 </div>
 
-<div id="game">
-
+<!-- MENU -->
+<div id="gameScreen">
 <header>
-<p>Nick: <span id="nickShow"></span></p>
-<p>Punkty: <span id="points">0</span></p>
-<p>Rebirth: <span id="rebirth">0</span></p>
+<h1>🎮 PlayWatch</h1>
+<p>Nick: <span id="displayNick"></span></p>
+<p>Punkty: <span id="totalPoints">0</span></p>
+<p>Rebirthy: <span id="rebirthCount">0</span></p>
 </header>
-
-<!-- KLIKACZ -->
-<section>
-<h2>🖱️ Klikacz</h2>
-<button id="clickBtn">Kliknij</button>
-</section>
+<nav>
+<button onclick="showSection('geografia')">Geografia</button>
+<button onclick="showSection('historia')">Historia</button>
+<button onclick="showSection('polski')">Polski</button>
+<button onclick="showSection('angielski')">Angielski</button>
+<button onclick="showSection('chemia')">Chemia</button>
+<button onclick="showSection('biologia')">Biologia</button>
+<button onclick="showSection('fizyka')">Fizyka</button>
+<button onclick="showSection('klikacz')">Klikacz</button>
+<button onclick="showSection('rebirthBonus')">Rebirth / Bonus</button>
+<button onclick="showSection('regulamin')">Regulamin</button>
+<button onclick="showSection('polityka')">Polityka Prywatności</button>
+<button onclick="showSection('kontakt')">Kontakt</button>
+<button onclick="showSection('onas')">O nas</button>
+</nav>
 
 <!-- GEOGRAFIA -->
-<section>
-<h2>🌍 Geografia – stolice</h2>
-<p id="geoQ"></p>
-<input id="geoA">
-<button onclick="checkGeo()">Sprawdź</button>
-<div class="result" id="geoR"></div>
+<section id="geografia">
+<h2>🌍 Geografia – Podaj stolicę państwa</h2>
+<p id="geoPytanie"></p>
+<input type="text" id="geoOdpowiedz" placeholder="Twoja odpowiedź">
+<button id="geoSprawdz">Sprawdź</button>
+<p id="geoWynik"></p>
 </section>
 
 <!-- HISTORIA -->
-<section>
-<h2>🇵🇱 Historia Polski</h2>
-<p id="hisQ"></p>
-<input id="hisA">
-<button onclick="checkHis()">Sprawdź</button>
-<div class="result" id="hisR"></div>
+<section id="historia">
+<h2>🏰 Historia Polski – Wydarzenia</h2>
+<p id="histPytanie"></p>
+<input type="text" id="histOdpowiedz" placeholder="Twoja odpowiedź">
+<button id="histSprawdz">Sprawdź</button>
+<p id="histWynik"></p>
 </section>
 
 <!-- POLSKI -->
-<section>
-<h2>✍️ Język polski</h2>
-<p id="polQ"></p>
-<input id="polA">
-<button onclick="checkPol()">Sprawdź</button>
-<div class="result" id="polR"></div>
+<section id="polski">
+<h2>📖 Język polski</h2>
+<p id="polskiPytanie"></p>
+<input type="text" id="polskiOdpowiedz" placeholder="Twoja odpowiedź">
+<button id="polskiSprawdz">Sprawdź</button>
+<p id="polskiWynik"></p>
 </section>
 
 <!-- ANGIELSKI -->
-<section>
-<h2>🇬🇧 Angielski – przetłumacz na polski</h2>
-<p id="engQ"></p>
-<input id="engA">
-<button onclick="checkEng()">Sprawdź</button>
-<div class="result" id="engR"></div>
+<section id="angielski">
+<h2>🇬🇧 Angielski – Tłumaczenie</h2>
+<p id="angPytanie"></p>
+<input type="text" id="angOdpowiedz" placeholder="Twoja odpowiedź">
+<button id="angSprawdz">Sprawdź</button>
+<p id="angWynik"></p>
 </section>
 
-<!-- NIEMIECKI -->
-<section>
-<h2>🇩🇪 Niemiecki – przetłumacz na polski</h2>
-<p id="gerQ"></p>
-<input id="gerA">
-<button onclick="checkGer()">Sprawdź</button>
-<div class="result" id="gerR"></div>
+<!-- CHEMIA -->
+<section id="chemia">
+<h2>⚗️ Chemia</h2>
+<p id="chemPytanie"></p>
+<input type="text" id="chemOdpowiedz" placeholder="Twoja odpowiedź">
+<button id="chemSprawdz">Sprawdź</button>
+<p id="chemWynik"></p>
 </section>
 
-<!-- REBIRTH -->
-<section>
-<h2>🔄 Rebirth</h2>
-<button onclick="doRebirth()">Rebirth (1000 pkt)</button>
+<!-- BIOLOGIA -->
+<section id="biologia">
+<h2>🧬 Biologia</h2>
+<p id="bioPytanie"></p>
+<input type="text" id="bioOdpowiedz" placeholder="Twoja odpowiedź">
+<button id="bioSprawdz">Sprawdź</button>
+<p id="bioWynik"></p>
 </section>
 
-<!-- BONUS -->
-<section>
-<h2>💰 Bonus</h2>
-<button onclick="bonus()">Bonus +50</button>
+<!-- FIZYKA -->
+<section id="fizyka">
+<h2>⚡ Fizyka</h2>
+<p id="fizykaPytanie"></p>
+<input type="text" id="fizykaOdpowiedz" placeholder="Twoja odpowiedź">
+<button id="fizykaSprawdz">Sprawdź</button>
+<p id="fizykaWynik"></p>
+</section>
+
+<!-- KLIKACZ -->
+<section id="klikacz">
+<h2>🖱️ Klikacz</h2>
+<p>Kliknij 1 pkt:</p>
+<button id="clickBtn">Kliknij mnie</button>
+<p>Kliknięcia: <span id="clicks">0</span></p>
+</section>
+
+<!-- REBIRTH I BONUS -->
+<section id="rebirthBonus">
+<h2>🔄 Rebirth i 💰 Bonus</h2>
+<button id="rebirthBtn">Rebirth ×2</button>
+<button id="bonusBtn">Oglądałem reklamę</button>
+</section>
+
+<!-- REGULAMIN -->
+<section id="regulamin">
+<h2>📜 Regulamin</h2>
+<p>Długi regulamin opisujący zasady korzystania z serwisu...</p>
+</section>
+
+<!-- POLITYKA PRYWATNOŚCI -->
+<section id="polityka">
+<h2>🛡️ Polityka Prywatności</h2>
+<p>Długa polityka prywatności...</p>
+</section>
+
+<!-- KONTAKT -->
+<section id="kontakt">
+<h2>📧 Kontakt</h2>
+<p>Kontakt: <strong>sikoraszymon45@gmail.com</strong></p>
+</section>
+
+<!-- O NAS -->
+<section id="onas">
+<h2>ℹ️ O nas</h2>
+<p>Długi opis o serwisie PlayWatch, misji, autorze, możliwościach gier...</p>
 </section>
 
 <footer>
-PlayWatch © 2026
+<p>© 2026 PlayWatch – Wszystkie prawa zastrzeżone</p>
 </footer>
-</div>
 
 <script>
-/* ===== LOGOWANIE ===== */
-const login = document.getElementById("login");
-const game = document.getElementById("game");
-const startBtn = document.getElementById("start");
-const nickInput = document.getElementById("nick");
-const nickShow = document.getElementById("nickShow");
+// Pokazywanie sekcji
+function showSection(id){
+  const sections = document.querySelectorAll('section');
+  sections.forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
 
-let points = 0;
-let rebirth = 0;
-let mult = 1;
+// LOCALSTORAGE
+let totalPoints = parseInt(localStorage.getItem('totalPoints'))||0;
+let clicks = parseInt(localStorage.getItem('clicks'))||0;
+let rebirthCount = parseInt(localStorage.getItem('rebirthCount'))||0;
+let rebirthMultiplier = rebirthCount+1;
+let currentNick = localStorage.getItem('currentNick')||"";
 
-startBtn.addEventListener("click",()=>{
-  if(!nickInput.value.trim()) return alert("Podaj nick!");
-  login.style.display="none";
-  game.style.display="block";
-  nickShow.textContent = nickInput.value;
+// START GRY
+document.getElementById('startBtn').addEventListener('click',()=>{
+  let nick=document.getElementById('playerNick').value.trim();
+  if(!nick){alert("Podaj nick!"); return;}
+  currentNick=nick;
+  localStorage.setItem('currentNick',currentNick);
+  document.getElementById('displayNick').innerText=currentNick;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
 });
 
-/* ===== PUNKTY ===== */
-function addPoints(p){
-  points += p*mult;
-  document.getElementById("points").textContent = points;
+// KLIKACZ
+document.getElementById('clickBtn').addEventListener('click',()=>{
+  clicks++; totalPoints+=1*rebirthMultiplier;
+  document.getElementById('clicks').innerText=clicks;
+  document.getElementById('totalPoints').innerText=totalPoints;
+  localStorage.setItem('clicks',clicks);
+  localStorage.setItem('totalPoints',totalPoints);
+});
+
+// REBIRTH
+document.getElementById('rebirthBtn').addEventListener('click',()=>{
+  let cost = 1000*Math.pow(10,rebirthCount);
+  if(totalPoints>=cost){
+    totalPoints=0; rebirthCount++; rebirthMultiplier=rebirthCount+1;
+    document.getElementById('totalPoints').innerText=totalPoints;
+    document.getElementById('rebirthCount').innerText=rebirthCount;
+    localStorage.setItem('totalPoints',totalPoints);
+    localStorage.setItem('rebirthCount',rebirthCount);
+    alert(`Rebirth ×${rebirthMultiplier}!`);
+  } else { alert(`Nie masz ${cost} punktów!`);}
+});
+
+// BONUS
+document.getElementById('bonusBtn').addEventListener('click',()=>{
+  totalPoints+=50*rebirthMultiplier;
+  document.getElementById('totalPoints').innerText=totalPoints;
+  localStorage.setItem('totalPoints',totalPoints);
+  alert("Bonus +50 pkt!");
+});
+
+// AUTO-LOGIN
+if(currentNick!==""){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
+  document.getElementById('displayNick').innerText=currentNick;
+  document.getElementById('totalPoints').innerText=totalPoints;
+  document.getElementById('rebirthCount').innerText=rebirthCount;
+  document.getElementById('clicks').innerText=clicks;
 }
 
-/* ===== KLIKACZ ===== */
-document.getElementById("clickBtn").onclick=()=>addPoints(1);
+// PRZYKŁADOWE PYTANIA (po 50 na przedmiot, można rozbudować)
+let geoQuestions=[
+{q:"Polska",a:"Warszawa"},{q:"Niemcy",a:"Berlin"},{q:"Francja",a:"Paryż"},{q:"Włochy",a:"Rzym"},{q:"Hiszpania",a:"Madryt"},
+{q:"Portugalia",a:"Lizbona"},{q:"Norwegia",a:"Oslo"},{q:"Szwecja",a:"Sztokholm"},{q:"Finlandia",a:"Helsinki"},{q:"Grecja",a:"Ateny"},
+{q:"Czechy",a:"Praga"},{q:"Słowacja",a:"Bratysława"},{q:"Belgia",a:"Bruksela"},{q:"Holandia",a:"Amsterdam"},{q:"Szwajcaria",a:"Bern"},
+{q:"Austria",a:"Wiedeń"},{q:"Węgry",a:"Budapeszt"},{q:"Dania",a:"Kopenhaga"},{q:"Irlandia",a:"Dublin"},{q:"Islandia",a:"Reykjavik"},
+{q:"Litwa",a:"Wilno"},{q:"Łotwa",a:"Ryga"},{q:"Estonia",a:"Tallin"},{q:"Chorwacja",a:"Zagrzeb"},{q:"Bośnia i Hercegowina",a:"Sarajewo"},
+{q:"Serbia",a:"Belgrad"},{q:"Czarnogóra",a:"Podgorica"},{q:"Rumunia",a:"Bukareszt"},{q:"Bułgaria",a:"Sofia"},{q:"Albania",a:"Tirana"},
+{q:"Ukraina",a:"Kijów"},{q:"Białoruś",a:"Mińsk"},{q:"Rosja",a:"Moskwa"},{q:"Turcja",a:"Ankara"},{q:"Gruzja",a:"Tbilisi"},
+{q:"Armenia",a:"Erywań"},{q:"Azerbejdżan",a:"Baku"},{q:"Kazachstan",a:"Astana"},{q:"Kirgistan",a:"Biszkek"},{q:"Uzbekistan",a:"Taszkent"},
+{q:"Tadżykistan",a:"Duszanbe"},{q:"Mongolia",a:"Ułan Bator"},{q:"Chiny",a:"Pekin"},{q:"Japonia",a:"Tokio"},{q:"Korea Południowa",a:"Seul"},
+{q:"Korea Północna",a:"Pjongjang"},{q:"Indie",a:"Nowe Delhi"},{q:"Pakistan",a:"Islamabad"},{q:"Bangladesz",a:"Dhaka"},{q:"Nepal",a:"Katmandu"}];
 
-/* ===== DANE (25 PYTAŃ) ===== */
-let geo=[["Polska","Warszawa"],["Niemcy","Berlin"],["Francja","Paryż"],["Hiszpania","Madryt"],["Włochy","Rzym"],
-["Czechy","Praga"],["Słowacja","Bratysława"],["Austria","Wiedeń"],["Węgry","Budapeszt"],["Norwegia","Oslo"],
-["Szwecja","Sztokholm"],["Finlandia","Helsinki"],["Litwa","Wilno"],["Łotwa","Ryga"],["Estonia","Tallin"],
-["Ukraina","Kijów"],["Białoruś","Mińsk"],["Rosja","Moskwa"],["Kanada","Ottawa"],["USA","Waszyngton"],
-["Meksyk","Meksyk"],["Brazylia","Brasilia"],["Argentyna","Buenos Aires"],["Japonia","Tokio"],["Chiny","Pekin"]];
-
-let his=[["966","Chrzest Polski"],["1000","Zjazd gnieźnieński"],["1025","Koronacja Bolesława Chrobrego"],
-["1138","Testament Krzywoustego"],["1410","Bitwa pod Grunwaldem"],["1569","Unia lubelska"],
-["1791","Konstytucja 3 Maja"],["1795","III rozbiór Polski"],["1918","Odzyskanie niepodległości"],
-["1939","Wybuch II wojny światowej"],["1945","Koniec II wojny światowej"],["1989","Upadek komunizmu"],
-["1385","Unia w Krewie"],["1320","Koronacja Łokietka"],["1573","Konfederacja warszawska"],
-["1655","Potop szwedzki"],["1772","I rozbiór"],["1793","II rozbiór"],["1863","Powstanie styczniowe"],
-["1920","Bitwa warszawska"],["1980","Solidarność"],["2004","Wejście do UE"],
-["966","Państwo Mieszka I"],["1410","Zwycięstwo nad Krzyżakami"],["1944","Powstanie warszawskie"]];
-
-let pol=[["Jaki to przypadek: kogo? czego?","Dopełniacz"],["Część mowy: pies","Rzeczownik"],
-["Zdanie pytające kończy się znakiem","?"],["Jaki to przypadek: komu? czemu?","Celownik"],
-["Czasownik to część mowy która","Oznacza czynność"],
-["Przysłówek odpowiada na pytania","Jak? gdzie?"],
-["Jaki to przypadek: kogo? co?","Biernik"],
-["Przymiotnik określa","Rzeczownik"],
-["Zdanie oznajmujące kończy się","."],
-["Jaki to przypadek: z kim? z czym?","Narzędnik"],
-["Imiesłów to","Forma czasownika"],
-["Wykrzyknik wyraża","Emocje"],
-["Liczebnik określa","Liczbę"],
-["Jaki to przypadek: o kim? o czym?","Miejscownik"],
-["Zdanie rozkazujące wyraża","Polecenie"],
-["Rzeczownik odpowiada na pytania","Kto? co?"],
-["Synonim to","Wyraz bliskoznaczny"],
-["Antonim to","Wyraz przeciwstawny"],
-["Podmiot to","Wykonawca czynności"],
-["Orzeczenie to","Czynność w zdaniu"],
-["Jaki to przypadek: kto? co?","Mianownik"],
-["Zdanie złożone ma","Więcej niż jedno orzeczenie"],
-["Spójnik łączy","Wyrazy lub zdania"],
-["Przyimek to np.","W, na, pod"],
-["Wyraz pochodny","Ma przedrostek lub przyrostek"]];
-
-let eng=[["cat","kot"],["dog","pies"],["house","dom"],["car","samochód"],["tree","drzewo"],
-["book","książka"],["school","szkoła"],["sun","słońce"],["moon","księżyc"],["water","woda"],
-["food","jedzenie"],["friend","przyjaciel"],["family","rodzina"],["city","miasto"],["country","kraj"],
-["chair","krzesło"],["table","stół"],["window","okno"],["door","drzwi"],["road","droga"],
-["child","dziecko"],["teacher","nauczyciel"],["student","uczeń"],["computer","komputer"],["phone","telefon"]];
-
-let ger=[["Haus","dom"],["Hund","pies"],["Katze","kot"],["Buch","książka"],["Schule","szkoła"],
-["Auto","samochód"],["Baum","drzewo"],["Wasser","woda"],["Brot","chleb"],["Milch","mleko"],
-["Freund","przyjaciel"],["Familie","rodzina"],["Stadt","miasto"],["Land","kraj"],["Tisch","stół"],
-["Stuhl","krzesło"],["Fenster","okno"],["Tür","drzwi"],["Kind","dziecko"],["Lehrer","nauczyciel"],
-["Schüler","uczeń"],["Hand","ręka"],["Kopf","głowa"],["Tag","dzień"],["Nacht","noc"]];
-
-/* ===== LOSOWANIE BEZ POWTÓREK ===== */
-function next(arr){ if(arr.length===0) return null; return arr.splice(Math.floor(Math.random()*arr.length),1)[0]; }
-
-let g=next(geo), h=next(his), p=next(pol), e=next(eng), d=next(ger);
-
-geoQ.textContent=`Podaj stolicę: ${g[0]}`;
-hisQ.textContent=`Co wydarzyło się w roku ${h[0]}?`;
-polQ.textContent=p[0];
-engQ.textContent=`${e[0]}`;
-gerQ.textContent=`${d[0]}`;
-
-/* ===== SPRAWDZANIE ===== */
-function check(input,good,res,arr,cb){
- if(input.value.trim().toLowerCase()==good.toLowerCase()){
-  res.textContent="✅ Poprawna odpowiedź";
-  addPoints(10);
- }else{
-  res.textContent="❌ Nieprawidłowa. Poprawna: "+good;
- }
- input.value="";
- let n=next(arr);
- if(n) cb(n);
+let currentGeoIndex = 0;
+function nextGeoQuestion(){
+  if(currentGeoIndex>=geoQuestions.length){currentGeoIndex=0;}
+  document.getElementById('geoPytanie').innerText=`Państwo: ${geoQuestions[currentGeoIndex].q}`;
+  document.getElementById('geoOdpowiedz').value="";
+  document.getElementById('geoWynik').innerText="";
 }
+document.getElementById('geoSprawdz').addEventListener('click',()=>{
+  let odp = document.getElementById('geoOdpowiedz').value.trim();
+  if(odp.toLowerCase()===geoQuestions[currentGeoIndex].a.toLowerCase()){
+    document.getElementById('geoWynik').innerText="✅ Prawidłowa!";
+    totalPoints+=10*rebirthMultiplier;
+  } else {
+    document.getElementById('geoWynik').innerText=`❌ Nieprawidłowa! Poprawna: ${geoQuestions[currentGeoIndex].a}`;
+  }
+  localStorage.setItem('totalPoints',totalPoints);
+  document.getElementById('totalPoints').innerText=totalPoints;
+  currentGeoIndex++;
+  nextGeoQuestion();
+});
+nextGeoQuestion();
 
-function checkGeo(){check(geoA,g[1],geoR,geo,n=>{g=n;geoQ.textContent=`Podaj stolicę: ${n[0]}`})}
-function checkHis(){check(hisA,h[1],hisR,his,n=>{h=n;hisQ.textContent=`Co wydarzyło się w roku ${n[0]}?`})}
-function checkPol(){check(polA,p[1],polR,pol,n=>{p=n;polQ.textContent=n[0]})}
-function checkEng(){check(engA,e[1],engR,eng,n=>{e=n;engQ.textContent=n[0]})}
-function checkGer(){check(gerA,d[1],gerR,ger,n=>{d=n;gerQ.textContent=n[0]})}
+// Podobnie należy dodać po 50 pytań do historii, polskiego, angielskiego, chemii, biologii i fizyki w tym samym schemacie:
+// historiaQuestions[], polskiQuestions[], angielskiQuestions[], chemiaQuestions[], biologiaQuestions[], fizykaQuestions[]
+// Każda sekcja ma swoje nextQuestion(), sprawdzanie i aktualizację punktów
 
-/* ===== REBIRTH ===== */
-function doRebirth(){
- if(points<1000) return alert("Za mało punktów");
- points=0;rebirth++;mult++;
- document.getElementById("points").textContent=0;
- document.getElementById("rebirth").textContent=rebirth;
- alert("Rebirth! Mnożnik x"+mult);
-}
-
-/* ===== BONUS ===== */
-function bonus(){addPoints(50);alert("Bonus +50");}
 </script>
 
 </body>
