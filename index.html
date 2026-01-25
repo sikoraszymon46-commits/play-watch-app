@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PlayWatch – Mega Gry i Zagadki</title>
 <link rel="stylesheet" href="style.css">
-
 <style>
 body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 0;}
 header, footer { text-align: center; padding: 20px; background: #0d1b33;}
@@ -14,14 +13,7 @@ button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-
 input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 #loginScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;}
 #gameScreen { display: none; }
-#adminPanel { margin-top: 20px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; display:none;}
-#playersList { list-style: none; padding-left: 0; }
-#playersList li { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.2);}
 </style>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-     crossorigin="anonymous"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9599322707323836"
-     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -42,58 +34,71 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
   <p>Rebirthy: <span id="rebirthCount">0</span></p>
 </header>
 
+<!-- Gry -->
 <section>
 <h2>🖱️ Klikacz</h2>
+<p>Kliknij przycisk, aby zdobyć punkty.</p>
 <p>Kliknięcia: <span id="clicks">0</span></p>
 <button id="clickBtn">Kliknij mnie</button>
 </section>
 
 <section>
 <h2>🎲 Losowa liczba</h2>
+<p>Wylosuj liczbę 1–100 i zdobądź punkty równe tej liczbie.</p>
 <p>Liczba: <span id="number">?</span></p>
 <button id="randomBtn">Losuj 1–100</button>
 </section>
 
 <section>
 <h2>⚡ Szybkie kliknięcia</h2>
-<p>Kliknij 5 razy jak najszybciej!</p>
+<p>Kliknij 5 razy jak najszybciej i zgarnij bonus.</p>
 <button id="fastClickBtn">Kliknij mnie</button>
 <p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
 </section>
 
 <section>
 <h2>🎴 Losowa karta</h2>
+<p>Losuj losową kartę. Za każdą kartę +10 punktów.</p>
 <p>Karta: <span id="card">?</span></p>
 <button id="cardBtn">Losuj kartę</button>
 </section>
 
 <section>
 <h2>🎯 Odgadnij liczbę</h2>
-<p>Wpisz liczbę 1–10:</p>
+<p>Wpisz liczbę od 1 do 10. Jeśli trafisz, wygrywasz 20 punktów!</p>
 <input type="number" id="guessNumber" min="1" max="10">
 <button id="guessBtn">Sprawdź</button>
 <p id="guessResult"></p>
 </section>
 
 <section>
+<h2>🎰 Slot</h2>
+<p>Spróbuj szczęścia w slocie. 3 takie same symbole = +50 pkt!</p>
+<p>Wynik: <span id="slotResult">---</span></p>
+<button id="slotBtn">Spin</button>
+</section>
+
+<section>
 <h2>🔄 Rebirth</h2>
+<p>Wydaj punkty, aby zwiększyć mnożnik punktów.</p>
 <button id="rebirthBtn">Rebirth ×2</button>
 </section>
 
 <section>
 <h2>💰 Bonus za reklamę</h2>
+<p>Oglądając reklamę zdobywasz bonus +50 punktów.</p>
 <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
-
 
 <footer>
 <a href="regulamin.html">Regulamin</a> |
 <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
+<a href="o-nas.html">O nas</a> |
 Kontakt: <strong>sikoraszymon45@gmail.com</strong>
 </footer>
 
-<!-- LOGIKA GRY -->
 <script>
+// Punkty i nick
 let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
 let clicks = parseInt(localStorage.getItem('clicks')) || 0;
 let fastClicks = parseInt(localStorage.getItem('fastClicks')) || 0;
@@ -101,7 +106,7 @@ let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
 let rebirthMultiplier = rebirthCount + 1;
 let currentNick = localStorage.getItem('currentNick') || "";
 
-// START GRY
+// Start gry
 document.getElementById('startBtn').addEventListener('click', function(){
   let nick = document.getElementById('playerNick').value.trim();
   if(!nick){ alert("Podaj nick!"); return; }
@@ -113,7 +118,7 @@ document.getElementById('startBtn').addEventListener('click', function(){
   updateAllDisplays();
 });
 
-// FUNKCJE
+// Funkcje do gry
 function updateAllDisplays(){
   document.getElementById('totalPoints').innerText = totalPoints;
   document.getElementById('clicks').innerText = clicks;
@@ -121,18 +126,21 @@ function updateAllDisplays(){
   document.getElementById('rebirthCount').innerText = rebirthCount;
 }
 
+// Klikacz
 document.getElementById('clickBtn').addEventListener('click', function(){
   clicks++; addPoints(1);
   document.getElementById('clicks').innerText = clicks;
   localStorage.setItem('clicks', clicks);
 });
 
+// Losowa liczba
 document.getElementById('randomBtn').addEventListener('click', function(){
   let num = Math.floor(Math.random()*100)+1;
   document.getElementById('number').innerText = num;
   addPoints(num);
 });
 
+// Szybkie kliknięcia
 let fastClickTarget = 5;
 document.getElementById('fastClickBtn').addEventListener('click', function(){
   fastClicks++; addPoints(5);
@@ -146,6 +154,7 @@ document.getElementById('fastClickBtn').addEventListener('click', function(){
   }
 });
 
+// Losowa karta
 document.getElementById('cardBtn').addEventListener('click', function(){
   const karty = ["♠A","♠2","♠3","♠4","♠5","♠6","♠7","♠8","♠9","♠10","♠J","♠Q","♠K",
                  "♥A","♥2","♥3","♥4","♥5","♥6","♥7","♥8","♥9","♥10","♥J","♥Q","♥K",
@@ -156,6 +165,7 @@ document.getElementById('cardBtn').addEventListener('click', function(){
   addPoints(10);
 });
 
+// Odgadnij liczbę
 document.getElementById('guessBtn').addEventListener('click', function(){
   let guess = parseInt(document.getElementById('guessNumber').value);
   let correct = Math.floor(Math.random()*10)+1;
@@ -167,6 +177,22 @@ document.getElementById('guessBtn').addEventListener('click', function(){
   }
 });
 
+// Slot
+document.getElementById('slotBtn').addEventListener('click', function(){
+  const symbole = ["🍒","🍋","🍉","⭐","🔔"];
+  let wynik = [
+    symbole[Math.floor(Math.random()*symbole.length)],
+    symbole[Math.floor(Math.random()*symbole.length)],
+    symbole[Math.floor(Math.random()*symbole.length)]
+  ];
+  document.getElementById('slotResult').innerText = wynik.join(" ");
+  if(wynik[0]===wynik[1] && wynik[1]===wynik[2]){
+    alert("Wygrana! +50 punktów");
+    addPoints(50);
+  }
+});
+
+// Rebirth
 document.getElementById('rebirthBtn').addEventListener('click', function(){
   let cost = 1000 * Math.pow(10, rebirthCount);
   if(totalPoints >= cost){
@@ -182,6 +208,7 @@ document.getElementById('rebirthBtn').addEventListener('click', function(){
   }
 });
 
+// Bonus za reklamę
 document.getElementById('bonusBtn').addEventListener('click', function(){
   addPoints(50);
   alert("Bonus +50 pkt za obejrzenie reklamy!");
@@ -201,29 +228,5 @@ if(currentNick!==""){
   updateAllDisplays();
 }
 </script>
-
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCz0_955oFzkQiAyiF9HU5IbfRCoVoVjFc",
-  authDomain: "playwatch-admin.firebaseapp.com",
-  projectId: "playwatch-admin",
-  storageBucket: "playwatch-admin.firebasestorage.app",
-  messagingSenderId: "1083558018258",
-  appId: "1:1083558018258:web:2e7abe903e07d3a13bc10b"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-
-}
-
-}, 5000);
-</script>
-
 </body>
 </html>
