@@ -3,225 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlayWatch – Mega Gry i Zagadki</title>
+<title>PlayWatch – Mega Gry Edukacyjne</title>
 <style>
-body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 0;}
-header, footer { text-align: center; padding: 20px; background: #0d1b33;}
-section { margin: 20px auto; padding: 15px; max-width: 800px; background: rgba(0,0,0,0.6); border-radius: 10px;}
-button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; background: #ff9800; color: #000; font-weight: bold;}
-input, select { padding: 8px; border-radius: 5px; border: none; width: 150px;}
-#loginScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;}
-#gameScreen, #regulaminScreen, #politykaScreen, #kontaktScreen, #oNasScreen { display: none; }
-#footerLinks a { color: #ff9800; margin: 0 5px; text-decoration: none; }
+body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin:0; padding:0;}
+header, footer { text-align:center; padding:20px; background:#0d1b33;}
+section { margin:20px auto; padding:15px; max-width:800px; background: rgba(0,0,0,0.6); border-radius:10px;}
+button { padding:10px 15px; margin:5px; cursor:pointer; border:none; border-radius:5px; background:#ff9800; color:#000; font-weight:bold;}
+input { padding:8px; border-radius:5px; border:none; width:150px;}
+#loginScreen { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh;}
+#gameScreen { display:none; }
 </style>
 </head>
 <body>
 
 <!-- Ekran logowania -->
 <div id="loginScreen">
-  <h1>🎮 Witaj w PlayWatch!</h1>
-  <p>Podaj swój nick, aby rozpocząć:</p>
-  <input type="text" id="playerNick" placeholder="Twój nick">
-  <button id="startBtn">Zaczynam!</button>
+<h1>🎮 Witaj w PlayWatch!</h1>
+<p>Podaj swój nick, aby rozpocząć:</p>
+<input type="text" id="playerNick" placeholder="Twój nick">
+<button id="startBtn">Zaczynam!</button>
 </div>
 
+<!-- Ekran gry -->
 <div id="gameScreen">
 <header>
-  <h1>🎮 PlayWatch</h1>
-  <p>Nick: <span id="displayNick"></span></p>
-  <p>Punkty: <span id="totalPoints">0</span></p>
-  <p>Rebirthy: <span id="rebirthCount">0</span></p>
+<h1>🎮 PlayWatch</h1>
+<p>Nick: <span id="displayNick"></span></p>
+<p>Punkty: <span id="totalPoints">0</span></p>
+<p>Rebirthy: <span id="rebirthCount">0</span></p>
 </header>
 
 <!-- Klikacz -->
-<section id="clickerGame">
-  <h2>🖱️ Klikacz</h2>
-  <button id="clickBtn">Kliknij mnie</button>
-  <p>Kliknięcia: <span id="clicks">0</span></p>
+<section>
+<h2>🖱️ Klikacz</h2>
+<p>Kliknięcia: <span id="clicks">0</span></p>
+<button id="clickBtn">Kliknij mnie</button>
+</section>
+
+<!-- Losowa liczba -->
+<section>
+<h2>🎲 Losowa liczba</h2>
+<p>Liczba: <span id="number">?</span></p>
+<button id="randomBtn">Losuj 1–100</button>
 </section>
 
 <!-- Geografia -->
-<section id="geoGame">
-  <h2>🌍 Geografia – Stolice Państw</h2>
-  <p id="geoQuestion"></p>
-  <input type="text" id="geoAnswer" placeholder="Wpisz stolicę">
-  <button id="geoCheckBtn">Sprawdź</button>
-  <p id="geoResult"></p>
+<section>
+<h2>🌍 Geografia - Stolice Państw</h2>
+<p id="geoQuestion"></p>
+<input type="text" id="geoAnswer" placeholder="Wpisz stolicę">
+<button id="geoBtn">Sprawdź</button>
+<p id="geoResult"></p>
 </section>
 
 <!-- Historia Polski -->
-<section id="histGame">
-  <h2>📜 Historia Polski</h2>
-  <p id="histQuestion"></p>
-  <input type="text" id="histAnswer" placeholder="Wpisz odpowiedź">
-  <button id="histCheckBtn">Sprawdź</button>
-  <p id="histResult"></p>
+<section>
+<h2>📜 Historia Polski</h2>
+<p id="histQuestion"></p>
+<input type="text" id="histAnswer" placeholder="Odpowiedź">
+<button id="histBtn">Sprawdź</button>
+<p id="histResult"></p>
 </section>
 
 <!-- Polski -->
-<section id="polskiGame">
-  <h2>📖 Język Polski</h2>
-  <p id="polskiQuestion"></p>
-  <input type="text" id="polskiAnswer" placeholder="Wpisz odpowiedź">
-  <button id="polskiCheckBtn">Sprawdź</button>
-  <p id="polskiResult"></p>
+<section>
+<h2>📝 Język Polski</h2>
+<p id="polQuestion"></p>
+<input type="text" id="polAnswer" placeholder="Odpowiedź">
+<button id="polBtn">Sprawdź</button>
+<p id="polResult"></p>
 </section>
 
 <!-- Angielski -->
-<section id="engGame">
-  <h2>📝 Język Angielski</h2>
-  <p id="engQuestion"></p>
-  <input type="text" id="engAnswer" placeholder="Wpisz odpowiedź">
-  <button id="engCheckBtn">Sprawdź</button>
-  <p id="engResult"></p>
+<section>
+<h2>🇬🇧 Angielski</h2>
+<p id="engQuestion"></p>
+<input type="text" id="engAnswer" placeholder="Tłumaczenie">
+<button id="engBtn">Sprawdź</button>
+<p id="engResult"></p>
+</section>
+
+<!-- Niemiecki -->
+<section>
+<h2>🇩🇪 Niemiecki</h2>
+<p id="gerQuestion"></p>
+<input type="text" id="gerAnswer" placeholder="Tłumaczenie">
+<button id="gerBtn">Sprawdź</button>
+<p id="gerResult"></p>
 </section>
 
 <!-- Chemia -->
-<section id="chemGame">
-  <h2>⚗️ Chemia</h2>
-  <p id="chemQuestion"></p>
-  <input type="text" id="chemAnswer" placeholder="Wpisz odpowiedź">
-  <button id="chemCheckBtn">Sprawdź</button>
-  <p id="chemResult"></p>
+<section>
+<h2>⚗️ Chemia</h2>
+<p id="chemQuestion"></p>
+<input type="text" id="chemAnswer" placeholder="Odpowiedź">
+<button id="chemBtn">Sprawdź</button>
+<p id="chemResult"></p>
 </section>
 
 <!-- Biologia -->
-<section id="bioGame">
-  <h2>🧬 Biologia</h2>
-  <p id="bioQuestion"></p>
-  <input type="text" id="bioAnswer" placeholder="Wpisz odpowiedź">
-  <button id="bioCheckBtn">Sprawdź</button>
-  <p id="bioResult"></p>
+<section>
+<h2>🧬 Biologia</h2>
+<p id="bioQuestion"></p>
+<input type="text" id="bioAnswer" placeholder="Odpowiedź">
+<button id="bioBtn">Sprawdź</button>
+<p id="bioResult"></p>
 </section>
 
 <!-- Fizyka -->
-<section id="physGame">
-  <h2>💡 Fizyka</h2>
-  <p id="physQuestion"></p>
-  <input type="text" id="physAnswer" placeholder="Wpisz odpowiedź">
-  <button id="physCheckBtn">Sprawdź</button>
-  <p id="physResult"></p>
+<section>
+<h2>⚡ Fizyka</h2>
+<p id="phyQuestion"></p>
+<input type="text" id="phyAnswer" placeholder="Odpowiedź">
+<button id="phyBtn">Sprawdź</button>
+<p id="phyResult"></p>
 </section>
 
-<!-- Rebirth i bonus -->
-<section id="rebirthSection">
-  <h2>🔄 Rebirth</h2>
-  <button id="rebirthBtn">Rebirth ×2</button>
-</section>
-
-<section id="bonusSection">
-  <h2>💰 Bonus za reklamę</h2>
-  <button id="bonusBtn">Oglądałem reklamę</button>
+<!-- Rebirth i Bonus na dole -->
+<section>
+<h2>🔄 Rebirth i Bonus</h2>
+<button id="rebirthBtn">Rebirth ×2</button>
+<button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
 <footer>
-<div id="footerLinks">
-  <a href="#" onclick="showSection('regulaminScreen')">Regulamin</a> |
-  <a href="#" onclick="showSection('politykaScreen')">Polityka prywatności</a> |
-  <a href="#" onclick="showSection('kontaktScreen')">Kontakt</a> |
-  <a href="#" onclick="showSection('oNasScreen')">O nas</a>
-</div>
+<a href="regulamin.html">Regulamin</a> | 
+<a href="polityka-prywatnosci.html">Polityka prywatności</a> | 
+<a href="kontakt.html">Kontakt</a> | 
+<a href="onas.html">O nas</a>
 </footer>
 
-<div id="regulaminScreen"><h2>Regulamin</h2><p>Długi regulamin...</p></div>
-<div id="politykaScreen"><h2>Polityka prywatności</h2><p>Długi tekst polityki...</p></div>
-<div id="kontaktScreen"><h2>Kontakt</h2><p>Email: sikoraszymon45@gmail.com</p></div>
-<div id="oNasScreen"><h2>O nas</h2><p>Długi tekst o nas...</p></div>
-
 <script>
-// --------- Zmienne i logika ---------
+// Punkty i logowanie
 let totalPoints = parseInt(localStorage.getItem('totalPoints'))||0;
 let clicks = parseInt(localStorage.getItem('clicks'))||0;
 let rebirthCount = parseInt(localStorage.getItem('rebirthCount'))||0;
 let rebirthMultiplier = rebirthCount+1;
 let currentNick = localStorage.getItem('currentNick')||"";
 
-document.getElementById('startBtn').addEventListener('click', function(){
+document.getElementById('startBtn').addEventListener('click', ()=>{
   let nick = document.getElementById('playerNick').value.trim();
-  if(!nick){ alert("Podaj nick!"); return; }
+  if(!nick){alert("Podaj nick!"); return;}
   currentNick=nick;
   localStorage.setItem('currentNick', currentNick);
   document.getElementById('displayNick').innerText=currentNick;
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('gameScreen').style.display='block';
-  updateDisplays();
-  startGames();
+  updateAllDisplays();
 });
 
-function updateDisplays(){
+// Klikacz
+document.getElementById('clickBtn').addEventListener('click', ()=>{
+  clicks++; addPoints(1);
+  document.getElementById('clicks').innerText=clicks;
+  localStorage.setItem('clicks',clicks);
+});
+
+// Losowa liczba
+document.getElementById('randomBtn').addEventListener('click', ()=>{
+  let num=Math.floor(Math.random()*100)+1;
+  document.getElementById('number').innerText=num;
+  addPoints(num);
+});
+
+// Rebirth i bonus
+document.getElementById('rebirthBtn').addEventListener('click', ()=>{
+  let cost=1000*Math.pow(10,rebirthCount);
+  if(totalPoints>=cost){
+    totalPoints=0; rebirthCount++; rebirthMultiplier=rebirthCount+1;
+    updateAllDisplays(); localStorage.setItem('totalPoints',totalPoints);
+    localStorage.setItem('rebirthCount',rebirthCount);
+    alert(`Rebirth ×${rebirthMultiplier}! Wszystkie punkty są mnożone.`);
+  } else {alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);}
+});
+document.getElementById('bonusBtn').addEventListener('click', ()=>{
+  addPoints(50); alert("Bonus +50 pkt za obejrzenie reklamy!");
+});
+
+function addPoints(p){
+  totalPoints+=p*rebirthMultiplier;
+  document.getElementById('totalPoints').innerText=totalPoints;
+  localStorage.setItem('totalPoints',totalPoints);
+}
+
+function updateAllDisplays(){
   document.getElementById('totalPoints').innerText=totalPoints;
   document.getElementById('clicks').innerText=clicks;
   document.getElementById('rebirthCount').innerText=rebirthCount;
 }
 
-function addPoints(p){
-  totalPoints+=p*rebirthMultiplier;
-  document.getElementById('totalPoints').innerText=totalPoints;
-  localStorage.setItem('totalPoints', totalPoints);
-}
-
-document.getElementById('clickBtn').addEventListener('click', function(){
-  clicks++; addPoints(1);
-  document.getElementById('clicks').innerText=clicks;
-  localStorage.setItem('clicks', clicks);
-});
-
-document.getElementById('rebirthBtn').addEventListener('click', function(){
-  let cost = 1000*Math.pow(10,rebirthCount);
-  if(totalPoints>=cost){
-    totalPoints=0; rebirthCount++; rebirthMultiplier=rebirthCount+1; updateDisplays();
-    localStorage.setItem('totalPoints',totalPoints);
-    localStorage.setItem('rebirthCount',rebirthCount);
-    alert(`Rebirth ×${rebirthMultiplier}!`);
-  } else { alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);}
-});
-
-document.getElementById('bonusBtn').addEventListener('click', function(){
-  addPoints(50);
-  alert("Bonus +50 pkt!");
-});
-
-function showSection(id){
-  document.getElementById('gameScreen').style.display='none';
-  document.getElementById('regulaminScreen').style.display='none';
-  document.getElementById('politykaScreen').style.display='none';
-  document.getElementById('kontaktScreen').style.display='none';
-  document.getElementById('oNasScreen').style.display='none';
-  document.getElementById(id).style.display='block';
-}
-
+// Auto-logowanie
 if(currentNick!==""){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('gameScreen').style.display='block';
   document.getElementById('displayNick').innerText=currentNick;
-  updateDisplays();
+  updateAllDisplays();
 }
 
-// --------- Gry edukacyjne ---------
-let geoQuestions=[{country:"Polska",capital:"Warszawa"},{country:"Niemcy",capital:"Berlin"},{country:"Francja",capital:"Paryż"}]; // tutaj dodaj pełne 50
-let geoUsed=[];
-function nextGeoQuestion(){
-  if(geoQuestions.length===0) geoQuestions=geoUsed.splice(0);
-  let idx=Math.floor(Math.random()*geoQuestions.length);
-  let q=geoQuestions.splice(idx,1)[0];
-  geoUsed.push(q);
-  document.getElementById('geoQuestion').innerText=`Jaka jest stolica: ${q.country}?`;
-  document.getElementById('geoCheckBtn').onclick=function(){
-    let ans=document.getElementById('geoAnswer').value.trim();
-    if(ans.toLowerCase()===q.capital.toLowerCase()){
-      document.getElementById('geoResult').innerText="✅ Poprawna odpowiedź!";
-      addPoints(10);
-    } else {
-      document.getElementById('geoResult').innerText=`❌ Niepoprawna! Poprawna: ${q.capital}`;
-    }
-    document.getElementById('geoAnswer').value="";
-    nextGeoQuestion();
+// ----------------------
+// Pytania do wszystkich gier (25 pytań każda)
+let geoQuestions=[
+{q:"Polska",a:"Warszawa"},{q:"Niemcy",a:"Berlin"},{q:"Francja",a:"Paryż"},
+{q:"Włochy",a:"Rzym"},{q:"Hiszpania",a:"Madryt"},{q:"Wielka Brytania",a:"Londyn"},
+{q:"Portugalia",a:"Lizbona"},{q:"Belgia",a:"Bruksela"},{q:"Holandia",a:"Amsterdam"},
+{q:"Austria",a:"Wiedeń"},{q:"Szwajcaria",a:"Bern"},{q:"Czechy",a:"Praga"},
+{q:"Słowacja",a:"Bratysława"},{q:"Węgry",a:"Budapeszt"},{q:"Norwegia",a:"Oslo"},
+{q:"Szwecja",a:"Sztokholm"},{q:"Finlandia",a:"Helsinki"},{q:"Dania",a:"Kopenhaga"},
+{q:"Grecja",a:"Ateny"},{q:"Turcja",a:"Ankara"},{q:"Rosja",a:"Moskwa"},
+{q:"Chorwacja",a:"Zagrzeb"},{q:"Irlandia",a:"Dublin"},{q:"Islandia",a:"Reykjavik"},
+{q:"Litwa",a:"Wilno"}];
+let geoIndex=0;
+
+let histQuestions=[
+{q:"Rok chrztu Polski",a:"966"},{q:"Pierwszy król Polski",a:"Bolesław Chrobry"},
+{q:"Rozbicie dzielnicowe",a:"1138"},{q:"Bitwa pod Grunwaldem",a:"1410"},
+{q:"Unia polsko-litewska",a:"1569"},{q:"Konstytucja 3 maja",a:"1791"},
+{q:"Powstanie listopadowe",a:"1830"},{q:"Powstanie styczniowe",a:"1863"},
+{q:"II wojna światowa",a:"1939"},{q:"Solidarność powstała",a:"1980"},
+{q:"Bitwa Warszawska",a:"1920"},{q:"Hołd pruski",a:"1525"},{q:"Panowanie Kazimierza Wielkiego",a:"1333"},
+{q:"Panowanie Władysława Jagiełły",a:"1386"},{q:"Rok uchwalenia Konstytucji 3 maja",a:"1791"},
+{q:"Rozbiór Polski pierwszy",a:"1772"},{q:"Rozbiór Polski drugi",a:"1793"},{q:"Rozbiór Polski trzeci",a:"1795"},
+{q:"Bitwa pod Wiedniem",a:"1683"},{q:"Rok wybuchu powstania warszawskiego",a:"1944"},
+{q:"Panowanie Mieszka I",a:"960"},{q:"Panowanie Kazimierza Odnowiciela",a:"1034"},
+{q:"Bitwa pod Racławicami",a:"1794"},{q:"Powstanie Warszawskie",a:"1944"},{q:"Pierwsza stolica Polski",a:"Gniezno"}];
+let histIndex=0;
+
+// Polski
+let polQuestions=[
+{q:"Podaj przypadek: kot",a:"mianownik"},{q:"Podaj przypadek: psa",a:"dopełniacz"},
+{q:"Zdanie oznajmujące: 'Idę do szkoły'",a:"tak"},{q:"Zdanie pytające: 'Czy lubisz książki?'",a:"tak"},
+{q:"Kto napisał 'Pan Tadeusz'?",a:"Adam Mickiewicz"},{q:"Rok urodzenia Henryka Sienkiewicza?",a:"1846"},
+{q:"Zdanie rozkazujące: 'Zrób zadanie'",a:"tak"},{q:"Zdanie wykrzyknikowe: 'Ale piękny dzień!'",a:"tak"},
+{q:"Synonim do 'duży'",a:"wielki"},{q:"Antonim do 'wysoki'",a:"niski"},
+{q:"Czasownik 'biegać' odmiana 1 os. l.poj.",a:"biegnę"},{q:"Czasownik 'czytać' odmiana 3 os. l.mn.",a:"czytają"},
+{q:"Rodzajnik 'ten' rodzaj żeński",a:"ta"},{q:"Rodzajnik 'ten' rodzaj nijaki",a:"to"},
+{q:"Zdanie z przyimkiem 'na'",a:"Na stole stoi książka"},{q:"Zdanie z przyimkiem 'pod'",a:"Pod krzesłem jest kot"},
+{q:"Zdanie z wykrzyknikiem",a:"Ale super!"},{q:"Zdanie z pytajnikiem","a":"Co robisz?"},{q:"Co to jest rzeczownik?","a":"osoba, miejsce, rzecz"},
+{q:"Co to jest czasownik?","a":"czynność"},{"q":"Co to jest przymiotnik?","a":"określa rzeczownik"},{"q":"Co to jest przysłówek?","a":"określa czasownik"}];
+let polIndex=0;
+
+// Angielski
+let engQuestions=[
+{q:"apple",a:"jabłko"},{q:"dog",a:"pies"},{q:"house",a:"dom"},{q:"sun",a:"słońce"},
+{q:"water",a:"woda"},{q:"book",a:"książka"},{q:"school",a:"szkoła"},{q:"car",a:"samochód"},
+{q:"tree",a:"drzewo"},{q:"cat",a:"kot"},{q:"bread",a:"chleb"},{q:"milk",a:"mleko"},
+{q:"computer",a:"komputer"},{q:"pen",a:"długopis"},{q:"paper",a:"papier"},{q:"chair",a:"krzesło"},
+{q:"table",a:"stół"},{q:"window",a:"okno"},{q:"door",a:"drzwi"},{q:"flower",a:"kwiat"},
+{q:"bird",a:"ptak"},{q:"fish",a:"ryba"},{q:"phone",a:"telefon"},{q:"river",a:"rzeka"},{q:"mountain",a:"góra"}];
+let engIndex=0;
+
+// Niemiecki
+let gerQuestions=[
+{q:"Hund",a:"pies"},{q:"Katze",a:"kot"},{q:"Haus",a:"dom"},{q:"Apfel",a:"jabłko"},
+{q:"Buch",a:"książka"},{q:"Stuhl",a:"krzesło"},{q:"Tisch",a:"stół"},{q:"Fenster",a:"okno"},
+{q:"Tür",a:"drzwi"},{q:"Baum",a:"drzewo"},{q:"Wasser",a:"woda"},{q:"Milch",a:"mleko"},
+{q:"Auto",a:"samochód"},{q:"Blume",a:"kwiat"},{q:"Vogel",a:"ptak"},{q:"Fisch",a:"ryba"},
+{q:"Telefon",a:"telefon"},{q:"Schule",a:"szkoła"},{q:"Papier",a:"papier"},{q:"Computer",a:"komputer"},
+{q:"Sonne",a:"słońce"},{q:"Berg",a:"góra"},{q:"Fluss",a:"rzeka"},{q:"Stadt",a:"miasto"},{q:"Dorf",a:"wieś"}];
+let gerIndex=0;
+
+// Chemia
+let chemQuestions=[
+{q:"Symbol węgla?",a:"C"},{q:"Symbol tlenu?",a:"O"},{q:"H2O to?",a:"woda"},{q:"NaCl to?",a:"sól"},
+{q:"Kwas siarkowy",a:"H2SO4"},{q:"Kwas solny",a:"HCl"},{q:"Podaj pierwiastek Au",a:"złoto"},
+{q:"Podaj pierwiastek Ag",a:"srebro"},{q:"NaOH to?",a:"wodorotlenek sodu"},{q:"CO2 to?",a:"dwutlenek węgla"},
+{q:"Na2CO3 to?",a:"węglan sodu"},{q:"H2O2 to?",a:"nadtlenek wodoru"},{q:"Fe to?",a:"żelazo"},
+{q:"Cu to?",a:"miedź"},{q:"Pb to?",a:"ołów"},{q:"Hg to?",a:"rtęć"},{q:"Zn to?",a:"cynk"},
+{q:"Si to?",a:"krzem"},{q:"Mg to?",a:"magnez"},{q:"K to?",a:"potas"},{q:"Na to?",a:"sód"},
+{q:"Cl to?",a:"chlor"},{q:"F to?",a:"fluor"},{q:"I to?",a:"jod"},{q:"P to?",a:"fosfor"}];
+let chemIndex=0;
+
+// Biologia
+let bioQuestions=[
+{q:"Największy ssak?",a:"wieloryb"},{q:"Roślina zielona?",a:"drzewo"},{q:"Człowiek ile płuc?",a:"2"},
+{q:"Serce człowieka",a:"4 komory"},{q:"Krwinki czerwone transportują?",a:"tlen"
+       ,{q:"Krwinki białe odpowiadają za?",a:"odporność"},{q:"Najmniejsza jednostka życia?",a:"komórka"},
+{q:"Organizm jednokomórkowy?",a:"ameba"},{q:"Organizm wielokomórkowy?",a:"człowiek"},{q:"Roślina wytwarza?",a:"tlen"},
+{q:"Proces fotosyntezy zachodzi w?",a:"chloroplasty"},{q:"Układ nerwowy człowieka?",a:"mózg i nerwy"},
+{q:"Układ pokarmowy zaczyna się od?",a:"usta"},{q:"Co produkuje insulina?",a:"trzustka"},
+{q:"Główna funkcja korzenia?",a:"wchłanianie wody"},{q:"Główna funkcja liścia?",a:"fotosynteza"},
+{q:"Największy narząd człowieka?",a:"skóra"},{q:"Ssaki rodzą?",a:"żywe młode"},
+{q:"Ptaki składają?",a:"jaja"},{q:"Ryby oddychają?",a:"skrzelami"},{q:"Gady mają?",a:"łuski"},
+{q:"Płazy żyją w?",a:"wodzie i na lądzie"},{q:"Bezkręgowce to np.",a:"meduza"},{q:"Kręgowce to np.",a:"człowiek"},
+{q:"Jakie narządy wątroby?",a:"produkuje żółć"},{q:"Co wchłania jelito cienkie?",a:"składniki odżywcze"},
+{q:"Najdłuższa żyła człowieka?",a:"żyła główna"}];
+let bioIndex=0;
+
+// Fizyka
+let phyQuestions=[
+{q:"Jednostka siły?",a:"N"},{q:"Jednostka prądu?",a:"A"},{q:"Prędkość światła?",a:"300000 km/s"},
+{q:"Ciśnienie = siła / ?",a:"powierzchnia"},{q:"Ruch jednostajny to?",a:"stała prędkość"},
+{q:"Grawitacja działa na?",a:"ciała"},{q:"Przyspieszenie ziemskie?",a:"9.81 m/s2"},
+{q:"E=mc2 to wzór?",a:"Einstein"},{q:"Jednostka energii?",a:"J"},{q:"Jednostka mocy?",a:"W"},
+{q:"Fale dźwiękowe są?",a:"podłużne"},{q:"Fale świetlne są?",a:"poprzeczne"},{q:"Ciepło =?",a:"energia"},{q:"Przewodnik elektryczny?",a:"metal"},
+{q:"Izolator?",a:"plastik"},{q:"Magnes przyciąga?",a:"metal"},{q:"Długość fali?",a:"λ"},{q:"Czas =?",a:"sekunda"},
+{q:"Temperatura wrzenia wody?",a:"100°C"},{q:"Ciśnienie atmosferyczne?",a:"1013 hPa"},{q:"Siła tarcia działa?",a:"przeciwnie"},
+{q:"Gęstość = masa / ?",a:"objętość"},{q:"Jednostka ładunku?",a:"C"},{q:"Prędkość = droga / ?",a:"czas"},
+{q:"Wzór na moc?",a:"P=W/t"}];
+let phyIndex=0;
+
+// Funkcja wyświetlania pytań
+function showQuestion(arr,index,idQuestion){
+  document.getElementById(idQuestion).innerText=`${arr[index].q}`;
+}
+
+// Funkcja sprawdzania odpowiedzi
+function checkAnswer(arr,index,inputId,resultId){
+  let user = document.getElementById(inputId).value.trim();
+  if(user.toLowerCase() === arr[index].a.toLowerCase()){
+    document.getElementById(resultId).innerText = "✅ Poprawnie!";
+    addPoints(10);
+  } else {
+    document.getElementById(resultId).innerText = `❌ Błąd! Poprawna odpowiedź: ${arr[index].a}`;
   }
+  index++;
+  return index % arr.length; // reset po ostatnim pytaniu
 }
 
-// Analogicznie dodaj tablice 50 pytań dla historii, polskiego, angielskiego, chemii, biologii, fizyki
-function startGames(){ nextGeoQuestion(); }
-</script>
+// Obsługa wszystkich gier
+document.getElementById('geoBtn').addEventListener('click', ()=>{ geoIndex = checkAnswer(geoQuestions, geoIndex,'geoAnswer','geoResult'); showQuestion(geoQuestions, geoIndex,'geoQuestion'); document.getElementById('geoAnswer').value=""; });
+document.getElementById('histBtn').addEventListener('click', ()=>{ histIndex = checkAnswer(histQuestions, histIndex,'histAnswer','histResult'); showQuestion(histQuestions, histIndex,'histQuestion'); document.getElementById('histAnswer').value=""; });
+document.getElementById('polBtn').addEventListener('click', ()=>{ polIndex = checkAnswer(polQuestions, polIndex,'polAnswer','polResult'); showQuestion(polQuestions, polIndex,'polQuestion'); document.getElementById('polAnswer').value=""; });
+document.getElementById('engBtn').addEventListener('click', ()=>{ engIndex = checkAnswer(engQuestions, engIndex,'engAnswer','engResult'); showQuestion(engQuestions, engIndex,'engQuestion'); document.getElementById('engAnswer').value=""; });
+document.getElementById('gerBtn').addEventListener('click', ()=>{ gerIndex = checkAnswer(gerQuestions, gerIndex,'gerAnswer','gerResult'); showQuestion(gerQuestions, gerIndex,'gerQuestion'); document.getElementById('gerAnswer').value=""; });
+document.getElementById('chemBtn').addEventListener('click', ()=>{ chemIndex = checkAnswer(chemQuestions, chemIndex,'chemAnswer','chemResult'); showQuestion(chemQuestions, chemIndex,'chemQuestion'); document.getElementById('chemAnswer').value=""; });
+document.getElementById('bioBtn').addEventListener('click', ()=>{ bioIndex = checkAnswer(bioQuestions, bioIndex,'bioAnswer','bioResult'); showQuestion(bioQuestions, bioIndex,'bioQuestion'); document.getElementById('bioAnswer').value=""; });
+document.getElementById('phyBtn').addEventListener('click', ()=>{ phyIndex = checkAnswer(phyQuestions, phyIndex,'phyAnswer','phyResult'); showQuestion(phyQuestions, phyIndex,'phyQuestion'); document.getElementById('phyAnswer').value=""; });
 
+// Inicjalizacja pytań na start
+showQuestion(geoQuestions, geoIndex,'geoQuestion');
+showQuestion(histQuestions, histIndex,'histQuestion');
+showQuestion(polQuestions, polIndex,'polQuestion');
+showQuestion(engQuestions, engIndex,'engQuestion');
+showQuestion(gerQuestions, gerIndex,'gerQuestion');
+showQuestion(chemQuestions, chemIndex,'chemQuestion');
+showQuestion(bioQuestions, bioIndex,'bioQuestion');
+showQuestion(phyQuestions, phyIndex,'phyQuestion');
+</script>
 </body>
-</html>
+</html>                             
