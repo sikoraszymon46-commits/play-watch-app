@@ -8,7 +8,7 @@
 <style>
 body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 0;}
 header, footer { text-align: center; padding: 20px; background: #0d1b33;}
-section { margin: 20px auto; padding: 15px; max-width: 800px; background: rgba(0,0,0,0.6); border-radius: 10px;}
+section { margin: 20px auto; padding: 15px; max-width: 900px; background: rgba(0,0,0,0.7); border-radius: 12px;}
 button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; background: #ff9800; color: #000; font-weight: bold;}
 input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 #loginScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;}
@@ -37,68 +37,73 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 <!-- Gry -->
 <section>
 <h2>🖱️ Klikacz</h2>
-<p>Kliknij przycisk, aby zdobyć punkty.</p>
 <p>Kliknięcia: <span id="clicks">0</span></p>
 <button id="clickBtn">Kliknij mnie</button>
 </section>
 
 <section>
 <h2>🎲 Losowa liczba</h2>
-<p>Wylosuj liczbę 1–100 i zdobądź punkty równe tej liczbie.</p>
 <p>Liczba: <span id="number">?</span></p>
 <button id="randomBtn">Losuj 1–100</button>
 </section>
 
 <section>
 <h2>⚡ Szybkie kliknięcia</h2>
-<p>Kliknij 5 razy jak najszybciej i zgarnij bonus.</p>
+<p>Kliknij 5 razy jak najszybciej!</p>
 <button id="fastClickBtn">Kliknij mnie</button>
 <p>Twoje kliknięcia: <span id="fastClicks">0</span></p>
 </section>
 
 <section>
 <h2>🎴 Losowa karta</h2>
-<p>Losuj losową kartę. Za każdą kartę +10 punktów.</p>
 <p>Karta: <span id="card">?</span></p>
 <button id="cardBtn">Losuj kartę</button>
 </section>
 
 <section>
 <h2>🎯 Odgadnij liczbę</h2>
-<p>Wpisz liczbę od 1 do 10. Jeśli trafisz, wygrywasz 20 punktów!</p>
+<p>Wpisz liczbę 1–10:</p>
 <input type="number" id="guessNumber" min="1" max="10">
 <button id="guessBtn">Sprawdź</button>
 <p id="guessResult"></p>
 </section>
 
+<!-- Matematyczna gra -->
 <section>
-<h2>🎰 Slot</h2>
-<p>Spróbuj szczęścia w slocie. 3 takie same symbole = +50 pkt!</p>
-<p>Wynik: <span id="slotResult">---</span></p>
-<button id="slotBtn">Spin</button>
+<h2>🧮 Matematyczna zagadka</h2>
+<p>Rozwiąż prostą zagadkę: <span id="mathQuestion">?</span></p>
+<input type="number" id="mathAnswer" placeholder="Twoja odpowiedź">
+<button id="mathBtn">Sprawdź</button>
+<p id="mathResult"></p>
+</section>
+
+<!-- Geograficzna gra -->
+<section>
+<h2>🌍 Geograficzna zagadka</h2>
+<p>Jaka jest stolica kraju: <span id="geoQuestion">?</span></p>
+<input type="text" id="geoAnswer" placeholder="Twoja odpowiedź">
+<button id="geoBtn">Sprawdź</button>
+<p id="geoResult"></p>
 </section>
 
 <section>
 <h2>🔄 Rebirth</h2>
-<p>Wydaj punkty, aby zwiększyć mnożnik punktów.</p>
 <button id="rebirthBtn">Rebirth ×2</button>
 </section>
 
 <section>
 <h2>💰 Bonus za reklamę</h2>
-<p>Oglądając reklamę zdobywasz bonus +50 punktów.</p>
 <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
 <footer>
 <a href="regulamin.html">Regulamin</a> |
 <a href="polityka-prywatnosci.html">Polityka prywatności</a> |
-<a href="o-nas.html">O nas</a> |
-Kontakt: <strong>sikoraszymon45@gmail.com</strong>
+<a href="o-nas.html">O nas</a>
 </footer>
 
+<!-- LOGIKA GRY -->
 <script>
-// Punkty i nick
 let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
 let clicks = parseInt(localStorage.getItem('clicks')) || 0;
 let fastClicks = parseInt(localStorage.getItem('fastClicks')) || 0;
@@ -106,7 +111,7 @@ let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
 let rebirthMultiplier = rebirthCount + 1;
 let currentNick = localStorage.getItem('currentNick') || "";
 
-// Start gry
+// START GRY
 document.getElementById('startBtn').addEventListener('click', function(){
   let nick = document.getElementById('playerNick').value.trim();
   if(!nick){ alert("Podaj nick!"); return; }
@@ -118,7 +123,7 @@ document.getElementById('startBtn').addEventListener('click', function(){
   updateAllDisplays();
 });
 
-// Funkcje do gry
+// FUNKCJE
 function updateAllDisplays(){
   document.getElementById('totalPoints').innerText = totalPoints;
   document.getElementById('clicks').innerText = clicks;
@@ -126,21 +131,18 @@ function updateAllDisplays(){
   document.getElementById('rebirthCount').innerText = rebirthCount;
 }
 
-// Klikacz
 document.getElementById('clickBtn').addEventListener('click', function(){
   clicks++; addPoints(1);
   document.getElementById('clicks').innerText = clicks;
   localStorage.setItem('clicks', clicks);
 });
 
-// Losowa liczba
 document.getElementById('randomBtn').addEventListener('click', function(){
   let num = Math.floor(Math.random()*100)+1;
   document.getElementById('number').innerText = num;
   addPoints(num);
 });
 
-// Szybkie kliknięcia
 let fastClickTarget = 5;
 document.getElementById('fastClickBtn').addEventListener('click', function(){
   fastClicks++; addPoints(5);
@@ -154,7 +156,6 @@ document.getElementById('fastClickBtn').addEventListener('click', function(){
   }
 });
 
-// Losowa karta
 document.getElementById('cardBtn').addEventListener('click', function(){
   const karty = ["♠A","♠2","♠3","♠4","♠5","♠6","♠7","♠8","♠9","♠10","♠J","♠Q","♠K",
                  "♥A","♥2","♥3","♥4","♥5","♥6","♥7","♥8","♥9","♥10","♥J","♥Q","♥K",
@@ -165,7 +166,6 @@ document.getElementById('cardBtn').addEventListener('click', function(){
   addPoints(10);
 });
 
-// Odgadnij liczbę
 document.getElementById('guessBtn').addEventListener('click', function(){
   let guess = parseInt(document.getElementById('guessNumber').value);
   let correct = Math.floor(Math.random()*10)+1;
@@ -177,22 +177,7 @@ document.getElementById('guessBtn').addEventListener('click', function(){
   }
 });
 
-// Slot
-document.getElementById('slotBtn').addEventListener('click', function(){
-  const symbole = ["🍒","🍋","🍉","⭐","🔔"];
-  let wynik = [
-    symbole[Math.floor(Math.random()*symbole.length)],
-    symbole[Math.floor(Math.random()*symbole.length)],
-    symbole[Math.floor(Math.random()*symbole.length)]
-  ];
-  document.getElementById('slotResult').innerText = wynik.join(" ");
-  if(wynik[0]===wynik[1] && wynik[1]===wynik[2]){
-    alert("Wygrana! +50 punktów");
-    addPoints(50);
-  }
-});
-
-// Rebirth
+// Rebirth i bonus
 document.getElementById('rebirthBtn').addEventListener('click', function(){
   let cost = 1000 * Math.pow(10, rebirthCount);
   if(totalPoints >= cost){
@@ -203,17 +188,15 @@ document.getElementById('rebirthBtn').addEventListener('click', function(){
     localStorage.setItem('totalPoints', totalPoints);
     localStorage.setItem('rebirthCount', rebirthCount);
     alert(`Rebirth ×${rebirthMultiplier}! Wszystkie punkty są teraz mnożone.`);
-  } else {
-    alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);
-  }
+  } else { alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`); }
 });
 
-// Bonus za reklamę
 document.getElementById('bonusBtn').addEventListener('click', function(){
   addPoints(50);
   alert("Bonus +50 pkt za obejrzenie reklamy!");
 });
 
+// Punkty
 function addPoints(p){
   totalPoints += p * rebirthMultiplier;
   document.getElementById('totalPoints').innerText = totalPoints;
@@ -227,6 +210,58 @@ if(currentNick!==""){
   document.getElementById('displayNick').innerText = currentNick;
   updateAllDisplays();
 }
+
+// ==== Matematyczna gra ====
+let mathCurrentAnswer = 0;
+function generateMathQuestion() {
+  let a = Math.floor(Math.random()*20)+1;
+  let b = Math.floor(Math.random()*20)+1;
+  let operations = ['+', '-', '*'];
+  let op = operations[Math.floor(Math.random()*operations.length)];
+  let question = `${a} ${op} ${b}`;
+  mathCurrentAnswer = eval(question);
+  document.getElementById('mathQuestion').innerText = question;
+}
+document.getElementById('mathBtn').addEventListener('click', function(){
+  let answer = parseInt(document.getElementById('mathAnswer').value);
+  if(answer === mathCurrentAnswer){
+    document.getElementById('mathResult').innerText = "✅ Brawo! +15 pkt";
+    addPoints(15);
+  } else {
+    document.getElementById('mathResult').innerText = `❌ Pomyłka! Poprawna odpowiedź: ${mathCurrentAnswer}`;
+  }
+  generateMathQuestion();
+  document.getElementById('mathAnswer').value = '';
+});
+generateMathQuestion();
+
+// ==== Geograficzna gra ====
+const geoQuestions = [
+  {country:"Polska", capital:"Warszawa"},
+  {country:"Francja", capital:"Paryż"},
+  {country:"Niemcy", capital:"Berlin"},
+  {country:"Hiszpania", capital:"Madryt"},
+  {country:"Włochy", capital:"Rzym"},
+  {country:"Japonia", capital:"Tokio"},
+  {country:"Brazylia", capital:"Brasília"},
+  {country:"Kanada", capital:"Ottawa"}
+];
+let geoCurrentIndex = Math.floor(Math.random()*geoQuestions.length);
+document.getElementById('geoQuestion').innerText = geoQuestions[geoCurrentIndex].country;
+document.getElementById('geoBtn').addEventListener('click', function(){
+  let answer = document.getElementById('geoAnswer').value.trim().toLowerCase();
+  let correct = geoQuestions[geoCurrentIndex].capital.toLowerCase();
+  if(answer === correct){
+    document.getElementById('geoResult').innerText = "✅ Brawo! +20 pkt";
+    addPoints(20);
+  } else {
+    document.getElementById('geoResult').innerText = `❌ Pomyłka! Poprawna odpowiedź: ${geoQuestions[geoCurrentIndex].capital}`;
+  }
+  geoCurrentIndex = Math.floor(Math.random()*geoQuestions.length);
+  document.getElementById('geoQuestion').innerText = geoQuestions[geoCurrentIndex].country;
+  document.getElementById('geoAnswer').value = '';
+});
 </script>
+
 </body>
 </html>
