@@ -6,12 +6,12 @@
 <title>PlayWatch – Gry Edukacyjne</title>
 
 <style>
-body{font-family:Arial;background:#1e3c72;color:#fff;margin:0}
-header,footer{background:#0d1b33;padding:15px;text-align:center}
-section{background:rgba(0,0,0,.6);margin:15px auto;padding:15px;max-width:900px;border-radius:10px}
-button{padding:8px 12px;border:none;border-radius:6px;background:#ff9800;font-weight:bold;cursor:pointer}
+body{margin:0;font-family:Arial;background:#1e3c72;color:#fff}
+header,footer{text-align:center;background:#0d1b33;padding:15px}
+section{background:rgba(0,0,0,.65);margin:15px auto;padding:15px;max-width:900px;border-radius:12px}
+button{padding:8px 14px;border:none;border-radius:8px;background:#ff9800;font-weight:bold;cursor:pointer}
 input{padding:6px;border-radius:6px;border:none}
-.result{margin-top:6px;font-weight:bold}
+.result{margin-top:8px;font-weight:bold}
 #login{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
 #game{display:none}
 </style>
@@ -26,19 +26,92 @@ input{padding:6px;border-radius:6px;border:none}
 </div>
 
 <div id="game">
+
 <header>
 <p>Nick: <span id="nickShow"></span></p>
 <p>Punkty: <span id="points">0</span></p>
 <p>Rebirth: <span id="rebirth">0</span></p>
 </header>
 
+<!-- KLIKACZ -->
 <section>
 <h2>🖱️ Klikacz</h2>
-<button onclick="addPoints(1)">Kliknij (+1)</button>
+<button onclick="addPoints(1)">Kliknij +1</button>
 </section>
 
-<section id="quiz"></section>
+<!-- GEOGRAFIA -->
+<section>
+<h2>🌍 Geografia – stolice</h2>
+<p id="geoQ"></p>
+<input id="geoA">
+<button onclick="checkGeo()">Sprawdź</button>
+<div class="result" id="geoR"></div>
+</section>
 
+<!-- HISTORIA -->
+<section>
+<h2>🇵🇱 Historia Polski</h2>
+<p id="hisQ"></p>
+<input id="hisA">
+<button onclick="checkHis()">Sprawdź</button>
+<div class="result" id="hisR"></div>
+</section>
+
+<!-- POLSKI -->
+<section>
+<h2>✍️ Język polski</h2>
+<p id="polQ"></p>
+<input id="polA">
+<button onclick="checkPol()">Sprawdź</button>
+<div class="result" id="polR"></div>
+</section>
+
+<!-- ANGIELSKI -->
+<section>
+<h2>🇬🇧 Angielski – przetłumacz na polski</h2>
+<p id="engQ"></p>
+<input id="engA">
+<button onclick="checkEng()">Sprawdź</button>
+<div class="result" id="engR"></div>
+</section>
+
+<!-- NIEMIECKI -->
+<section>
+<h2>🇩🇪 Niemiecki – przetłumacz na polski</h2>
+<p id="gerQ"></p>
+<input id="gerA">
+<button onclick="checkGer()">Sprawdź</button>
+<div class="result" id="gerR"></div>
+</section>
+
+<!-- CHEMIA -->
+<section>
+<h2>⚗️ Chemia</h2>
+<p id="chemQ"></p>
+<input id="chemA">
+<button onclick="checkChem()">Sprawdź</button>
+<div class="result" id="chemR"></div>
+</section>
+
+<!-- BIOLOGIA -->
+<section>
+<h2>🧬 Biologia</h2>
+<p id="bioQ"></p>
+<input id="bioA">
+<button onclick="checkBio()">Sprawdź</button>
+<div class="result" id="bioR"></div>
+</section>
+
+<!-- FIZYKA -->
+<section>
+<h2>⚡ Fizyka</h2>
+<p id="phyQ"></p>
+<input id="phyA">
+<button onclick="checkPhy()">Sprawdź</button>
+<div class="result" id="phyR"></div>
+</section>
+
+<!-- NA DOLE -->
 <section>
 <h2>🔄 Rebirth</h2>
 <button onclick="doRebirth()">Rebirth (1000 pkt)</button>
@@ -49,152 +122,88 @@ input{padding:6px;border-radius:6px;border:none}
 <button onclick="addPoints(50)">Bonus +50</button>
 </section>
 
-<footer>PlayWatch ©</footer>
+<footer>© PlayWatch</footer>
 </div>
 
 <script>
-/* ===== SYSTEM ===== */
-let points=0, rebirth=0, mult=1;
-function save(){localStorage.points=points;localStorage.rebirth=rebirth}
-function load(){
- points=+localStorage.points||0;
- rebirth=+localStorage.rebirth||0;
- mult=rebirth+1;
-}
-function update(){
- document.getElementById("points").textContent=points;
- document.getElementById("rebirth").textContent=rebirth;
-}
-function addPoints(p){points+=p*mult;save();update();}
-function doRebirth(){
- if(points<1000) return alert("Za mało punktów");
- points=0; rebirth++; mult=rebirth+1;
- save(); update();
- alert("Rebirth aktywny!");
-}
+let points=0, rebirth=0, mult=1
 
-/* ===== START ===== */
-document.getElementById("start").onclick=()=>{
- let n=nick.value.trim();
- if(!n) return alert("Podaj nick");
- load();
- nickShow.textContent=n;
- login.style.display="none";
- game.style.display="block";
- update();
- nextQuestion();
-}
-
-/* ===== PYTANIA – 25 NA KAŻDY DZIAŁ ===== */
-const quizzes=[
-{
-name:"🌍 Geografia – stolice",
-data:[
-["Polska","Warszawa"],["Niemcy","Berlin"],["Francja","Paryż"],["Włochy","Rzym"],
-["Hiszpania","Madryt"],["Czechy","Praga"],["Słowacja","Bratysława"],
-["Ukraina","Kijów"],["Norwegia","Oslo"],["Szwecja","Sztokholm"],
-["Finlandia","Helsinki"],["Grecja","Ateny"],["Portugalia","Lizbona"],
-["Austria","Wiedeń"],["Szwajcaria","Berno"],["Holandia","Amsterdam"],
-["Belgia","Bruksela"],["Dania","Kopenhaga"],["Irlandia","Dublin"],
-["Islandia","Reykjavik"],["Litwa","Wilno"],["Łotwa","Ryga"],
-["Estonia","Tallin"],["Rumunia","Bukareszt"],["Bułgaria","Sofia"]
+const geo=[
+["Polska","Warszawa"],["Niemcy","Berlin"],["Francja","Paryż"],["Hiszpania","Madryt"],
+["Włochy","Rzym"],["Czechy","Praga"],["Słowacja","Bratysława"],["USA","Waszyngton"],
+["Kanada","Ottawa"],["Japonia","Tokio"],["Chiny","Pekin"],["Norwegia","Oslo"],
+["Szwecja","Sztokholm"],["Finlandia","Helsinki"],["Ukraina","Kijów"],
+["Litwa","Wilno"],["Łotwa","Ryga"],["Estonia","Tallinn"],["Austria","Wiedeń"],
+["Szwajcaria","Berno"],["Holandia","Amsterdam"],["Belgia","Bruksela"],
+["Portugalia","Lizbona"],["Grecja","Ateny"],["Turcja","Ankara"]
 ]
-},
-{
-name:"🇵🇱 Historia Polski",
-data:[
-["966","Chrzest Polski"],["1000","Zjazd gnieźnieński"],
-["1025","Koronacja Bolesława Chrobrego"],
-["1138","Testament Krzywoustego"],
-["1226","Sprowadzenie Krzyżaków"],
-["1320","Koronacja Łokietka"],["1410","Bitwa pod Grunwaldem"],
-["1569","Unia lubelska"],["1655","Potop szwedzki"],
-["1683","Odsiecz wiedeńska"],["1772","I rozbiór Polski"],
-["1791","Konstytucja 3 Maja"],["1795","III rozbiór Polski"],
-["1830","Powstanie listopadowe"],
-["1863","Powstanie styczniowe"],
-["1918","Odzyskanie niepodległości"],
-["1939","Wybuch II wojny światowej"],
-["1944","Powstanie warszawskie"],
-["1945","Koniec II wojny światowej"],
-["1980","Powstanie Solidarności"],
-["1989","Upadek komunizmu"],
-["1999","Wejście do NATO"],
-["2004","Wejście do UE"],
-["2010","Katastrofa smoleńska"]
-]
-},
-{
-name:"✍️ Język polski",
-data:[
-["Ile jest przypadków?","7"],
-["Kto? Co?","Mianownik"],
-["Kogo? Czego?","Dopełniacz"],
-["Komu? Czemu?","Celownik"],
-["Kogo? Co?","Biernik"],
-["Z kim? Z czym?","Narzędnik"],
-["O kim? O czym?","Miejscownik"],
-["Wyraz określający rzecz","Rzeczownik"],
-["Część mowy określająca czynność","Czasownik"],
-["Zdanie oznajmujące kończy się","Kropką"],
-["Zdanie pytające kończy się","Znakiem zapytania"],
-["Autor 'Pana Tadeusza'","Adam Mickiewicz"],
-["Autor 'Balladyny'","Juliusz Słowacki"],
-["Co to jest przymiotnik?","Część mowy"],
-["Liczba pojedyncza to","Jeden"],
-["Liczba mnoga to","Wiele"],
-["Co to jest podmiot?","Wykonawca czynności"],
-["Co to jest orzeczenie?","Czynność"],
-["Synonim słowa duży","Wielki"],
-["Antonim słowa mały","Duży"],
-["Co to jest zdanie?","Zespół wyrazów"],
-["Część mowy nieodmienna","Przysłówek"],
-["Rodzaj męski","On"],
-["Rodzaj żeński","Ona"],
-["Rodzaj nijaki","Ono"]
-]
-},
-{
-name:"🇬🇧 Angielski",
-data:[
-["cat","kot"],["dog","pies"],["house","dom"],["car","samochód"],
-["book","książka"],["school","szkoła"],["apple","jabłko"],
-["water","woda"],["sun","słońce"],["moon","księżyc"],
-["tree","drzewo"],["chair","krzesło"],["table","stół"],
-["window","okno"],["door","drzwi"],["teacher","nauczyciel"],
-["student","uczeń"],["friend","przyjaciel"],
-["family","rodzina"],["food","jedzenie"],
-["milk","mleko"],["bread","chleb"],
-["city","miasto"],["country","kraj"],["child","dziecko"]
-]
-}
-];
 
-let qIndex=0, currentQuiz=0;
+const his=[
+["966","Chrzest Polski"],["1025","Koronacja Bolesława Chrobrego"],
+["1410","Bitwa pod Grunwaldem"],["1569","Unia lubelska"],
+["1791","Konstytucja 3 maja"],["1795","III rozbiór Polski"],
+["1918","Odzyskanie niepodległości"],["1939","Wybuch II wojny światowej"],
+["1989","Upadek komunizmu"],["1944","Powstanie warszawskie"]
+]
 
-function nextQuestion(){
- if(currentQuiz>=quizzes.length) currentQuiz=0;
- let quiz=quizzes[currentQuiz];
- if(quiz.data.length===0){
-  quiz.data=[...quiz.original];
- }
- let q=quiz.data.shift();
- document.getElementById("quiz").innerHTML=`
- <h2>${quiz.name}</h2>
- <p>${quiz.name.includes("Geografia")?"Podaj stolicę: "+q[0]:quiz.name.includes("Historia")?"Co wydarzyło się w "+q[0]+"?":quiz.name.includes("Angielski")?"Przetłumacz: "+q[0]:q[0]}</p>
- <input id="ans">
- <button onclick="check('${q[1]}')">Sprawdź</button>
- <p class="result" id="res"></p>`;
+const pol=[
+["Co to jest rzeczownik?","część mowy"],
+["Jakie to zdanie: Czy lubisz szkołę?","pytające"],
+["Mianownik odpowiada na pytania","kto co"],
+["Czasownik to","część mowy"],
+["Przymiotnik określa","rzeczownik"]
+]
+
+const eng=[
+["apple","jabłko"],["dog","pies"],["cat","kot"],["house","dom"],["car","samochód"]
+]
+
+const ger=[
+["Haus","dom"],["Hund","pies"],["Katze","kot"],["Auto","samochód"],["Apfel","jabłko"]
+]
+
+const chem=[
+["H2O to","woda"],["O to symbol","tlenu"],["Stan ciekły to","ciecz"],
+["NaCl to","sól"],["CO2 to","dwutlenek węgla"]
+]
+
+const bio=[
+["Serce to","narząd"],["Fotosynteza zachodzi w","liściach"],
+["Człowiek to","ssak"],["Ryby oddychają","skrzelami"],
+["Krew krąży dzięki","sercu"]
+]
+
+const phy=[
+["Jednostka siły to","niuton"],["Jednostka masy to","kilogram"],
+["Światło to","fala"],["Grawitacja przyciąga","ciała"],
+["Prędkość to","droga przez czas"]
+]
+
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
+
+let g=rand(geo), h=rand(his), p=rand(pol), e=rand(eng), r=rand(ger), c=rand(chem), b=rand(bio), f=rand(phy)
+
+geoQ.innerText=`Podaj stolicę: ${g[0]}`
+hisQ.innerText=`Co wydarzyło się w ${h[0]}?`
+polQ.innerText=p[0]
+engQ.innerText=e[0]
+gerQ.innerText=r[0]
+chemQ.innerText=c[0]
+bioQ.innerText=b[0]
+phyQ.innerText=f[0]
+
+function check(q,a,el,arr){
+ if(q.value.toLowerCase()==a.toLowerCase()){el.innerText="✅ Poprawna";addPoints(10)}
+ else el.innerText="❌ Nieprawidłowa. Odp: "+a
 }
 
-function check(correct){
- let a=document.getElementById("ans").value.trim().toLowerCase();
- let c=correct.toLowerCase();
- if(a===c){res.textContent="✅ Poprawna odpowiedź";addPoints(10);}
- else res.textContent="❌ Nieprawidłowa. Poprawna: "+correct;
- currentQuiz++;
- setTimeout(nextQuestion,800);
-}
-</script>
-</body>
-</html>
+function checkGeo(){check(geoA,g[1],geoR,geo)}
+function checkHis(){check(hisA,h[1],hisR,his)}
+function checkPol(){check(polA,p[1],polR,pol)}
+function checkEng(){check(engA,e[1],engR,eng)}
+function checkGer(){check(gerA,r[1],gerR,ger)}
+function checkChem(){check(chemA,c[1],chemR,chem)}
+function checkBio(){check(bioA,b[1],bioR,bio)}
+function checkPhy(){check(phyA,f[1],phyR,phy)}
+
+function addPoints(x){points+=x*mult;pointsSpan
