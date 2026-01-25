@@ -25,9 +25,7 @@ input, select { padding: 8px; border-radius: 5px; border: none; width: 150px;}
   <button id="startBtn">Zaczynam!</button>
 </div>
 
-<!-- Ekran gry -->
 <div id="gameScreen">
-
 <header>
   <h1>🎮 PlayWatch</h1>
   <p>Nick: <span id="displayNick"></span></p>
@@ -38,7 +36,6 @@ input, select { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 <!-- Klikacz -->
 <section id="clickerGame">
   <h2>🖱️ Klikacz</h2>
-  <p>Kliknij przycisk, aby zdobywać punkty:</p>
   <button id="clickBtn">Kliknij mnie</button>
   <p>Kliknięcia: <span id="clicks">0</span></p>
 </section>
@@ -117,7 +114,6 @@ input, select { padding: 8px; border-radius: 5px; border: none; width: 150px;}
   <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
-<!-- Footer / Podstrony -->
 <footer>
 <div id="footerLinks">
   <a href="#" onclick="showSection('regulaminScreen')">Regulamin</a> |
@@ -127,114 +123,92 @@ input, select { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 </div>
 </footer>
 
-<!-- Sekcje podstron -->
-<div id="regulaminScreen"><h2>Regulamin</h2><p>Długi tekst regulaminu...</p></div>
+<div id="regulaminScreen"><h2>Regulamin</h2><p>Długi regulamin...</p></div>
 <div id="politykaScreen"><h2>Polityka prywatności</h2><p>Długi tekst polityki...</p></div>
 <div id="kontaktScreen"><h2>Kontakt</h2><p>Email: sikoraszymon45@gmail.com</p></div>
 <div id="oNasScreen"><h2>O nas</h2><p>Długi tekst o nas...</p></div>
 
 <script>
-// ----------- Zmienne globalne -----------
-let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
-let clicks = parseInt(localStorage.getItem('clicks')) || 0;
-let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
-let rebirthMultiplier = rebirthCount + 1;
-let currentNick = localStorage.getItem('currentNick') || "";
+// --------- Zmienne i logika ---------
+let totalPoints = parseInt(localStorage.getItem('totalPoints'))||0;
+let clicks = parseInt(localStorage.getItem('clicks'))||0;
+let rebirthCount = parseInt(localStorage.getItem('rebirthCount'))||0;
+let rebirthMultiplier = rebirthCount+1;
+let currentNick = localStorage.getItem('currentNick')||"";
 
-// ----------- Start gry -----------
 document.getElementById('startBtn').addEventListener('click', function(){
   let nick = document.getElementById('playerNick').value.trim();
   if(!nick){ alert("Podaj nick!"); return; }
-  currentNick = nick;
+  currentNick=nick;
   localStorage.setItem('currentNick', currentNick);
-  document.getElementById('displayNick').innerText = currentNick;
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('gameScreen').style.display = 'block';
+  document.getElementById('displayNick').innerText=currentNick;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
   updateDisplays();
   startGames();
 });
 
-// ----------- Funkcje pomocnicze -----------
 function updateDisplays(){
-  document.getElementById('totalPoints').innerText = totalPoints;
-  document.getElementById('clicks').innerText = clicks;
-  document.getElementById('rebirthCount').innerText = rebirthCount;
+  document.getElementById('totalPoints').innerText=totalPoints;
+  document.getElementById('clicks').innerText=clicks;
+  document.getElementById('rebirthCount').innerText=rebirthCount;
 }
 
 function addPoints(p){
-  totalPoints += p * rebirthMultiplier;
-  document.getElementById('totalPoints').innerText = totalPoints;
+  totalPoints+=p*rebirthMultiplier;
+  document.getElementById('totalPoints').innerText=totalPoints;
   localStorage.setItem('totalPoints', totalPoints);
 }
 
-// ----------- Klikacz -----------
 document.getElementById('clickBtn').addEventListener('click', function(){
   clicks++; addPoints(1);
-  document.getElementById('clicks').innerText = clicks;
+  document.getElementById('clicks').innerText=clicks;
   localStorage.setItem('clicks', clicks);
 });
 
-// ----------- Rebirth i bonus -----------
 document.getElementById('rebirthBtn').addEventListener('click', function(){
-  let cost = 1000 * Math.pow(10, rebirthCount);
-  if(totalPoints >= cost){
-    totalPoints = 0;
-    rebirthCount++;
-    rebirthMultiplier = rebirthCount + 1;
-    updateDisplays();
-    localStorage.setItem('totalPoints', totalPoints);
-    localStorage.setItem('rebirthCount', rebirthCount);
-    alert(`Rebirth ×${rebirthMultiplier}! Wszystkie punkty są teraz mnożone.`);
-  } else {
-    alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);
-  }
+  let cost = 1000*Math.pow(10,rebirthCount);
+  if(totalPoints>=cost){
+    totalPoints=0; rebirthCount++; rebirthMultiplier=rebirthCount+1; updateDisplays();
+    localStorage.setItem('totalPoints',totalPoints);
+    localStorage.setItem('rebirthCount',rebirthCount);
+    alert(`Rebirth ×${rebirthMultiplier}!`);
+  } else { alert(`Nie masz wystarczająco punktów! Potrzebujesz ${cost}.`);}
 });
 
 document.getElementById('bonusBtn').addEventListener('click', function(){
   addPoints(50);
-  alert("Bonus +50 pkt za obejrzenie reklamy!");
+  alert("Bonus +50 pkt!");
 });
 
-// ----------- Podstrony -----------
 function showSection(id){
-  document.getElementById('gameScreen').style.display = 'none';
-  document.getElementById('regulaminScreen').style.display = 'none';
-  document.getElementById('politykaScreen').style.display = 'none';
-  document.getElementById('kontaktScreen').style.display = 'none';
-  document.getElementById('oNasScreen').style.display = 'none';
-  document.getElementById(id).style.display = 'block';
+  document.getElementById('gameScreen').style.display='none';
+  document.getElementById('regulaminScreen').style.display='none';
+  document.getElementById('politykaScreen').style.display='none';
+  document.getElementById('kontaktScreen').style.display='none';
+  document.getElementById('oNasScreen').style.display='none';
+  document.getElementById(id).style.display='block';
 }
 
-// ----------- Auto-logowanie -----------
 if(currentNick!==""){
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('gameScreen').style.display = 'block';
-  document.getElementById('displayNick').innerText = currentNick;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
+  document.getElementById('displayNick').innerText=currentNick;
   updateDisplays();
 }
-</script>
 
-<script>
-// ----------- Gry edukacyjne -----------
-// Tu będzie kod do geografii, historii, polskiego, angielskiego, chemii, biologii, fizyki
-// Każda gra powinna mieć 50 pytań w tablicy, losowanie bez powtórzeń, reset po wyczerpaniu
-// Dla przykładu: geografia
-let geoQuestions = [
-  {country:"Polska", capital:"Warszawa"},
-  {country:"Niemcy", capital:"Berlin"},
-  {country:"Francja", capital:"Paryż"},
-  // ... dodać wszystkie 50 państw
-];
-let geoUsed = [];
+// --------- Gry edukacyjne ---------
+let geoQuestions=[{country:"Polska",capital:"Warszawa"},{country:"Niemcy",capital:"Berlin"},{country:"Francja",capital:"Paryż"}]; // tutaj dodaj pełne 50
+let geoUsed=[];
 function nextGeoQuestion(){
-  if(geoQuestions.length===0) geoQuestions = geoUsed.splice(0); // reset
-  let idx = Math.floor(Math.random()*geoQuestions.length);
-  let q = geoQuestions.splice(idx,1)[0];
+  if(geoQuestions.length===0) geoQuestions=geoUsed.splice(0);
+  let idx=Math.floor(Math.random()*geoQuestions.length);
+  let q=geoQuestions.splice(idx,1)[0];
   geoUsed.push(q);
-  document.getElementById('geoQuestion').innerText = `Jaka jest stolica: ${q.country}?`;
-  document.getElementById('geoCheckBtn').onclick = function(){
-    let ans = document.getElementById('geoAnswer').value.trim();
-    if(ans.toLowerCase() === q.capital.toLowerCase()){
+  document.getElementById('geoQuestion').innerText=`Jaka jest stolica: ${q.country}?`;
+  document.getElementById('geoCheckBtn').onclick=function(){
+    let ans=document.getElementById('geoAnswer').value.trim();
+    if(ans.toLowerCase()===q.capital.toLowerCase()){
       document.getElementById('geoResult').innerText="✅ Poprawna odpowiedź!";
       addPoints(10);
     } else {
@@ -245,12 +219,8 @@ function nextGeoQuestion(){
   }
 }
 
-// Inne gry – analogicznie tworzymy tablice z 50 pytań i losujemy bez powtórzeń
-// Historia, Polski, Angielski, Chemia, Biologia, Fizyka
-function startGames(){
-  nextGeoQuestion();
-  // tutaj analogicznie dla innych gier: histQuestion(), polskiQuestion(), engQuestion(), chemQuestion(), bioQuestion(), physQuestion()
-}
+// Analogicznie dodaj tablice 50 pytań dla historii, polskiego, angielskiego, chemii, biologii, fizyki
+function startGames(){ nextGeoQuestion(); }
 </script>
 
 </body>
