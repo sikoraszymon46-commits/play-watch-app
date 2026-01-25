@@ -334,6 +334,221 @@ function loadAllQuestions(){
     showQuestion(polQuestions, polIndex, 'polQuestion');
     showQuestion(engQuestions, engIndex, 'engQuestion');
 }
+
+<!-- === CZĘŚĆ 3: Niemiecki, Chemia, Biologia, Fizyka === -->
+
+<!-- Niemiecki -->
+<section>
+<h2>🇩🇪 Niemiecki</h2>
+<p id="deQuestion"></p>
+<input type="text" id="deAnswer" placeholder="Odpowiedź">
+<button id="deBtn">Sprawdź</button>
+<p id="deResult"></p>
+</section>
+
+<!-- Chemia -->
+<section>
+<h2>⚗️ Chemia</h2>
+<p id="chemQuestion"></p>
+<input type="text" id="chemAnswer" placeholder="Odpowiedź">
+<button id="chemBtn">Sprawdź</button>
+<p id="chemResult"></p>
+</section>
+
+<!-- Biologia -->
+<section>
+<h2>🧬 Biologia</h2>
+<p id="bioQuestion"></p>
+<input type="text" id="bioAnswer" placeholder="Odpowiedź">
+<button id="bioBtn">Sprawdź</button>
+<p id="bioResult"></p>
+</section>
+
+<!-- Fizyka -->
+<section>
+<h2>🔬 Fizyka</h2>
+<p id="phyQuestion"></p>
+<input type="text" id="phyAnswer" placeholder="Odpowiedź">
+<button id="phyBtn">Sprawdź</button>
+<p id="phyResult"></p>
+</section>
+
+<!-- Rebirth i bonusy na samym dole -->
+<section>
+<h2>🔄 Rebirth</h2>
+<button id="rebirthBtn">Rebirth ×2</button>
+
+<h2>💰 Bonus za reklamę</h2>
+<button id="bonusBtn">Oglądałem reklamę</button>
+</section>
+
+<!-- Stopka -->
+<footer>
+<a href="regulamin.html">Regulamin</a> |
+<a href="polityka-prywatnosci.html">Polityka prywatności</a> |
+<a href="o-nas.html">O nas</a> |
+Kontakt: <strong>sikoraszymon45@gmail.com</strong>
+</footer>
+
+<script>
+// --- Pytania do wszystkich przedmiotów ---
+let deQuestions = [
+{q:"Hund po polsku?", a:"Pies"},
+{q:"Katze po polsku?", a:"Kot"},
+{q:"Haus po polsku?", a:"Dom"},
+{q:"Schule po polsku?", a:"Szkoła"},
+{q:"Buch po polsku?", a:"Książka"},
+{q:"Stuhl po polsku?", a:"Krzesło"},
+{q:"Tisch po polsku?", a:"Stół"},
+{q:"Wasser po polsku?", a:"Woda"},
+{q:"Milch po polsku?", a:"Mleko"},
+{q:"Sonne po polsku?", a:"Słońce"},
+{q:"Mond po polsku?", a:"Księżyc"},
+{q:"Stern po polsku?", a:"Gwiazda"},
+{q:"Auto po polsku?", a:"Samochód"},
+{q:"Fahrrad po polsku?", a:"Rower"},
+{q:"Straße po polsku?", a:"Ulica"},
+{q:"Stadt po polsku?", a:"Miasto"},
+{q:"Dorf po polsku?", a:"Wieś"},
+{q:"Fluss po polsku?", a:"Rzeka"},
+{q:"Berg po polsku?", a:"Góra"},
+{q:"Meer po polsku?", a:"Morze"},
+{q:"Kaffee po polsku?", a:"Kawa"},
+{q:"Tee po polsku?", a:"Herbata"},
+{q:"Lehrer po polsku?", a:"Nauczyciel"},
+{q:"Schüler po polsku?", a:"Uczeń"},
+{q:"Freund po polsku?", a:"Przyjaciel"}
+];
+
+let chemQuestions = [
+{q:"Symbol wodoru?", a:"H"},
+{q:"Symbol tlenu?", a:"O"},
+{q:"Woda chemicznie?", a:"H2O"},
+{q:"Sól chemicznie?", a:"NaCl"},
+{q:"Dwutlenek węgla?", a:"CO2"},
+{q:"Metan?", a:"CH4"},
+{q:"Tlenek węgla?", a:"CO"},
+{q:"Azot symbol?", a:"N"},
+{q:"Sód symbol?", a:"Na"},
+{q:"Magnez symbol?", a:"Mg"},
+{q:"Żelazo symbol?", a:"Fe"},
+{q:"Miedź symbol?", a:"Cu"},
+{q:"Złoto symbol?", a:"Au"},
+{q:"Srebro symbol?", a:"Ag"},
+{q:"Kwas siarkowy?", a:"H2SO4"},
+{q:"Wodorotlenek sodu?", a:"NaOH"},
+{q:"Etanol?", a:"C2H5OH"},
+{q:"Cukier chemicznie?", a:"C12H22O11"},
+{q:"Tlenek azotu?", a:"NO"},
+{q:"Ammoniak?", a:"NH3"},
+{q:"Chlorek wapnia?", a:"CaCl2"},
+{q:"Siarka symbol?", a:"S"},
+{q:"Fosfor symbol?", a:"P"},
+{q:"Hel symbol?", a:"He"},
+{q:"Lit symbol?", a:"Li"}
+];
+
+let bioQuestions = [
+{q:"Część komórki roślinnej, zielony barwnik?", a:"Chloroplast"},
+{q:"Organizm jednokomórkowy?", a:"Ameba"},
+{q:"Układ oddechowy człowieka?", a:"Płuca"},
+{q:"Największy organ człowieka?", a:"Skóra"},
+{q:"DNA co przenosi?", a:"Geny"},
+{q:"Krwinki czerwone?", a:"Erytrocyty"},
+{q:"Krwinki białe?", a:"Leukocyty"},
+{q:"Płazy przykład?", a:"Żaba"},
+{q:"Gady przykład?", a:"Wąż"},
+{q:"Ssaki przykład?", a:"Krowa"},
+{q:"Ptaki przykład?", a:"Orzeł"},
+{q:"Ryby przykład?", a:"Łosoś"},
+{q:"Kwiat żeński część?", a:"Słupek"},
+{q:"Kwiat męski część?", a:"Pręcik"},
+{q:"Fotosynteza zachodzi w?", a:"Liść"},
+{q:"Organizm autotroficzny?", a:"Roślina"},
+{q:"Organizm heterotroficzny?", a:"Zwierzę"},
+{q:"Wąż jadowity?", a:"Żmija"},
+{q:"Ssak wodny?", a:"Delfin"},
+{q:"Ssak latający?", a:"Nietoperz"},
+{q:"Co oddycha skrzelami?", a:"Ryba"},
+{q:"Gdzie jest rdzeń kręgowy?", a:"Kręgosłup"},
+{q:"Największe zwierzę?", a:"Płetwal błękitny"},
+{q:"Roślina nagonasienna?", a:"Sosna"},
+{q:"Roślina okrytonasienna?", a:"Róża"}
+];
+
+let phyQuestions = [
+{q:"Jednostka siły?", a:"Newton"},
+{q:"Prędkość światła?", a:"299792458"},
+{q:"Jednostka energii?", a:"Joul"},
+{q:"Jednostka masy?", a:"Kilogram"},
+{q:"Jednostka napięcia?", a:"Volt"},
+{q:"Jednostka prądu?", a:"Amper"},
+{q:"Jednostka częstotliwości?", a:"Hertz"},
+{q:"Przyspieszenie ziemskie?", a:"9.81"},
+{q:"Prawo Ohma?", a:"V=IR"},
+{q:"Jednostka mocy?", a:"Watt"},
+{q:"Temperatura wrzenia wody?", a:"100"},
+{q:"Temperatura topnienia lodu?", a:"0"},
+{q:"Planeta najbliższa Słońcu?", a:"Merkury"},
+{q:"Planeta najdalsza od Słońca?", a:"Neptun"},
+{q:"Prędkość dźwięku?", a:"343"},
+{q:"Gęstość wody?", a:"1"},
+{q:"Siła ciężkości?", a:"F=mg"},
+{q:"Jednostka długości?", a:"metr"},
+{q:"Jednostka czasu?", a:"sekunda"},
+{q:"Jak nazywa się przyrząd do mierzenia napięcia?", a:"Woltomierz"},
+{q:"Jak nazywa się przyrząd do mierzenia prądu?", a:"Amperomierz"},
+{q:"Ruch jednostajny prostoliniowy?", a:"RJP"},
+{q:"Ruch jednostajnie przyspieszony?", a:"RJPp"},
+{q:"Ciało w spoczynku?", a:"Spoczynek"}
+];
+
+let deIndex=0, chemIndex=0, bioIndex=0, phyIndex=0;
+
+function showQ(arr,index,elementId){ document.getElementById(elementId).innerText = arr[index].q; }
+function checkQ(arr,index,inputId,resultId){
+    let answer = document.getElementById(inputId).value.trim().toLowerCase();
+    let correct = arr[index].a.toLowerCase();
+    if(answer === correct){
+        document.getElementById(resultId).innerText = "✅ Poprawna!";
+        addPoints(10);
+    } else {
+        document.getElementById(resultId).innerText = "❌ Niepoprawna! Prawidłowa: "+arr[index].a;
+    }
+    index++;
+    if(index >= arr.length) index = 0;
+    return index;
+}
+
+document.getElementById('deBtn').addEventListener('click',()=>{
+    deIndex = checkQ(deQuestions,deIndex,'deAnswer','deResult');
+    showQ(deQuestions,deIndex,'deQuestion');
+    document.getElementById('deAnswer').value="";
+});
+document.getElementById('chemBtn').addEventListener('click',()=>{
+    chemIndex = checkQ(chemQuestions,chemIndex,'chemAnswer','chemResult');
+    showQ(chemQuestions,chemIndex,'chemQuestion');
+    document.getElementById('chemAnswer').value="";
+});
+document.getElementById('bioBtn').addEventListener('click',()=>{
+    bioIndex = checkQ(bioQuestions,bioIndex,'bioAnswer','bioResult');
+    showQ(bioQuestions,bioIndex,'bioQuestion');
+    document.getElementById('bioAnswer').value="";
+});
+document.getElementById('phyBtn').addEventListener('click',()=>{
+    phyIndex = checkQ(phyQuestions,phyIndex,'phyAnswer','phyResult');
+    showQ(phyQuestions,phyIndex,'phyQuestion');
+    document.getElementById('phyAnswer').value="";
+});
+
+// --- Ładowanie pierwszych pytań ---
+function loadAllExtraQuestions(){
+    showQ(deQuestions,deIndex,'deQuestion');
+    showQ(chemQuestions,chemIndex,'chemQuestion');
+    showQ(bioQuestions,bioIndex,'bioQuestion');
+    showQ(phyQuestions,phyIndex,'phyQuestion');
+}
+loadAllExtraQuestions();
 </script>
 </body>
-  </html>
+</html>
