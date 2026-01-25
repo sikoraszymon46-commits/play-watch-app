@@ -7,9 +7,9 @@
 
 <style>
 body{margin:0;font-family:Arial;background:#1e3c72;color:#fff}
-header,footer{text-align:center;background:#0d1b33;padding:15px}
-section{background:rgba(0,0,0,.65);margin:15px auto;padding:15px;max-width:900px;border-radius:12px}
-button{padding:8px 14px;border:none;border-radius:8px;background:#ff9800;font-weight:bold;cursor:pointer}
+header,footer{background:#0d1b33;padding:15px;text-align:center}
+section{background:rgba(0,0,0,.6);margin:15px auto;padding:15px;max-width:900px;border-radius:10px}
+button{padding:8px 14px;border:none;border-radius:6px;background:#ff9800;font-weight:bold;cursor:pointer}
 input{padding:6px;border-radius:6px;border:none}
 .result{margin-top:8px;font-weight:bold}
 #login{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
@@ -22,6 +22,7 @@ input{padding:6px;border-radius:6px;border:none}
 <div id="login">
 <h1>🎮 PlayWatch</h1>
 <input id="nick" placeholder="Twój nick">
+<br><br>
 <button id="start">Zaczynam</button>
 </div>
 
@@ -36,7 +37,7 @@ input{padding:6px;border-radius:6px;border:none}
 <!-- KLIKACZ -->
 <section>
 <h2>🖱️ Klikacz</h2>
-<button onclick="addPoints(1)">Kliknij +1</button>
+<button id="clickBtn">Kliknij</button>
 </section>
 
 <!-- GEOGRAFIA -->
@@ -84,126 +85,145 @@ input{padding:6px;border-radius:6px;border:none}
 <div class="result" id="gerR"></div>
 </section>
 
-<!-- CHEMIA -->
-<section>
-<h2>⚗️ Chemia</h2>
-<p id="chemQ"></p>
-<input id="chemA">
-<button onclick="checkChem()">Sprawdź</button>
-<div class="result" id="chemR"></div>
-</section>
-
-<!-- BIOLOGIA -->
-<section>
-<h2>🧬 Biologia</h2>
-<p id="bioQ"></p>
-<input id="bioA">
-<button onclick="checkBio()">Sprawdź</button>
-<div class="result" id="bioR"></div>
-</section>
-
-<!-- FIZYKA -->
-<section>
-<h2>⚡ Fizyka</h2>
-<p id="phyQ"></p>
-<input id="phyA">
-<button onclick="checkPhy()">Sprawdź</button>
-<div class="result" id="phyR"></div>
-</section>
-
-<!-- NA DOLE -->
+<!-- REBIRTH -->
 <section>
 <h2>🔄 Rebirth</h2>
 <button onclick="doRebirth()">Rebirth (1000 pkt)</button>
 </section>
 
+<!-- BONUS -->
 <section>
 <h2>💰 Bonus</h2>
-<button onclick="addPoints(50)">Bonus +50</button>
+<button onclick="bonus()">Bonus +50</button>
 </section>
 
-<footer>© PlayWatch</footer>
+<footer>
+PlayWatch © 2026
+</footer>
 </div>
 
 <script>
-let points=0, rebirth=0, mult=1
+/* ===== LOGOWANIE ===== */
+const login = document.getElementById("login");
+const game = document.getElementById("game");
+const startBtn = document.getElementById("start");
+const nickInput = document.getElementById("nick");
+const nickShow = document.getElementById("nickShow");
 
-const geo=[
-["Polska","Warszawa"],["Niemcy","Berlin"],["Francja","Paryż"],["Hiszpania","Madryt"],
-["Włochy","Rzym"],["Czechy","Praga"],["Słowacja","Bratysława"],["USA","Waszyngton"],
-["Kanada","Ottawa"],["Japonia","Tokio"],["Chiny","Pekin"],["Norwegia","Oslo"],
-["Szwecja","Sztokholm"],["Finlandia","Helsinki"],["Ukraina","Kijów"],
-["Litwa","Wilno"],["Łotwa","Ryga"],["Estonia","Tallinn"],["Austria","Wiedeń"],
-["Szwajcaria","Berno"],["Holandia","Amsterdam"],["Belgia","Bruksela"],
-["Portugalia","Lizbona"],["Grecja","Ateny"],["Turcja","Ankara"]
-]
+let points = 0;
+let rebirth = 0;
+let mult = 1;
 
-const his=[
-["966","Chrzest Polski"],["1025","Koronacja Bolesława Chrobrego"],
-["1410","Bitwa pod Grunwaldem"],["1569","Unia lubelska"],
-["1791","Konstytucja 3 maja"],["1795","III rozbiór Polski"],
-["1918","Odzyskanie niepodległości"],["1939","Wybuch II wojny światowej"],
-["1989","Upadek komunizmu"],["1944","Powstanie warszawskie"]
-]
+startBtn.addEventListener("click",()=>{
+  if(!nickInput.value.trim()) return alert("Podaj nick!");
+  login.style.display="none";
+  game.style.display="block";
+  nickShow.textContent = nickInput.value;
+});
 
-const pol=[
-["Co to jest rzeczownik?","część mowy"],
-["Jakie to zdanie: Czy lubisz szkołę?","pytające"],
-["Mianownik odpowiada na pytania","kto co"],
-["Czasownik to","część mowy"],
-["Przymiotnik określa","rzeczownik"]
-]
-
-const eng=[
-["apple","jabłko"],["dog","pies"],["cat","kot"],["house","dom"],["car","samochód"]
-]
-
-const ger=[
-["Haus","dom"],["Hund","pies"],["Katze","kot"],["Auto","samochód"],["Apfel","jabłko"]
-]
-
-const chem=[
-["H2O to","woda"],["O to symbol","tlenu"],["Stan ciekły to","ciecz"],
-["NaCl to","sól"],["CO2 to","dwutlenek węgla"]
-]
-
-const bio=[
-["Serce to","narząd"],["Fotosynteza zachodzi w","liściach"],
-["Człowiek to","ssak"],["Ryby oddychają","skrzelami"],
-["Krew krąży dzięki","sercu"]
-]
-
-const phy=[
-["Jednostka siły to","niuton"],["Jednostka masy to","kilogram"],
-["Światło to","fala"],["Grawitacja przyciąga","ciała"],
-["Prędkość to","droga przez czas"]
-]
-
-function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
-
-let g=rand(geo), h=rand(his), p=rand(pol), e=rand(eng), r=rand(ger), c=rand(chem), b=rand(bio), f=rand(phy)
-
-geoQ.innerText=`Podaj stolicę: ${g[0]}`
-hisQ.innerText=`Co wydarzyło się w ${h[0]}?`
-polQ.innerText=p[0]
-engQ.innerText=e[0]
-gerQ.innerText=r[0]
-chemQ.innerText=c[0]
-bioQ.innerText=b[0]
-phyQ.innerText=f[0]
-
-function check(q,a,el,arr){
- if(q.value.toLowerCase()==a.toLowerCase()){el.innerText="✅ Poprawna";addPoints(10)}
- else el.innerText="❌ Nieprawidłowa. Odp: "+a
+/* ===== PUNKTY ===== */
+function addPoints(p){
+  points += p*mult;
+  document.getElementById("points").textContent = points;
 }
 
-function checkGeo(){check(geoA,g[1],geoR,geo)}
-function checkHis(){check(hisA,h[1],hisR,his)}
-function checkPol(){check(polA,p[1],polR,pol)}
-function checkEng(){check(engA,e[1],engR,eng)}
-function checkGer(){check(gerA,r[1],gerR,ger)}
-function checkChem(){check(chemA,c[1],chemR,chem)}
-function checkBio(){check(bioA,b[1],bioR,bio)}
-function checkPhy(){check(phyA,f[1],phyR,phy)}
+/* ===== KLIKACZ ===== */
+document.getElementById("clickBtn").onclick=()=>addPoints(1);
 
-function addPoints(x){points+=x*mult;pointsSpan
+/* ===== DANE (25 PYTAŃ) ===== */
+let geo=[["Polska","Warszawa"],["Niemcy","Berlin"],["Francja","Paryż"],["Hiszpania","Madryt"],["Włochy","Rzym"],
+["Czechy","Praga"],["Słowacja","Bratysława"],["Austria","Wiedeń"],["Węgry","Budapeszt"],["Norwegia","Oslo"],
+["Szwecja","Sztokholm"],["Finlandia","Helsinki"],["Litwa","Wilno"],["Łotwa","Ryga"],["Estonia","Tallin"],
+["Ukraina","Kijów"],["Białoruś","Mińsk"],["Rosja","Moskwa"],["Kanada","Ottawa"],["USA","Waszyngton"],
+["Meksyk","Meksyk"],["Brazylia","Brasilia"],["Argentyna","Buenos Aires"],["Japonia","Tokio"],["Chiny","Pekin"]];
+
+let his=[["966","Chrzest Polski"],["1000","Zjazd gnieźnieński"],["1025","Koronacja Bolesława Chrobrego"],
+["1138","Testament Krzywoustego"],["1410","Bitwa pod Grunwaldem"],["1569","Unia lubelska"],
+["1791","Konstytucja 3 Maja"],["1795","III rozbiór Polski"],["1918","Odzyskanie niepodległości"],
+["1939","Wybuch II wojny światowej"],["1945","Koniec II wojny światowej"],["1989","Upadek komunizmu"],
+["1385","Unia w Krewie"],["1320","Koronacja Łokietka"],["1573","Konfederacja warszawska"],
+["1655","Potop szwedzki"],["1772","I rozbiór"],["1793","II rozbiór"],["1863","Powstanie styczniowe"],
+["1920","Bitwa warszawska"],["1980","Solidarność"],["2004","Wejście do UE"],
+["966","Państwo Mieszka I"],["1410","Zwycięstwo nad Krzyżakami"],["1944","Powstanie warszawskie"]];
+
+let pol=[["Jaki to przypadek: kogo? czego?","Dopełniacz"],["Część mowy: pies","Rzeczownik"],
+["Zdanie pytające kończy się znakiem","?"],["Jaki to przypadek: komu? czemu?","Celownik"],
+["Czasownik to część mowy która","Oznacza czynność"],
+["Przysłówek odpowiada na pytania","Jak? gdzie?"],
+["Jaki to przypadek: kogo? co?","Biernik"],
+["Przymiotnik określa","Rzeczownik"],
+["Zdanie oznajmujące kończy się","."],
+["Jaki to przypadek: z kim? z czym?","Narzędnik"],
+["Imiesłów to","Forma czasownika"],
+["Wykrzyknik wyraża","Emocje"],
+["Liczebnik określa","Liczbę"],
+["Jaki to przypadek: o kim? o czym?","Miejscownik"],
+["Zdanie rozkazujące wyraża","Polecenie"],
+["Rzeczownik odpowiada na pytania","Kto? co?"],
+["Synonim to","Wyraz bliskoznaczny"],
+["Antonim to","Wyraz przeciwstawny"],
+["Podmiot to","Wykonawca czynności"],
+["Orzeczenie to","Czynność w zdaniu"],
+["Jaki to przypadek: kto? co?","Mianownik"],
+["Zdanie złożone ma","Więcej niż jedno orzeczenie"],
+["Spójnik łączy","Wyrazy lub zdania"],
+["Przyimek to np.","W, na, pod"],
+["Wyraz pochodny","Ma przedrostek lub przyrostek"]];
+
+let eng=[["cat","kot"],["dog","pies"],["house","dom"],["car","samochód"],["tree","drzewo"],
+["book","książka"],["school","szkoła"],["sun","słońce"],["moon","księżyc"],["water","woda"],
+["food","jedzenie"],["friend","przyjaciel"],["family","rodzina"],["city","miasto"],["country","kraj"],
+["chair","krzesło"],["table","stół"],["window","okno"],["door","drzwi"],["road","droga"],
+["child","dziecko"],["teacher","nauczyciel"],["student","uczeń"],["computer","komputer"],["phone","telefon"]];
+
+let ger=[["Haus","dom"],["Hund","pies"],["Katze","kot"],["Buch","książka"],["Schule","szkoła"],
+["Auto","samochód"],["Baum","drzewo"],["Wasser","woda"],["Brot","chleb"],["Milch","mleko"],
+["Freund","przyjaciel"],["Familie","rodzina"],["Stadt","miasto"],["Land","kraj"],["Tisch","stół"],
+["Stuhl","krzesło"],["Fenster","okno"],["Tür","drzwi"],["Kind","dziecko"],["Lehrer","nauczyciel"],
+["Schüler","uczeń"],["Hand","ręka"],["Kopf","głowa"],["Tag","dzień"],["Nacht","noc"]];
+
+/* ===== LOSOWANIE BEZ POWTÓREK ===== */
+function next(arr){ if(arr.length===0) return null; return arr.splice(Math.floor(Math.random()*arr.length),1)[0]; }
+
+let g=next(geo), h=next(his), p=next(pol), e=next(eng), d=next(ger);
+
+geoQ.textContent=`Podaj stolicę: ${g[0]}`;
+hisQ.textContent=`Co wydarzyło się w roku ${h[0]}?`;
+polQ.textContent=p[0];
+engQ.textContent=`${e[0]}`;
+gerQ.textContent=`${d[0]}`;
+
+/* ===== SPRAWDZANIE ===== */
+function check(input,good,res,arr,cb){
+ if(input.value.trim().toLowerCase()==good.toLowerCase()){
+  res.textContent="✅ Poprawna odpowiedź";
+  addPoints(10);
+ }else{
+  res.textContent="❌ Nieprawidłowa. Poprawna: "+good;
+ }
+ input.value="";
+ let n=next(arr);
+ if(n) cb(n);
+}
+
+function checkGeo(){check(geoA,g[1],geoR,geo,n=>{g=n;geoQ.textContent=`Podaj stolicę: ${n[0]}`})}
+function checkHis(){check(hisA,h[1],hisR,his,n=>{h=n;hisQ.textContent=`Co wydarzyło się w roku ${n[0]}?`})}
+function checkPol(){check(polA,p[1],polR,pol,n=>{p=n;polQ.textContent=n[0]})}
+function checkEng(){check(engA,e[1],engR,eng,n=>{e=n;engQ.textContent=n[0]})}
+function checkGer(){check(gerA,d[1],gerR,ger,n=>{d=n;gerQ.textContent=n[0]})}
+
+/* ===== REBIRTH ===== */
+function doRebirth(){
+ if(points<1000) return alert("Za mało punktów");
+ points=0;rebirth++;mult++;
+ document.getElementById("points").textContent=0;
+ document.getElementById("rebirth").textContent=rebirth;
+ alert("Rebirth! Mnożnik x"+mult);
+}
+
+/* ===== BONUS ===== */
+function bonus(){addPoints(50);alert("Bonus +50");}
+</script>
+
+</body>
+</html>
