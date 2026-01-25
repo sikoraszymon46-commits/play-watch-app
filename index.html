@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlayWatch – Edukacja i Gry</title>
+<title>PlayWatch – Mega Gry i Zagadki</title>
 <style>
 body { font-family: Arial, sans-serif; background: linear-gradient(to right, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 0;}
 header, footer { text-align: center; padding: 20px; background: #0d1b33;}
 section { margin: 20px auto; padding: 15px; max-width: 800px; background: rgba(0,0,0,0.6); border-radius: 10px;}
 button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; background: #ff9800; color: #000; font-weight: bold;}
-input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
+input { padding: 8px; border-radius: 5px; border: none; width: 200px;}
 #loginScreen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;}
 #gameScreen { display: none; }
 </style>
@@ -35,224 +35,254 @@ input { padding: 8px; border-radius: 5px; border: none; width: 150px;}
 
 <!-- Geografia -->
 <section>
-<h2>🌍 Geografia – państwo → stolica</h2>
-<p id="geoQuestion"></p>
-<input type="text" id="geoAnswer" placeholder="Twoja odpowiedź">
-<button id="geoBtn">Sprawdź</button>
+<h2>🌍 Geografia – Podaj stolicę</h2>
+<p>Państwo: <span id="geoCountry">?</span></p>
+<input type="text" id="geoAnswer" placeholder="Stolica">
+<button id="geoCheck">Sprawdź</button>
 <p id="geoResult"></p>
 </section>
 
 <!-- Historia -->
 <section>
-<h2>🏰 Historia – wydarzenie z roku</h2>
-<p id="historyQuestion"></p>
-<input type="text" id="historyAnswer" placeholder="Twoja odpowiedź">
-<button id="historyBtn">Sprawdź</button>
-<p id="historyResult"></p>
+<h2>🏰 Historia Polski</h2>
+<p>Wydarzenie: <span id="histEvent">?</span></p>
+<input type="text" id="histAnswer" placeholder="Rok lub opis">
+<button id="histCheck">Sprawdź</button>
+<p id="histResult"></p>
 </section>
 
 <!-- Polski -->
 <section>
-<h2>📖 Język Polski – pytanie</h2>
-<p id="polishQuestion"></p>
-<input type="text" id="polishAnswer" placeholder="Twoja odpowiedź">
-<button id="polishBtn">Sprawdź</button>
-<p id="polishResult"></p>
+<h2>📝 Polski – Pytania</h2>
+<p>Pytanie: <span id="polskiQuestion">?</span></p>
+<input type="text" id="polskiAnswer" placeholder="Odpowiedź">
+<button id="polskiCheck">Sprawdź</button>
+<p id="polskiResult"></p>
 </section>
 
 <!-- Angielski -->
 <section>
-<h2>📝 Angielski – przetłumacz słowo</h2>
-<p id="englishQuestion"></p>
-<input type="text" id="englishAnswer" placeholder="Twoja odpowiedź">
-<button id="englishBtn">Sprawdź</button>
+<h2>🇬🇧 Angielski – Tłumaczenie</h2>
+<p>Słówko: <span id="englishWord">?</span></p>
+<input type="text" id="englishAnswer" placeholder="Tłumaczenie">
+<button id="englishCheck">Sprawdź</button>
 <p id="englishResult"></p>
 </section>
 
-<!-- Rebirth i bonus na samym dole -->
+<!-- Rebirth i bonus -->
 <section>
 <h2>🔄 Rebirth</h2>
 <button id="rebirthBtn">Rebirth ×2</button>
+</section>
+
+<section>
 <h2>💰 Bonus za reklamę</h2>
 <button id="bonusBtn">Oglądałem reklamę</button>
 </section>
 
 <footer>
 <a href="regulamin.html">Regulamin</a> |
-<a href="polityka-prywatnosci.html">Polityka prywatności</a>
+<a href="polityka-prywatnosci.html">Polityka prywatności</a> |
+Kontakt: <strong>sikoraszymon45@gmail.com</strong>
 </footer>
 
 <script>
-// Dane przykładowe – 50 pozycji
-const geoData = [
-  {country:"Polska", capital:"Warszawa"}, {country:"Niemcy", capital:"Berlin"}, {country:"Francja", capital:"Paryż"},
-  {country:"Włochy", capital:"Rzym"}, {country:"Hiszpania", capital:"Madryt"}, {country:"Portugalia", capital:"Lizbona"},
-  {country:"Norwegia", capital:"Oslo"}, {country:"Szwecja", capital:"Sztokholm"}, {country:"Finlandia", capital:"Helsinki"},
-  {country:"Dania", capital:"Kopenhaga"}, {country:"Belgia", capital:"Bruksela"}, {country:"Holandia", capital:"Amsterdam"},
-  {country:"Austria", capital:"Wiedeń"}, {country:"Szwajcaria", capital:"Berno"}, {country:"Czechy", capital:"Praga"},
-  {country:"Słowacja", capital:"Bratysława"}, {country:"Węgry", capital:"Budapeszt"}, {country:"Irlandia", capital:"Dublin"},
-  {country:"Anglia", capital:"Londyn"}, {country:"Szkocja", capital:"Edynburg"}, {country:"Walia", capital:"Cardiff"},
-  {country:"Islandia", capital:"Reykjavik"}, {country:"Grecja", capital:"Ateny"}, {country:"Turcja", capital:"Ankara"},
-  {country:"Rosja", capital:"Moskwa"}, {country:"Ukraina", capital:"Kijów"}, {country:"Białoruś", capital:"Mińsk"},
-  {country:"Litwa", capital:"Wilno"}, {country:"Łotwa", capital:"Ryga"}, {country:"Estonia", capital:"Tallin"},
-  {country:"Chorwacja", capital:"Zagrzeb"}, {country:"Bośnia i Hercegowina", capital:"Sarajewo"}, {country:"Serbia", capital:"Belgrad"},
-  {country:"Czarnogóra", capital:"Podgorica"}, {country:"Albania", capital:"Tirana"}, {country:"Macedonia", capital:"Skopje"},
-  {country:"Bułgaria", capital:"Sofia"}, {country:"Rumunia", capital:"Bukareszt"}, {country:"Mołdawia", capital:"Kiszyniów"},
-  {country:"Słowenia", capital:"Lublana"}, {country:"Monako", capital:"Monako"}, {country:"Liechtenstein", capital:"Vaduz"},
-  {country:"San Marino", capital:"San Marino"}, {country:"Andora", capital:"Andora la Vella"}, {country:"Malta", capital:"Valletta"},
-  {country:"Cypr", capital:"Nikozja"}, {country:"Rosja", capital:"Moskwa"}, {country:"Kazachstan", capital:"Astana"},
-  {country:"Kanada", capital:"Ottawa"}, {country:"USA", capital:"Waszyngton"}, {country:"Meksyk", capital:"Miasto Meksyk"}
-];
-
-const historyData = [
-  {year:"966", event:"Chrzest Polski"}, {year:"1410", event:"Bitwa pod Grunwaldem"}, 
-  {year:"1791", event:"Konstytucja 3 Maja"}, {year:"1918", event:"Odzyskanie niepodległości"}, 
-  {year:"1989", event:"Upadek komunizmu w Polsce"}, /* dodaj resztę do 50 */ 
-];
-
-const polishData = [
-  {q:"Kto był autorem 'Pana Tadeusza'?", a:"Adam Mickiewicz"},
-  {q:"W którym wieku żył Juliusz Słowacki?", a:"XIX"},
-  {q:"Przykład zdania oznajmującego?", a:"Ja idę do szkoły"}, /* dodaj resztę do 50 */
-];
-
-const englishData = [
-  {eng:"house", pl:"dom"}, {eng:"cat", pl:"kot"}, {eng:"dog", pl:"pies"}, {eng:"book", pl:"książka"}, /* dodaj do 50 */
-];
-
-// Shuffle helper
-function shuffleArray(array){ return array.sort(()=>Math.random()-0.5); }
-
-// Indeksy
-let geoIndex=0, historyIndex=0, polishIndex=0, englishIndex=0;
-
-// Punkty i rebirth
+// Punkty i gracz
 let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
 let rebirthCount = parseInt(localStorage.getItem('rebirthCount')) || 0;
-let rebirthMultiplier = rebirthCount+1;
+let rebirthMultiplier = rebirthCount + 1;
 let currentNick = localStorage.getItem('currentNick') || "";
 
+// Listy 50 elementów
+let geoList = [
+{country:"Polska", capital:"Warszawa"},{country:"Niemcy", capital:"Berlin"},{country:"Francja", capital:"Paryż"},
+{country:"Włochy", capital:"Rzym"},{country:"Hiszpania", capital:"Madryt"},{country:"Portugalia", capital:"Lizbona"},
+{country:"Norwegia", capital:"Oslo"},{country:"Szwecja", capital:"Sztokholm"},{country:"Finlandia", capital:"Helsinki"},
+{country:"Dania", capital:"Kopenhaga"},{country:"Belgia", capital:"Bruksela"},{country:"Holandia", capital:"Amsterdam"},
+{country:"Szwajcaria", capital:"Bern"},{country:"Austria", capital:"Wiedeń"},{country:"Czechy", capital:"Praga"},
+{country:"Słowacja", capital:"Bratysława"},{country:"Węgry", capital:"Budapeszt"},{country:"Irlandia", capital:"Dublin"},
+{country:"Islandia", capital:"Reykjavik"},{country:"Grecja", capital:"Ateny"},{country:"Turcja", capital:"Ankara"},
+{country:"Rosja", capital:"Moskwa"},{country:"Ukraina", capital:"Kijów"},{country:"Białoruś", capital:"Mińsk"},
+{country:"Litwa", capital:"Wilno"},{country:"Łotwa", capital:"Ryga"},{country:"Estonia", capital:"Tallin"},
+{country:"Serbia", capital:"Belgrad"},{country:"Chorwacja", capital:"Zagrzeb"},{country:"Bośnia i Hercegowina", capital:"Sarajewo"},
+{country:"Czarnogóra", capital:"Podgorica"},{country:"Macedonia Północna", capital:"Skopje"},{country:"Albania", capital:"Tirana"},
+{country:"Bułgaria", capital:"Sofia"},{country:"Rumunia", capital:"Bukareszt"},{country:"Mołdawia", capital:"Kiszyniów"},
+{country:"Słowenia", capital:"Lublana"},{country:"Andora", capital:"Andora la Vella"},{country:"Liechtenstein", capital:"Vaduz"},
+{country:"Monako", capital:"Monako"},{country:"San Marino", capital:"San Marino"},{country:"Malta", capital:"Valletta"},
+{country:"Cypr", capital:"Nikozja"},{country:"Kazachstan", capital:"Astana"},{country:"Gruzja", capital:"Tbilisi"},
+{country:"Armenia", capital:"Erywań"},{country:"Azerbejdżan", capital:"Baku"},{country:"Chorwacja", capital:"Zagrzeb"},
+{country:"Szwajcaria", capital:"Bern"},{country:"Polska", capital:"Warszawa"},{country:"Niemcy", capital:"Berlin"},
+{country:"Francja", capital:"Paryż"},{country:"Węgry", capital:"Budapeszt"},{country:"Turcja", capital:"Ankara"}
+];
+
+let histList = [
+{event:"Chrzest Polski", year:"966"},{event:"Bitwa pod Grunwaldem", year:"1410"},{event:"Unia Lubelska", year:"1569"},
+{event:"Rozbiory Polski", year:"1772-1795"},{event:"Powstanie Listopadowe", year:"1830-1831"},{event:"Powstanie Styczniowe", year:"1863-1864"},
+{event:"Odzyskanie niepodległości", year:"1918"},{event:"II wojna światowa", year:"1939-1945"},{event:"Powstanie Warszawskie", year:"1944"},
+{event:"Solidarność – strajki", year:"1980-1981"},{event:"Wejście Polski do UE", year:"2004"},{event:"Konstytucja 3 Maja", year:"1791"},
+{event:"Bitwa pod Wiedniem", year:"1683"},{event:"Zabór pruski", year:"1772"},{event:"Zabór austriacki", year:"1772"},
+{event:"Zabór rosyjski", year:"1772"},{event:"Bitwa pod Racławicami", year:"1794"},{event:"Powstanie Warszawskie 1794", year:"1794"},
+{event:"Bitwa pod Cedynią", year:"972"},{event:"Bitwa pod Kircholmem", year:"1605"},{event:"Odsiecz wiedeńska", year:"1683"},
+{event:"Bitwa pod Chocimiem", year:"1621"},{event:"Konstytucja marcowa", year:"1921"},{event:"Powstanie Wielkopolskie", year:"1918-1919"},
+{event:"Bitwa pod Kłuszynem", year:"1610"},{event:"Powstanie kościuszkowskie", year:"1794"},{event:"Bitwa pod Oliwą", year:"1627"},
+{event:"Rozbiory Rzeczypospolitej", year:"1772-1795"},{event:"Konstytucja 3 maja", year:"1791"},{event:"Powstanie Listopadowe", year:"1830-1831"},
+{event:"Powstanie styczniowe", year:"1863-1864"},{event:"Rok 966 – chrzest Polski", year:"966"},{event:"Bitwa pod Warszawą", year:"1656"},
+{event:"Bitwa pod Lwowem", year:"1675"},{event:"Unia personalna z Saksonią", year:"1697"},{event:"Konfederacja barska", year:"1768"},
+{event:"Sejm Czteroletni", year:"1788-1792"},{event:"Powstanie listopadowe", year:"1830"},{event:"Bitwa pod Olszynką Grochowską", year:"1831"},
+{event:"Powstanie styczniowe", year:"1863"},{event:"Rewolucja 1905 w Królestwie Polskim", year:"1905"},{event:"Bitwa warszawska", year:"1920"},
+{event:"Rok 1945 – koniec wojny", year:"1945"},{event:"Przemiany 1989 – upadek komunizmu", year:"1989"},{event:"Transformacja gospodarcza", year:"1990-1991"},
+{event:"Wejście Polski do strefy Schengen", year:"2007"},{event:"Wybory prezydenckie", year:"1990"},{event:"Obchody milenium", year:"2000"},
+{event:"Powódź tysiąclecia", year:"1997"},{event:"Rozpoczęcie budowy COP", year:"2014"}
+];
+
+// Polski 50 pytań
+let polskiList = [
+{question:"Kto napisał 'Pan Tadeusz'?", answer:"Adam Mickiewicz"},{question:"Czym zajmował się Henryk Sienkiewicz?", answer:"Pisarz"},
+{question:"W którym wieku urodził się Juliusz Słowacki?", answer:"XIX"},{question:"Co oznacza wyraz 'zauważyć'?", answer:"Dostrzec"},
+{question:"Jak odmienia się 'kot' w liczbie mnogiej?", answer:"koty"},{question:"W jakim przypadku jest słowo 'domu'?", answer:"Dopełniacz"},
+{question:"Twórz zdanie oznajmujące z 'pies'", answer:"Pies biega po podwórku"},{question:"Kto jest autorem 'Lalki'?", answer:"Bolesław Prus"},
+{question:"Jak odmienia się czasownik 'czytać' w 3 os. l. poj?", answer:"czyta"},{question:"W jakim czasie jest zdanie 'On czyta książkę'?", answer:"Teraźniejszy"},
+// ... do 50
+];
+
+// Angielski 50 słówek
+let englishList = [
+{word:"cat", answer:"kot"},{word:"dog", answer:"pies"},{word:"house", answer:"dom"},{word:"school", answer:"szkoła"},
+{word:"book", answer:"książka"},{word:"computer", answer:"komputer"},{word:"tree", answer:"drzewo"},{word:"water", answer:"woda"},
+{word:"sun", answer:"słońce"},{word:"moon", answer:"księżyc"},{word:"car", answer:"samochód"},{word:"bread", answer:"chleb"},
+{word:"milk", answer:"mleko"},{word:"table", answer:"stół"},{word:"chair", answer:"krzesło"},{word:"window", answer:"okno"},
+{word:"door", answer:"drzwi"},{word:"city", answer:"miasto"},{word:"country", answer:"kraj"},{word:"schoolbag", answer:"plecak"},
+{word:"pen", answer:"długopis"},{word:"pencil", answer:"ołówek"},{word:"teacher", answer:"nauczyciel"},{word:"student", answer:"uczeń"},
+{word:"friend", answer:"przyjaciel"},{word:"family", answer:"rodzina"},{word:"food", answer:"jedzenie"},{word:"drink", answer:"napój"},
+{word:"river", answer:"rzeka"},{word:"mountain", answer:"góra"},{word:"forest", answer:"las"},{word:"sea", answer:"morze"},
+{word:"lake", answer:"jezioro"},{word:"road", answer:"droga"},{word:"street", answer:"ulica"},{word:"apple", answer:"jabłko"},
+{word:"banana", answer:"banan"},{word:"orange", answer:"pomarańcza"},{word:"grape", answer:"winogrono"},{word:"clock", answer:"zegarek"},
+{word:"phone", answer:"telefon"},{word:"mouse", answer:"mysz"},{word:"keyboard", answer:"klawiatura"},{word:"fire", answer:"ogień"},
+{word:"water", answer:"woda"},{word:"air", answer:"powietrze"},{word:"earth", answer:"ziemia"},{word:"wind", answer:"wiatr"},
+{word:"rain", answer:"deszcz"},{word:"snow", answer:"śnieg"}
+];
+
+// Indeksy
+let geoIndex=0, histIndex=0, polskiIndex=0, englishIndex=0;
+
 // Start gry
-document.getElementById('startBtn').addEventListener('click', ()=>{
+document.getElementById('startBtn').addEventListener('click', function(){
   let nick = document.getElementById('playerNick').value.trim();
   if(!nick){ alert("Podaj nick!"); return; }
   currentNick = nick;
   localStorage.setItem('currentNick', currentNick);
   document.getElementById('displayNick').innerText = currentNick;
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('gameScreen').style.display='block';
-  updateDisplays();
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'block';
+  nextQuestions();
 });
 
-// Funkcje wyświetlania
-function updateDisplays(){ 
-  document.getElementById('totalPoints').innerText = totalPoints; 
-  document.getElementById('rebirthCount').innerText = rebirthCount;
+// Wyświetl nowe pytania
+function nextQuestions(){
+  if(geoIndex>=geoList.length) geoIndex=0;
+  document.getElementById('geoCountry').innerText = geoList[geoIndex].country;
+  document.getElementById('geoAnswer').value=""; document.getElementById('geoResult').innerText="";
+
+  if(histIndex>=histList.length) histIndex=0;
+  document.getElementById('histEvent').innerText = histList[histIndex].event;
+  document.getElementById('histAnswer').value=""; document.getElementById('histResult').innerText="";
+
+  if(polskiIndex>=polskiList.length) polskiIndex=0;
+  document.getElementById('polskiQuestion').innerText = polskiList[polskiIndex].question;
+  document.getElementById('polskiAnswer').value=""; document.getElementById('polskiResult').innerText="";
+
+  if(englishIndex>=englishList.length) englishIndex=0;
+  document.getElementById('englishWord').innerText = englishList[englishIndex].word;
+  document.getElementById('englishAnswer').value=""; document.getElementById('englishResult').innerText="";
 }
 
-// Dodawanie punktów
-function addPoints(p){
-  totalPoints += p * rebirthMultiplier;
+// Sprawdzenie odpowiedzi
+document.getElementById('geoCheck').addEventListener('click', function(){
+  let ans = document.getElementById('geoAnswer').value.trim().toLowerCase();
+  if(ans === geoList[geoIndex].capital.toLowerCase()){
+    document.getElementById('geoResult').innerText="✅ Poprawnie!";
+    totalPoints+=10*rebirthMultiplier;
+  } else {
+    document.getElementById('geoResult').innerText=`❌ Błędnie! Prawidłowa: ${geoList[geoIndex].capital}`;
+  }
+  geoIndex++; nextQuestions(); updatePoints();
+});
+
+document.getElementById('histCheck').addEventListener('click', function(){
+  let ans = document.getElementById('histAnswer').value.trim();
+  if(ans === histList[histIndex].year){
+    document.getElementById('histResult').innerText="✅ Poprawnie!";
+    totalPoints+=10*rebirthMultiplier;
+  } else {
+    document.getElementById('histResult').innerText=`❌ Błędnie! Prawidłowa: ${histList[histIndex
+].year}`;
+  }
+  histIndex++;
+  nextQuestions();
+  updatePoints();
+});
+
+document.getElementById('polskiCheck').addEventListener('click', function(){
+  let ans = document.getElementById('polskiAnswer').value.trim().toLowerCase();
+  if(ans === polskiList[polskiIndex].answer.toLowerCase()){
+    document.getElementById('polskiResult').innerText="✅ Poprawnie!";
+    totalPoints+=10*rebirthMultiplier;
+  } else {
+    document.getElementById('polskiResult').innerText=`❌ Błędnie! Prawidłowa: ${polskiList[polskiIndex].answer}`;
+  }
+  polskiIndex++;
+  nextQuestions();
+  updatePoints();
+});
+
+document.getElementById('englishCheck').addEventListener('click', function(){
+  let ans = document.getElementById('englishAnswer').value.trim().toLowerCase();
+  if(ans === englishList[englishIndex].answer.toLowerCase()){
+    document.getElementById('englishResult').innerText="✅ Poprawnie!";
+    totalPoints+=10*rebirthMultiplier;
+  } else {
+    document.getElementById('englishResult').innerText=`❌ Błędnie! Prawidłowa: ${englishList[englishIndex].answer}`;
+  }
+  englishIndex++;
+  nextQuestions();
+  updatePoints();
+});
+
+// Aktualizacja punktów
+function updatePoints(){
+  document.getElementById('totalPoints').innerText = totalPoints;
   localStorage.setItem('totalPoints', totalPoints);
-  updateDisplays();
 }
 
-// Rebirth
-document.getElementById('rebirthBtn').addEventListener('click', ()=>{
-  let cost = 1000*Math.pow(10,rebirthCount);
-  if(totalPoints>=cost){
-    totalPoints=0;
+// Rebirth ×2
+document.getElementById('rebirthBtn').addEventListener('click', function(){
+  if(totalPoints >= 100){ // koszt rebirtha
+    totalPoints = Math.floor(totalPoints/2);
     rebirthCount++;
-    rebirthMultiplier = rebirthCount+1;
-    localStorage.setItem('totalPoints', totalPoints);
+    rebirthMultiplier = rebirthCount + 1;
     localStorage.setItem('rebirthCount', rebirthCount);
-    updateDisplays();
-    alert(`Rebirth ×${rebirthMultiplier}!`);
-  } else { alert(`Potrzebujesz ${cost} punktów`);}
-});
-
-// Bonus
-document.getElementById('bonusBtn').addEventListener('click', ()=>{
-  addPoints(50);
-  alert("Bonus +50 pkt!");
-});
-
-// Funkcje gier
-function nextGeo(){
-  if(geoIndex>=geoData.length){ geoIndex=0; geoData=shuffleArray(geoData);}
-  document.getElementById('geoQuestion').innerText = "Państwo: "+geoData[geoIndex].country;
-  document.getElementById('geoAnswer').value="";
-  document.getElementById('geoResult').innerText="";
-}
-nextGeo();
-document.getElementById('geoBtn').addEventListener('click', ()=>{
-  let answer=document.getElementById('geoAnswer').value.trim().toLowerCase();
-  if(answer===geoData[geoIndex].capital.toLowerCase()){ 
-    document.getElementById('geoResult').innerText="✅ Dobrze!"; addPoints(10);
+    updatePoints();
+    alert("🔄 Rebirth aktywowany! Punkty i mnożnik zaktualizowane.");
   } else {
-    document.getElementById('geoResult').innerText="❌ Błąd! Prawidłowa: "+geoData[geoIndex].capital;
+    alert("Nie masz wystarczająco punktów (100) na rebirth!");
   }
-  geoIndex++; nextGeo();
 });
 
-function nextHistory(){
-  if(historyIndex>=historyData.length){ historyIndex=0; historyData=shuffleArray(historyData);}
-  document.getElementById('historyQuestion').innerText = "Rok: "+historyData[historyIndex].year;
-  document.getElementById('historyAnswer').value="";
-  document.getElementById('historyResult').innerText="";
-}
-nextHistory();
-document.getElementById('historyBtn').addEventListener('click', ()=>{
-  let answer=document.getElementById('historyAnswer').value.trim().toLowerCase();
-  if(answer===historyData[historyIndex].event.toLowerCase()){
-    document.getElementById('historyResult').innerText="✅ Dobrze!"; addPoints(10);
-  } else {
-    document.getElementById('historyResult').innerText="❌ Błąd! Prawidłowa: "+historyData[historyIndex].event;
-  }
-  historyIndex++; nextHistory();
+// Bonus za reklamę
+document.getElementById('bonusBtn').addEventListener('click', function(){
+  totalPoints += 50 * rebirthMultiplier;
+  alert("💰 Bonus dodany: +50 punktów!");
+  updatePoints();
 });
 
-function nextPolish(){
-  if(polishIndex>=polishData.length){ polishIndex=0; polishData=shuffleArray(polishData);}
-  document.getElementById('polishQuestion').innerText = polishData[polishIndex].q;
-  document.getElementById('polishAnswer').value="";
-  document.getElementById('polishResult').innerText="";
+// Na wypadek wyczerpania listy resetujemy indeksy
+function resetAll(){
+  geoIndex=0; histIndex=0; polskiIndex=0; englishIndex=0;
+  nextQuestions();
 }
-nextPolish();
-document.getElementById('polishBtn').addEventListener('click', ()=>{
-  let answer=document.getElementById('polishAnswer').value.trim().toLowerCase();
-  if(answer===polishData[polishIndex].a.toLowerCase()){
-    document.getElementById('polishResult').innerText="✅ Dobrze!"; addPoints(10);
-  } else {
-    document.getElementById('polishResult').innerText="❌ Błąd! Prawidłowa: "+polishData[polishIndex].a;
-  }
-  polishIndex++; nextPolish();
-});
 
-function nextEnglish(){
-  if(englishIndex>=englishData.length){ englishIndex=0; englishData=shuffleArray(englishData);}
-  document.getElementById('englishQuestion').innerText = "Przetłumacz na polski: "+englishData[englishIndex].eng;
-  document.getElementById('englishAnswer').value="";
-  document.getElementById('englishResult').innerText="";
-}
-nextEnglish();
-document.getElementById('englishBtn').addEventListener('click', ()=>{
-  let answer=document.getElementById('englishAnswer').value.trim().toLowerCase();
-  if(answer===englishData[englishIndex].pl.toLowerCase()){
-    document.getElementById('englishResult').innerText="✅ Dobrze!"; addPoints(10);
-  } else {
-    document.getElementById('englishResult').innerText="❌ Błąd! Prawidłowa: "+englishData[englishIndex].pl;
-  }
-  englishIndex++; nextEnglish();
-});
-
-// Auto-logowanie
-if(currentNick!==""){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('gameScreen').style.display='block';
-  document.getElementById('displayNick').innerText=currentNick;
-  updateDisplays();
-}
+// Uruchomienie pytań po załadowaniu gry
+nextQuestions();
 </script>
 </body>
 </html>
